@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import retrofit2.Response;
+
 public class ExerciseFragment extends Fragment
 {
     private OnFragmentInteractionListener mListener;
@@ -57,6 +59,12 @@ public class ExerciseFragment extends Fragment
     {
         super.onDetach();
         mListener = null;
+    }
+
+    public void onDataReceived(Response<Exercise> response)
+    {
+        Exercise exercise = response.body();
+
     }
 
     public interface OnFragmentInteractionListener

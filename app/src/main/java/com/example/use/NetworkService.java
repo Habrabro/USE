@@ -21,9 +21,9 @@ import retrofit2.http.Path;
 public class NetworkService
 {
     private static NetworkService instance;
-    private String baseURL = "https://glabstore.blob.core.windows.net/test/";
-    private static NetworkServiceListener listener;
-    private List<Request> requests = new ArrayList<>();
+    private String baseURL = "https://my-json-server.typicode.com/Habrabro/JSON_server/";
+    private static ExerciseFragment listener;
+    private List<Exercise> requests = new ArrayList<>();
     private Retrofit retrofit;
     private ServerAPI serverAPI;
 
@@ -35,7 +35,7 @@ public class NetworkService
                 .build();
     }
 
-    public static NetworkService getInstance(NetworkServiceListener _listener)
+    public static NetworkService getInstance(ExerciseFragment _listener)
     {
         if (instance == null)
         {
@@ -45,7 +45,7 @@ public class NetworkService
         return instance;
     }
 
-    public List<Request> getRequests(boolean updateData)
+    public List<Exercise> getRequests(long id, boolean updateData)
     {
         if (serverAPI == null || updateData)
         {
@@ -54,31 +54,17 @@ public class NetworkService
                 requests.clear();
                 serverAPI = retrofit.create(ServerAPI.class);
                 serverAPI
-                        .getRequests()
-                        .enqueue(new Callback<ListResponse>()
+                        .getExercise(id)
+                        .enqueue(new Callback<Exercise>()
                         {
                             @Override
-                            public void onResponse(@NonNull Call<ListResponse> call, @NonNull Response<ListResponse> response)
+                            public void onResponse(@NonNull Call<Exercise> call, @NonNull Response<Exercise> response)
                             {
-                                ListResponse listResponse = response.body();
-                                requests.clear();
-                                requests.addAll(listResponse.getData());
-                                if (listener instanceof NetworkServiceListener.ListResponseReceiver)
-                                {
-                                    if (listResponse.isStatus())
-                                    {
-                                        ((NetworkServiceListener.ListResponseReceiver)listener)
-                                                .onListResponseReceived(listResponse);
-                                    }
-                                    else
-                                    {
-                                        listener.onError(listResponse);
-                                    }
-                                }
+                                listener.onDataReceived(response);
                             }
 
                             @Override
-                            public void onFailure(@NonNull Call<ListResponse> call, @NonNull Throwable t)
+                            public void onFailure(@NonNull Call<Exercise> call, @NonNull Throwable t)
                             {
                                 Log.i("Tag", "Fail");
                             }
@@ -88,7 +74,7 @@ public class NetworkService
             {
                 if (listener != null)
                 {
-                    listener.onDisconnected();
+
                 }
             }
         }
@@ -112,7 +98,7 @@ public class NetworkService
 
     public interface ServerAPI
     {
-        @GET("list.json")
-        Call<ListResponse> getRequests();
+        @GET("getExercise/{id}")
+        Call<Exercise> getExercise(@Path("id") long id);
     }
 }
