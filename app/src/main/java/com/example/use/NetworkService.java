@@ -23,7 +23,6 @@ public class NetworkService
     private static NetworkService instance;
     private String baseURL = "https://my-json-server.typicode.com/Habrabro/JSON_server/";
     private static ExerciseFragment listener;
-    private List<Exercise> requests = new ArrayList<>();
     private Retrofit retrofit;
     private ServerAPI serverAPI;
 
@@ -45,13 +44,12 @@ public class NetworkService
         return instance;
     }
 
-    public List<Exercise> getRequests(long id, boolean updateData)
+    public void getRequests(long id, boolean updateData)
     {
         if (serverAPI == null || updateData)
         {
             if (isNetworkConnected())
             {
-                requests.clear();
                 serverAPI = retrofit.create(ServerAPI.class);
                 serverAPI
                         .getExercise(id)
@@ -78,7 +76,27 @@ public class NetworkService
                 }
             }
         }
-        return requests;
+    }
+
+    public void getRequestsList(long id, boolean updateData)
+    {
+        if (serverAPI == null || updateData)
+        {
+            if (isNetworkConnected())
+            {
+                serverAPI = retrofit.create(ServerAPI.class);
+                serverAPI
+                        .getExercisesList()
+                        .enqueue(new com.example.use.Callback<List<Exercise>>());
+            }
+            else
+            {
+                if (listener != null)
+                {
+
+                }
+            }
+        }
     }
 
     public void setBaseURL(String url)
@@ -100,5 +118,7 @@ public class NetworkService
     {
         @GET("getExercise/{id}")
         Call<Exercise> getExercise(@Path("id") long id);
+        @GET("getExercise")
+        Call<List<Exercise>> getExercisesList();
     }
 }

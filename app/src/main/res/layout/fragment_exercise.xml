@@ -9,19 +9,19 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView android:id="@+id/id"
+        <TextView android:id="@+id/tvId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <TextView android:id="@+id/description"
+        <TextView android:id="@+id/tvDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <ImageView
+        <ImageView android:id="@+id/ivImage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <EditText
+        <EditText android:id="@+id/etAnswerField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Введите ответ"/>
