@@ -53,20 +53,7 @@ public class NetworkService
                 serverAPI = retrofit.create(ServerAPI.class);
                 serverAPI
                         .getExercise(id)
-                        .enqueue(new Callback<Exercise>()
-                        {
-                            @Override
-                            public void onResponse(@NonNull Call<Exercise> call, @NonNull Response<Exercise> response)
-                            {
-                                listener.onDataReceived(response);
-                            }
-
-                            @Override
-                            public void onFailure(@NonNull Call<Exercise> call, @NonNull Throwable t)
-                            {
-                                Log.i("Tag", "Fail");
-                            }
-                        });
+                        .enqueue(new BaseCallback<Exercise>(listener));
             }
             else
             {
@@ -87,7 +74,7 @@ public class NetworkService
                 serverAPI = retrofit.create(ServerAPI.class);
                 serverAPI
                         .getExercisesList()
-                        .enqueue(new com.example.use.Callback<List<Exercise>>());
+                        .enqueue(new BaseCallback<Exercise>(listener));
             }
             else
             {
@@ -119,6 +106,6 @@ public class NetworkService
         @GET("getExercise/{id}")
         Call<Exercise> getExercise(@Path("id") long id);
         @GET("getExercise")
-        Call<List<Exercise>> getExercisesList();
+        Call<Exercise> getExercisesList();
     }
 }

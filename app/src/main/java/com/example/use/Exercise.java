@@ -1,6 +1,6 @@
 package com.example.use;
 
-public class Exercise
+public class Exercise extends BaseResponse
 {
     private long id;
     private String description;

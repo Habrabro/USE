@@ -19,7 +19,7 @@ import androidx.fragment.app.Fragment;
 
 import retrofit2.Response;
 
-public class ExerciseFragment extends Fragment
+public class ExerciseFragment extends BaseFragment
 {
     private OnFragmentInteractionListener mListener;
 
@@ -79,6 +79,39 @@ public class ExerciseFragment extends Fragment
         mListener = null;
     }
 
+    @Override
+    public void onResponse(BaseResponse response)
+    {
+        Exercise exercise = (Exercise)response;
+        idView.setText(Long.toString(exercise.getId()));
+        descriptionView.setText(exercise.getDescription());
+        UrlToBitmap urlToBitmap = new UrlToBitmap(new OnBitmapTaskExecutedListener()
+        {
+            @Override
+            public void onBitmapTaskExecuted(Bitmap result)
+            {
+                imageView.setImageBitmap(result);
+            }
+        });
+        urlToBitmap.execute(
+                "http://storage.mds.yandex.net/get-mturk/1136717/a2a954b4-5ec8-4dac-9411-eb5768f80a33");
+    }
+    @Override
+    public void onFailure()
+    {
+
+    }
+    @Override
+    public void onError()
+    {
+
+    }
+    @Override
+    public void onDisconnected()
+    {
+
+    }
+
     public void onDataReceived(Response<Exercise> response)
     {
         Exercise exercise = response.body();
@@ -94,7 +127,6 @@ public class ExerciseFragment extends Fragment
         });
         urlToBitmap.execute(
                 "http://storage.mds.yandex.net/get-mturk/1136717/a2a954b4-5ec8-4dac-9411-eb5768f80a33");
-        Log.i("Tag", exercise.getDescription());
     }
 
     public interface OnFragmentInteractionListener
