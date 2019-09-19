@@ -21,10 +21,16 @@ import retrofit2.http.Path;
 public class NetworkService
 {
     private static NetworkService instance;
-    private String baseURL = "https://my-json-server.typicode.com/Habrabro/JSON_server/";
+    private String baseURL = "https://usetrainingadmin.000webhostapp.com/api/";
     private static ExerciseFragment listener;
+    private BaseResponse savedResponse;
     private Retrofit retrofit;
     private ServerAPI serverAPI;
+
+    public BaseResponse getSavedResponse()
+    {
+        return savedResponse;
+    }
 
     private NetworkService()
     {
@@ -44,7 +50,7 @@ public class NetworkService
         return instance;
     }
 
-    public void getRequests(long id, boolean updateData)
+    public void getExercises(long id, boolean updateData)
     {
         if (serverAPI == null || updateData)
         {
@@ -52,20 +58,29 @@ public class NetworkService
             {
                 serverAPI = retrofit.create(ServerAPI.class);
                 serverAPI
-                        .getExercise(id)
-                        .enqueue(new BaseCallback<Exercise>(listener));
+                        .getExercises(id)
+                        .enqueue(new BaseCallback<Exercise>(listener)
+                        {
+                            @Override
+                            public void onResponse(Call<Exercise> call, Response<Exercise> response)
+                            {
+                                super.onResponse(call, response);
+                                savedResponse = response.body();
+                            }
+                        });
             }
             else
             {
-                if (listener != null)
-                {
-
-                }
+                listener.onDisconnected();
             }
+        }
+        else
+        {
+            listener.onResponse(savedResponse);
         }
     }
 
-    public void getRequestsList(long id, boolean updateData)
+    public void getExercises(boolean updateData)
     {
         if (serverAPI == null || updateData)
         {
@@ -73,16 +88,26 @@ public class NetworkService
             {
                 serverAPI = retrofit.create(ServerAPI.class);
                 serverAPI
-                        .getExercisesList()
-                        .enqueue(new BaseCallback<Exercise>(listener));
+                        .getExercises()
+                        .enqueue(new BaseCallback<Exercise>(listener)
+                        {
+                            @Override
+                            public void onResponse(Call<Exercise> call, Response<Exercise> response)
+                            {
+                                super.onResponse(call, response);
+                                savedResponse = response.body();
+                            }
+                        });
             }
             else
             {
-                if (listener != null)
-                {
-
-                }
+                listener.onDisconnected();
             }
+        }
+        else
+        {
+            Log.i("ret", "using savedResponse");
+            listener.onResponse(savedResponse);
         }
     }
 
@@ -103,9 +128,9 @@ public class NetworkService
 
     public interface ServerAPI
     {
-        @GET("getExercise/{id}")
-        Call<Exercise> getExercise(@Path("id") long id);
-        @GET("getExercise")
-        Call<Exercise> getExercisesList();
+        @GET("getExercises.php/{id}")
+        Call<Exercise> getExercises(@Path("id") long id);
+        @GET("getExercises.php")
+        Call<Exercise> getExercises();
     }
 }

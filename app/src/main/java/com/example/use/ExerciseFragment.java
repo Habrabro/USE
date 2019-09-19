@@ -2,6 +2,8 @@ package com.example.use;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,15 +19,20 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Response;
 
 public class ExerciseFragment extends BaseFragment
 {
     private OnFragmentInteractionListener mListener;
 
-    private TextView idView, descriptionView;
-    private EditText answerFieldView;
-    private ImageView imageView;
+    @BindView(R.id.tvId) TextView idView;
+    @BindView(R.id.tvDescription) TextView descriptionView;
+    @BindView(R.id.ivImage) ImageView imageView;
+    @BindView(R.id.etAnswerField) EditText answerFieldView;
 
     public ExerciseFragment()
     {
@@ -49,6 +56,7 @@ public class ExerciseFragment extends BaseFragment
                              Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_exercise, container, false);
+        ButterKnife.bind(this, view);
         return view;
     }
 
@@ -57,13 +65,8 @@ public class ExerciseFragment extends BaseFragment
     {
         super.onViewCreated(view, savedInstanceState);
 
-        idView = view.findViewById(R.id.tvId);
-        descriptionView = view.findViewById(R.id.tvDescription);
-        imageView = view.findViewById(R.id.ivImage);
-        answerFieldView = view.findViewById(R.id.etAnswerField);
-
         NetworkService networkService = NetworkService.getInstance(this);
-        networkService.getRequests(0, false);
+        networkService.getExercises(false);
     }
 
     @Override
@@ -83,18 +86,15 @@ public class ExerciseFragment extends BaseFragment
     public void onResponse(BaseResponse response)
     {
         Exercise exercise = (Exercise)response;
-        idView.setText(Long.toString(exercise.getId()));
-        descriptionView.setText(exercise.getDescription());
-        UrlToBitmap urlToBitmap = new UrlToBitmap(new OnBitmapTaskExecutedListener()
-        {
-            @Override
-            public void onBitmapTaskExecuted(Bitmap result)
-            {
-                imageView.setImageBitmap(result);
-            }
-        });
-        urlToBitmap.execute(
-                "http://storage.mds.yandex.net/get-mturk/1136717/a2a954b4-5ec8-4dac-9411-eb5768f80a33");
+        idView.setText(Long.toString(exercise.getData().get(0).getId()));
+        descriptionView.setText(exercise.getData().get(0).getDescription());
+        Glide
+                .with(this)
+                .load(exercise.getData().get(0).getImg())
+                .placeholder(new ColorDrawable(Color.GREEN))
+                .error(new ColorDrawable(Color.RED))
+                .fallback(new ColorDrawable(Color.GRAY))
+                .into(imageView);
     }
     @Override
     public void onFailure()
@@ -110,23 +110,6 @@ public class ExerciseFragment extends BaseFragment
     public void onDisconnected()
     {
 
-    }
-
-    public void onDataReceived(Response<Exercise> response)
-    {
-        Exercise exercise = response.body();
-        idView.setText(Long.toString(exercise.getId()));
-        descriptionView.setText(exercise.getDescription());
-        UrlToBitmap urlToBitmap = new UrlToBitmap(new OnBitmapTaskExecutedListener()
-        {
-            @Override
-            public void onBitmapTaskExecuted(Bitmap result)
-            {
-                imageView.setImageBitmap(result);
-            }
-        });
-        urlToBitmap.execute(
-                "http://storage.mds.yandex.net/get-mturk/1136717/a2a954b4-5ec8-4dac-9411-eb5768f80a33");
     }
 
     public interface OnFragmentInteractionListener

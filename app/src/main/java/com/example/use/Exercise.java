@@ -1,14 +1,13 @@
 package com.example.use;
 
+import java.util.List;
+
 public class Exercise extends BaseResponse
 {
-    private long id;
-    private String description;
-    private String img;
-    private String rightAnswer;
+    private List<ExerciseDatum> data = null;
 
-    public long getId() { return id; }
-    public String getDescription() { return description; }
-    public String getImg() { return img; }
-    public String getRightAnswer() { return rightAnswer; }
+    public List<ExerciseDatum> getData()
+    {
+        return data;
+    }
 }
