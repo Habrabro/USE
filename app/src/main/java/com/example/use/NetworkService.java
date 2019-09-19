@@ -22,7 +22,7 @@ public class NetworkService
 {
     private static NetworkService instance;
     private String baseURL = "https://usetrainingadmin.000webhostapp.com/api/";
-    private static ExerciseFragment listener;
+    private static BaseFragment listener;
     private BaseResponse savedResponse;
     private Retrofit retrofit;
     private ServerAPI serverAPI;
@@ -40,7 +40,7 @@ public class NetworkService
                 .build();
     }
 
-    public static NetworkService getInstance(ExerciseFragment _listener)
+    public static NetworkService getInstance(BaseFragment _listener)
     {
         if (instance == null)
         {

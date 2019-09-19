@@ -1,13 +1,10 @@
 package com.example.use;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,31 +14,31 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Response;
 
-public class ExerciseFragment extends BaseFragment
+public class ExercisesListFragment extends BaseFragment implements ExercisesListAdapter.Listener
 {
     private OnFragmentInteractionListener mListener;
+    private ExercisesListAdapter exercisesListAdapter;
 
-    @BindView(R.id.tvId) TextView idView;
-    @BindView(R.id.tvDescription) TextView descriptionView;
-    @BindView(R.id.ivImage) ImageView imageView;
-    @BindView(R.id.etAnswerField) EditText answerFieldView;
+    private List<ExerciseDatum> exercises = new ArrayList<>();
 
-    public ExerciseFragment()
+    public ExercisesListFragment()
     {
 
     }
 
-    public static ExerciseFragment newInstance()
+    public static ExercisesListFragment newInstance()
     {
-        ExerciseFragment fragment = new ExerciseFragment();
+        ExercisesListFragment fragment = new ExercisesListFragment();
         return fragment;
     }
 
@@ -55,8 +52,7 @@ public class ExerciseFragment extends BaseFragment
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_exercise, container, false);
-        ButterKnife.bind(this, view);
+        View view = inflater.inflate(R.layout.fragment_exercises_list, container, false);
         return view;
     }
 
@@ -64,6 +60,10 @@ public class ExerciseFragment extends BaseFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+
+        RecyclerView recyclerView = view.findViewById(R.id.rvList);
+        exercisesListAdapter = new ExercisesListAdapter(this, exercises);
+        recyclerView.setAdapter(exercisesListAdapter);
 
         NetworkService networkService = NetworkService.getInstance(this);
         networkService.getExercises(false);
@@ -86,15 +86,8 @@ public class ExerciseFragment extends BaseFragment
     public void onResponse(BaseResponse response)
     {
         Exercise exercise = (Exercise)response;
-        idView.setText(Long.toString(exercise.getData().get(0).getId()));
-        descriptionView.setText(exercise.getData().get(0).getDescription());
-        Glide
-                .with(this)
-                .load(exercise.getData().get(0).getImg())
-                .placeholder(new ColorDrawable(Color.GREEN))
-                .error(new ColorDrawable(Color.RED))
-                .fallback(new ColorDrawable(Color.GRAY))
-                .into(imageView);
+        exercises.addAll(exercise.getData());
+        exercisesListAdapter.notifyDataSetChanged();
     }
     @Override
     public void onFailure()
@@ -108,6 +101,12 @@ public class ExerciseFragment extends BaseFragment
     }
     @Override
     public void onDisconnected()
+    {
+
+    }
+
+    @Override
+    public void OnViewHolderClick(int position)
     {
 
     }
