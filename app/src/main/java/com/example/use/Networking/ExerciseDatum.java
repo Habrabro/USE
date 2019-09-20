@@ -1,4 +1,4 @@
-package com.example.use;
+package com.example.use.Networking;
 
 public class ExerciseDatum
 {

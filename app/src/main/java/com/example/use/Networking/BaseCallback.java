@@ -1,4 +1,4 @@
-package com.example.use;
+package com.example.use.Networking;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -22,6 +22,6 @@ public class BaseCallback<T extends BaseResponse> implements Callback<T>
     @Override
     public void onFailure(Call<T> call, Throwable t)
     {
-
+        listener.onFailure(t);
     }
 }

@@ -15,11 +15,11 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        if (fragmentManager.findFragmentByTag("exerciseFragment") == null)
+        if (fragmentManager.findFragmentByTag("subjectsListFragment") == null)
         {
-            ExercisesListFragment detailsFragment = ExercisesListFragment.newInstance();
+            SubjectsListFragment subjectsListFragment = SubjectsListFragment.newInstance();
             fragmentManager.beginTransaction()
-                    .replace(R.id.fragmentExerciseContainer, detailsFragment, "exerciseFragment")
+                    .replace(R.id.fragmentContainer, subjectsListFragment, "subjectsListFragment")
                     .commit();
         }
     }

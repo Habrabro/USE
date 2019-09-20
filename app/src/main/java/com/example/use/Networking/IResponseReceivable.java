@@ -1,11 +1,9 @@
-package com.example.use;
-
-import javax.security.auth.callback.Callback;
+package com.example.use.Networking;
 
 public interface IResponseReceivable
 {
     void onResponse(BaseResponse response);
-    void onFailure();
+    void onFailure(Throwable t);
     void onError();
     void onDisconnected();
 }

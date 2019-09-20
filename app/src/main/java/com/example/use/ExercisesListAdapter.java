@@ -1,7 +1,7 @@
 package com.example.use;
 
 import androidx.recyclerview.widget.RecyclerView;
-import android.content.Context;
+
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.use.Networking.ExerciseDatum;
 
 import java.util.List;
 

@@ -9,35 +9,33 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.use.Networking.BaseResponse;
 import com.example.use.Networking.Exercise;
-import com.example.use.Networking.ExerciseDatum;
-import com.example.use.Networking.IResponseReceivable;
+import com.example.use.Networking.Subject;
+import com.example.use.Networking.SubjectDatum;
 import com.example.use.Networking.NetworkService;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExercisesListFragment extends BaseFragment implements ExercisesListAdapter.Listener
+public class SubjectsListFragment extends BaseFragment implements SubjectsListAdapter.Listener
 {
     private OnFragmentInteractionListener mListener;
-    private ExercisesListAdapter exercisesListAdapter;
+    private SubjectsListAdapter subjectsListAdapter;
 
-    private List<ExerciseDatum> exercises = new ArrayList<>();
+    private List<SubjectDatum> subjects = new ArrayList<>();
 
-    public ExercisesListFragment()
+    public SubjectsListFragment()
     {
 
     }
 
-    public static ExercisesListFragment newInstance()
+    public static SubjectsListFragment newInstance()
     {
-        ExercisesListFragment fragment = new ExercisesListFragment();
+        SubjectsListFragment fragment = new SubjectsListFragment();
         return fragment;
     }
 
@@ -51,7 +49,7 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_exercises_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_subjects_list, container, false);
         return view;
     }
 
@@ -60,14 +58,14 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
     {
         super.onViewCreated(view, savedInstanceState);
 
-        RecyclerView recyclerView = view.findViewById(R.id.rvExercisesList);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
-        recyclerView.setLayoutManager(linearLayoutManager);
-        exercisesListAdapter = new ExercisesListAdapter(this, exercises);
-        recyclerView.setAdapter(exercisesListAdapter);
+        RecyclerView recyclerView = view.findViewById(R.id.rvSubjectsList);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(view.getContext(), 2);
+        recyclerView.setLayoutManager(gridLayoutManager);
+        subjectsListAdapter = new SubjectsListAdapter(this, subjects);
+        recyclerView.setAdapter(subjectsListAdapter);
 
         NetworkService networkService = NetworkService.getInstance(this);
-        networkService.getExercises(4, false);
+        networkService.getSubjects(false);
     }
 
     @Override
@@ -86,9 +84,9 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
     @Override
     public void onResponse(BaseResponse response)
     {
-        Exercise exercise = (Exercise)response;
-        exercises.addAll(exercise.getData());
-        exercisesListAdapter.notifyDataSetChanged();
+        Subject subject = (Subject)response;
+        subjects.addAll(subject.getData());
+        subjectsListAdapter.notifyDataSetChanged();
     }
 
     @Override
