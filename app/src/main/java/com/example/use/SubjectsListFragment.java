@@ -23,7 +23,7 @@ import java.util.List;
 
 public class SubjectsListFragment extends BaseFragment implements SubjectsListAdapter.Listener
 {
-    private OnFragmentInteractionListener mListener;
+    private Listener mListener;
     private SubjectsListAdapter subjectsListAdapter;
 
     private List<SubjectDatum> subjects = new ArrayList<>();
@@ -72,6 +72,7 @@ public class SubjectsListFragment extends BaseFragment implements SubjectsListAd
     public void onAttach(@NonNull Context context)
     {
         super.onAttach(context);
+        mListener = (Listener)getActivity();
     }
 
     @Override
@@ -85,18 +86,19 @@ public class SubjectsListFragment extends BaseFragment implements SubjectsListAd
     public void onResponse(BaseResponse response)
     {
         Subject subject = (Subject)response;
+        subjects.clear();
         subjects.addAll(subject.getData());
         subjectsListAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void OnViewHolderClick(int position)
+    public void OnViewHolderClick(int position, long subjectId)
     {
-
+        mListener.onSubjectsListFragmentInteraction(subjectId);
     }
 
-    public interface OnFragmentInteractionListener
+    interface Listener
     {
-        void onFragmentInteraction(Uri uri);
+        void onSubjectsListFragmentInteraction(long subjectId);
     }
 }

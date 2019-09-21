@@ -9,42 +9,41 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.use.Networking.BaseResponse;
-import com.example.use.Networking.Exercise;
-import com.example.use.Networking.ExerciseDatum;
 import com.example.use.Networking.IResponseReceivable;
 import com.example.use.Networking.NetworkService;
+import com.example.use.Networking.Subject;
+import com.example.use.Networking.SubjectDatum;
+import com.example.use.Networking.Topic;
+import com.example.use.Networking.TopicDatum;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExercisesListFragment extends BaseFragment implements ExercisesListAdapter.Listener
+public class TopicsListFragment extends BaseFragment implements TopicsListAdapter.Listener
 {
     private final static String PARAM_1 = "param_1";
-    private final static String PARAM_2 = "param_2";
-    private long topicId, number;
+    private long subjectId;
 
     private Listener mListener;
-    private ExercisesListAdapter exercisesListAdapter;
+    private TopicsListAdapter topicsListAdapter;
 
-    private List<ExerciseDatum> exercises = new ArrayList<>();
+    private List<TopicDatum> topics = new ArrayList<>();
 
-    public ExercisesListFragment()
+    public TopicsListFragment()
     {
 
     }
 
-    public static ExercisesListFragment newInstance(long topicId, long number)
+    public static TopicsListFragment newInstance(long subjectId)
     {
         Bundle bundle = new Bundle();
-        bundle.putLong(PARAM_1, topicId);
-        bundle.putLong(PARAM_2, number);
-        ExercisesListFragment fragment = new ExercisesListFragment();
+        bundle.putLong(PARAM_1, subjectId);
+        TopicsListFragment fragment = new TopicsListFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -55,8 +54,7 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
         super.onCreate(savedInstanceState);
         if (getArguments() != null)
         {
-            topicId = getArguments().getLong(PARAM_1);
-            number = getArguments().getLong(PARAM_2);
+            subjectId = getArguments().getLong(PARAM_1);
         }
     }
 
@@ -64,7 +62,7 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_exercises_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_topics_list, container, false);
         return view;
     }
 
@@ -73,20 +71,21 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
     {
         super.onViewCreated(view, savedInstanceState);
 
-        RecyclerView recyclerView = view.findViewById(R.id.rvExercisesList);
+        RecyclerView recyclerView = view.findViewById(R.id.rvTopicsList);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-        exercisesListAdapter = new ExercisesListAdapter(this, exercises, number);
-        recyclerView.setAdapter(exercisesListAdapter);
+        topicsListAdapter = new TopicsListAdapter(this, topics);
+        recyclerView.setAdapter(topicsListAdapter);
 
         NetworkService networkService = NetworkService.getInstance(this);
-        networkService.getExercises(topicId, true);
+        networkService.getTopics(subjectId,true);
     }
 
     @Override
     public void onAttach(@NonNull Context context)
     {
         super.onAttach(context);
+        mListener = (Listener)getActivity();
     }
 
     @Override
@@ -99,19 +98,20 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
     @Override
     public void onResponse(BaseResponse response)
     {
-        Exercise exercise = (Exercise)response;
-        exercises.addAll(exercise.getData());
-        exercisesListAdapter.notifyDataSetChanged();
+        Topic topic = (Topic) response;
+        topics.clear();
+        topics.addAll(topic.getData());
+        topicsListAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void OnViewHolderClick(int position)
+    public void OnViewHolderClick(int position, long topicId, long number)
     {
-
+        mListener.onTopicsListFragmentInteraction(topicId, number);
     }
 
     public interface Listener
     {
-        void onFragmentInteraction();
+        void onTopicsListFragmentInteraction(long topicId, long number);
     }
 }

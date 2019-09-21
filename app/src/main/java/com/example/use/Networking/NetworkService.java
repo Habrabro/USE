@@ -4,7 +4,6 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 
 import com.example.use.App;
-import com.example.use.BaseFragment;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -18,14 +17,11 @@ public class NetworkService
     private static NetworkService instance;
     private String baseURL = "https://usetrainingadmin.000webhostapp.com/api/";
     private static IResponseReceivable listener;
-    private BaseResponse savedResponse;
+    private Subject savedSubjectResponse;
+    private Topic savedTopicResponse;
+    private Exercise savedExerciseResponse;
     private Retrofit retrofit;
     private ServerAPI serverAPI;
-
-    public BaseResponse getSavedResponse()
-    {
-        return savedResponse;
-    }
 
     private NetworkService()
     {
@@ -47,8 +43,9 @@ public class NetworkService
 
     public void getSubjects(boolean updateData)
     {
-        if (checkNetworkService(updateData))
+        if (checkNetworkService(updateData) && (savedSubjectResponse == null || updateData))
         {
+            savedSubjectResponse = null;
             serverAPI = retrofit.create(ServerAPI.class);
             serverAPI
                     .getSubjects()
@@ -58,35 +55,45 @@ public class NetworkService
                         public void onResponse(Call<Subject> call, Response<Subject> response)
                         {
                             super.onResponse(call, response);
-                            savedResponse = response.body();
+                            savedSubjectResponse = response.body();
                         }
                     });
         }
+        else
+        {
+            listener.onResponse(savedSubjectResponse);
+        }
     }
 
-    public void getExercises(long topicId, long id, boolean updateData)
+    public void getTopics(long subjectId, boolean updateData)
     {
-        if (checkNetworkService(updateData))
+        if (checkNetworkService(updateData) && (savedTopicResponse == null || updateData))
         {
+            savedTopicResponse = null;
             serverAPI = retrofit.create(ServerAPI.class);
             serverAPI
-                    .getExercises(topicId, id)
-                    .enqueue(new BaseCallback<Exercise>(listener)
+                    .getTopics(subjectId)
+                    .enqueue(new BaseCallback<Topic>(listener)
                     {
                         @Override
-                        public void onResponse(Call<Exercise> call, Response<Exercise> response)
+                        public void onResponse(Call<Topic> call, Response<Topic> response)
                         {
                             super.onResponse(call, response);
-                            savedResponse = response.body();
+                            savedTopicResponse = response.body();
                         }
                     });
+        }
+        else
+        {
+            listener.onResponse(savedTopicResponse);
         }
     }
 
     public void getExercises(long topicId, boolean updateData)
     {
-        if (checkNetworkService(updateData))
+        if (checkNetworkService(updateData) && (savedExerciseResponse == null || updateData))
         {
+            savedExerciseResponse = null;
             serverAPI = retrofit.create(ServerAPI.class);
             serverAPI
                     .getExercises(topicId)
@@ -96,29 +103,49 @@ public class NetworkService
                         public void onResponse(Call<Exercise> call, Response<Exercise> response)
                         {
                             super.onResponse(call, response);
-                            savedResponse = response.body();
+                            savedExerciseResponse = response.body();
                         }
                     });
+        }
+        else
+        {
+            listener.onResponse(savedExerciseResponse);
+        }
+    }
+
+    public void getExercises(long topicId, long id, boolean updateData)
+    {
+        if (checkNetworkService(updateData) && (savedExerciseResponse == null || updateData))
+        {
+            savedExerciseResponse = null;
+            serverAPI = retrofit.create(ServerAPI.class);
+            serverAPI
+                    .getExercises(topicId, id)
+                    .enqueue(new BaseCallback<Exercise>(listener)
+                    {
+                        @Override
+                        public void onResponse(Call<Exercise> call, Response<Exercise> response)
+                        {
+                            super.onResponse(call, response);
+                            savedExerciseResponse = response.body();
+                        }
+                    });
+        }
+        else
+        {
+            listener.onResponse(savedExerciseResponse);
         }
     }
 
     private boolean checkNetworkService(boolean updateData)
     {
-        if (serverAPI == null || updateData)
+        if (isNetworkConnected())
         {
-            if (isNetworkConnected())
-            {
-                return true;
-            }
-            else
-            {
-                listener.onDisconnected();
-                return false;
-            }
+            return true;
         }
         else
         {
-            listener.onResponse(savedResponse);
+            listener.onDisconnected();
             return false;
         }
     }
@@ -142,6 +169,8 @@ public class NetworkService
     {
         @GET("getSubjects.php")
         Call<Subject> getSubjects();
+        @GET("getTopics.php")
+        Call<Topic> getTopics(@Query("subjectId") long subjectId);
         @GET("getExercises.php")
         Call<Exercise> getExercises(@Query("topicId") long topicId, @Query("id") long id);
         @GET("getExercises.php")

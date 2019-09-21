@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.use.Networking.ExerciseDatum;
 
 import java.util.List;
@@ -24,10 +25,12 @@ public class ExercisesListAdapter extends RecyclerView.Adapter<ExercisesListAdap
     private LayoutInflater inflater;
     private List<ExerciseDatum> exercises;
     private Listener listener;
+    private long topicId;
 
-    ExercisesListAdapter(Listener listener, List<ExerciseDatum> exercises)
+    ExercisesListAdapter(Listener listener, List<ExerciseDatum> exercises, long topicId)
     {
         this.exercises = exercises;
+        this.topicId = topicId;
         if (listener instanceof Listener)
         {
             this.listener = listener;
@@ -45,7 +48,7 @@ public class ExercisesListAdapter extends RecyclerView.Adapter<ExercisesListAdap
     public void onBindViewHolder(ExercisesListAdapter.ViewHolder holder, int position)
     {
         ExerciseDatum exercise = exercises.get(position);
-        holder.idView.setText(Long.toString(exercise.getId()));
+        holder.idView.setText(topicId + "." + Long.toString(exercise.getId()));
         holder.descriptionView.setText(exercise.getDescription());
         Glide
                 .with(App.getInstance())
