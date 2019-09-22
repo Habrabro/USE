@@ -56,22 +56,19 @@ public class SubjectsListAdapter extends RecyclerView.Adapter<SubjectsListAdapte
     {
         int outerPadding = (int)App.getInstance().getResources().getDimension(R.dimen.subjectIconOuterPadding);
         int innerPadding = (int)App.getInstance().getResources().getDimension(R.dimen.subjectIconInnerPadding);
-        int leftPadding = position % 2 == 0
-                ?outerPadding
-                :innerPadding;
-        int rightPadding = position % 2 == 0
-                ?innerPadding
-                :outerPadding;
-        holder.view.setPadding(leftPadding, outerPadding, rightPadding, 0);
+        int leftPadding = position % 2 == 0 ?outerPadding :innerPadding;
+        int rightPadding = position % 2 == 0 ?innerPadding :outerPadding;
+        int bottomPadding = position == subjects.size() - 1 ?outerPadding :0;
+        holder.view.setPadding(leftPadding, outerPadding, rightPadding, bottomPadding);
 
         SubjectDatum subject = subjects.get(position);
-        holder.subjectNameView.setText(subject.getName());
         Glide
                 .with(App.getInstance())
                 .load(subject.getImg())
                 .placeholder(new ColorDrawable(Color.GREEN))
                 .error(new ColorDrawable(Color.RED))
                 .fallback(new ColorDrawable(Color.GRAY))
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(holder.subjectIconView);
     }
 
@@ -88,7 +85,6 @@ public class SubjectsListAdapter extends RecyclerView.Adapter<SubjectsListAdapte
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
     {
-        @BindView(R.id.tvSubjectName) TextView subjectNameView;
         @BindView(R.id.ivSubjectIcon) ImageView subjectIconView;
         private View view;
 

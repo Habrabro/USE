@@ -5,8 +5,8 @@ import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity implements SubjectsListFragment.Listener,
-        TopicsListFragment.Listener
+public class MainActivity extends AppCompatActivity implements SubjectMenuFragment.Listener,
+        SubjectsListFragment.Listener, TopicsListFragment.Listener
 {
     private FragmentManager fragmentManager;
 
@@ -30,7 +30,21 @@ public class MainActivity extends AppCompatActivity implements SubjectsListFragm
     public void onSubjectsListFragmentInteraction(long subjectId)
     {
         if (fragmentManager.findFragmentByTag("subjectsListFragment") != null &&
-        fragmentManager.findFragmentByTag("topicsListFragment") == null)
+        fragmentManager.findFragmentByTag("subjectMenuFragment") == null)
+        {
+            SubjectMenuFragment subjectMenuFragment = SubjectMenuFragment.newInstance(subjectId);
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragmentContainer, subjectMenuFragment, "subjectMenuFragment")
+                    .addToBackStack(null)
+                    .commit();
+        }
+    }
+
+    @Override
+    public void onSubjectMenuFragmentInteraction(long subjectId)
+    {
+        if (fragmentManager.findFragmentByTag("subjectMenuFragment") != null &&
+                fragmentManager.findFragmentByTag("topicsListFragment") == null)
         {
             TopicsListFragment topicsListFragment = TopicsListFragment.newInstance(subjectId);
             fragmentManager.beginTransaction()

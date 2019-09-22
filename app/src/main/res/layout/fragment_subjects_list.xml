@@ -4,6 +4,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id = "@+id/my_awesome_toolbar"
+        android:layout_width = "match_parent"
+        android:layout_height = "wrap_content"
+        android:background = "@color/colorPrimary"
+        android:minHeight = "?attr/actionBarSize"
+        android:elevation="10dp">
+        <TextView
+            android:id = "@+id/toolbarTitle"
+            style = "@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+            android:textColor="@android:color/white"
+            android:layout_width = "wrap_content"
+            android:gravity = "center_vertical"
+            android:layout_height = "match_parent"
+            android:text="App"/>
+    </androidx.appcompat.widget.Toolbar>
+
     <androidx.recyclerview.widget.RecyclerView android:id="@+id/rvSubjectsList"
         android:layout_width="match_parent"
         android:layout_height="match_parent">

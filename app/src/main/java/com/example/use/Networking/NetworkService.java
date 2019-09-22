@@ -2,6 +2,7 @@ package com.example.use.Networking;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
+import android.util.Log;
 
 import com.example.use.App;
 
@@ -45,6 +46,7 @@ public class NetworkService
     {
         if (checkNetworkService(updateData) && (savedSubjectResponse == null || updateData))
         {
+            Log.i("networking", "subjects is loading");
             savedSubjectResponse = null;
             serverAPI = retrofit.create(ServerAPI.class);
             serverAPI
