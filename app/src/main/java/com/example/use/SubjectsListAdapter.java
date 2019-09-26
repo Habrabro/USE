@@ -68,7 +68,7 @@ public class SubjectsListAdapter extends RecyclerView.Adapter<SubjectsListAdapte
                 .placeholder(new ColorDrawable(Color.GREEN))
                 .error(new ColorDrawable(Color.RED))
                 .fallback(new ColorDrawable(Color.GRAY))
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(holder.subjectIconView);
     }
 

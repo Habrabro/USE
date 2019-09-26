@@ -2,31 +2,37 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="18dp">
+    android:paddingTop="18dp">
 
     <Button android:id="@+id/btnDirectory"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/subject_menu_directory_button"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:maxWidth="500dp"
+        style="@style/subjectMenuButton"
         android:drawableStart="@drawable/ic_directory_icon"
         android:drawablePadding="12dp"
-        android:gravity="center_vertical"
-        android:paddingStart="20dp"
-        android:layout_marginTop="18dp"
-        android:hint="Справочник"
-        android:textColorHint="@android:color/black"
-        android:textSize="23sp"/>
+        android:paddingStart="38dp"
+        android:hint="Справочник" />
 
     <Button android:id="@+id/btnStartTraining"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/subject_menu_start_training_button"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:maxWidth="500dp"
+        style="@style/subjectMenuButton"
         android:drawableStart="@drawable/ic_start_training_icon"
         android:drawablePadding="15dp"
         android:gravity="center_vertical"
-        android:paddingStart="34dp"
-        android:layout_marginTop="18dp"
-        android:hint="Решить вариант"
-        android:textColorHint="@android:color/black"
-        android:textSize="23sp"/>
+        android:paddingStart="50dp"
+        android:hint="Решить вариант"/>
+
+    <Button android:id="@+id/btnVariantsList"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:maxWidth="500dp"
+        style="@style/subjectMenuButton"
+        android:drawableStart="@drawable/ic_variants_list_icon"
+        android:drawablePadding="21dp"
+        android:paddingStart="53dp"
+        android:gravity="center_vertical"
+        android:hint="Список вариантов"/>
 </LinearLayout>

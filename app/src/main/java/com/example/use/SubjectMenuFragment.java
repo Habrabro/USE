@@ -1,10 +1,15 @@
 package com.example.use;
 
+import android.animation.AnimatorInflater;
+import android.animation.StateListAnimator;
 import android.content.Context;
+import android.graphics.Outline;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewOutlineProvider;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
@@ -31,6 +36,7 @@ public class SubjectMenuFragment extends BaseFragment
 
     @BindView(R.id.btnDirectory) Button directoryView;
     @BindView(R.id.btnStartTraining) Button startTrainingView;
+    @BindView(R.id.btnVariantsList) Button variantsListView;
 
     private SubjectMenuFragment.Listener mListener;
 
@@ -70,17 +76,10 @@ public class SubjectMenuFragment extends BaseFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-
-
-        directoryView = view.findViewById(R.id.btnDirectory);
-        directoryView.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                mListener.onSubjectMenuFragmentInteraction(subjectId);
-            }
-        });
+        ButterKnife.bind(this, view);
+        directoryView.setOutlineProvider(new SubjectMenuButtonOutlineProvider());
+        startTrainingView.setOutlineProvider(new SubjectMenuButtonOutlineProvider());
+        variantsListView.setOutlineProvider(new SubjectMenuButtonOutlineProvider());
     }
 
     @Override
@@ -97,8 +96,8 @@ public class SubjectMenuFragment extends BaseFragment
         mListener = null;
     }
 
-    @OnClick(R.id.btnDirectory)
-    public void onDirectoryPressed()
+    @OnClick(R.id.btnVariantsList)
+    public void onDirectoryViewClick()
     {
         mListener.onSubjectMenuFragmentInteraction(subjectId);
     }
