@@ -56,8 +56,7 @@ public class TopicsListAdapter extends RecyclerView.Adapter<TopicsListAdapter.Vi
     public void onBindViewHolder(TopicsListAdapter.ViewHolder holder, int position)
     {
         TopicDatum topic = topics.get(position);
-        holder.topicNumberView.setText(Long.toString(topic.getNumber()));
-        holder.topicTitleView.setText(topic.getTitle());
+        holder.topicTitleView.setText(topic.getNumber() + ". " + topic.getTitle());
     }
 
     @Override
@@ -73,7 +72,6 @@ public class TopicsListAdapter extends RecyclerView.Adapter<TopicsListAdapter.Vi
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
     {
-        @BindView(R.id.tvTopicNumber) TextView topicNumberView;
         @BindView(R.id.tvTopicTitle) TextView topicTitleView;
         private View view;
 

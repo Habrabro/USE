@@ -3,13 +3,26 @@ package com.example.use;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity implements SubjectMenuFragment.Listener,
         SubjectsListFragment.Listener, TopicsListFragment.Listener
 {
     private FragmentManager fragmentManager;
+
+    @BindView(R.id.btnProfile) Button profileButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -17,9 +30,12 @@ public class MainActivity extends AppCompatActivity implements SubjectMenuFragme
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setDisplayShowCustomEnabled(true);
-        getSupportActionBar().setCustomView(R.layout.action_bar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setCustomView(R.layout.action_bar);
+
+        ButterKnife.bind(this, actionBar.getCustomView());
 
         fragmentManager = getSupportFragmentManager();
         if (fragmentManager.findFragmentByTag("subjectsListFragment") == null)
@@ -71,5 +87,13 @@ public class MainActivity extends AppCompatActivity implements SubjectMenuFragme
                     .addToBackStack(null)
                     .commit();
         }
+    }
+
+    @OnClick(R.id.btnProfile)
+    public void onProfileButtonClick()
+    {
+        View bottomSheet = App.getInstance().getCurrentFragment().getView().findViewById(R.id.bottomSheet);
+        BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(bottomSheet);
+        behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 }

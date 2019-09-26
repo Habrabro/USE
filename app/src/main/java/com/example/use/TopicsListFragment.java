@@ -1,6 +1,8 @@
 package com.example.use;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,6 +11,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -74,6 +77,11 @@ public class TopicsListFragment extends BaseFragment implements TopicsListAdapte
         RecyclerView recyclerView = view.findViewById(R.id.rvTopicsList);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
+
+        DividerItemDecoration horizontalSeparator = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+        horizontalSeparator.setDrawable(getResources().getDrawable(R.drawable.horizontal_separator));
+        recyclerView.addItemDecoration(horizontalSeparator);
+
         topicsListAdapter = new TopicsListAdapter(this, topics);
         recyclerView.setAdapter(topicsListAdapter);
 

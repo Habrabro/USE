@@ -1,38 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="18dp">
 
-    <Button android:id="@+id/btnDirectory"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="75dp"
-        android:maxWidth="500dp"
-        style="@style/subjectMenuButton"
-        android:drawableStart="@drawable/ic_directory_icon"
-        android:drawablePadding="12dp"
-        android:paddingStart="38dp"
-        android:hint="Справочник" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <Button android:id="@+id/btnStartTraining"
-        android:layout_width="match_parent"
-        android:layout_height="75dp"
-        android:maxWidth="500dp"
-        style="@style/subjectMenuButton"
-        android:drawableStart="@drawable/ic_start_training_icon"
-        android:drawablePadding="15dp"
-        android:gravity="center_vertical"
-        android:paddingStart="50dp"
-        android:hint="Решить вариант"/>
+        <Button android:id="@+id/btnDirectory"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:maxWidth="500dp"
+            style="@style/subjectMenuButton"
+            android:drawableStart="@drawable/ic_directory_icon"
+            android:drawablePadding="12dp"
+            android:paddingStart="38dp"
+            android:hint="Справочник" />
 
-    <Button android:id="@+id/btnVariantsList"
-        android:layout_width="match_parent"
-        android:layout_height="75dp"
-        android:maxWidth="500dp"
-        style="@style/subjectMenuButton"
-        android:drawableStart="@drawable/ic_variants_list_icon"
-        android:drawablePadding="21dp"
-        android:paddingStart="53dp"
-        android:gravity="center_vertical"
-        android:hint="Список вариантов"/>
-</LinearLayout>
+        <Button android:id="@+id/btnStartTraining"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:maxWidth="500dp"
+            style="@style/subjectMenuButton"
+            android:drawableStart="@drawable/ic_start_training_icon"
+            android:drawablePadding="15dp"
+            android:gravity="center_vertical"
+            android:paddingStart="50dp"
+            android:hint="Решить вариант"/>
+
+        <Button android:id="@+id/btnVariantsList"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:maxWidth="500dp"
+            style="@style/subjectMenuButton"
+            android:drawableStart="@drawable/ic_variants_list_icon"
+            android:drawablePadding="21dp"
+            android:paddingStart="53dp"
+            android:gravity="center_vertical"
+            android:hint="Список вариантов"/>
+    </LinearLayout>
+
+    <include layout="@layout/layout_bottom_sheet"/>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

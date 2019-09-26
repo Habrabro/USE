@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-        <TextView
-            android:id = "@+id/toolbarTitle"
-            style = "@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
-            android:textColor="@android:color/white"
-            android:layout_width = "wrap_content"
-            android:gravity = "center_vertical"
-            android:layout_height = "match_parent"
-            android:text="@string/app_name"/>
-</LinearLayout>
+    <TextView android:id = "@+id/toolbarTitle"
+        style = "@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+        android:textColor="@android:color/white"
+        android:layout_width = "wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_height = "wrap_content"
+        android:text="@string/app_name"/>
+
+    <Button android:id="@+id/btnProfile"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:drawableEnd="@drawable/ic_user_icon"
+        android:background="@android:color/transparent"/>
+</RelativeLayout>
