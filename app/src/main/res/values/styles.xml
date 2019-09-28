@@ -5,7 +5,19 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorPrimaryDark</item>
+
+        <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
+    </style>
+
+    <style name="AppBottomSheetDialogTheme"
+        parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppModalStyle</item>
+    </style>
+
+    <style name="AppModalStyle"
+        parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/layout_rounded_corners</item>
     </style>
 
     <style name="subjectNameStyle">
@@ -25,7 +37,12 @@
         <item name="android:textSize">23sp</item>
     </style>
 
-    <style name="custom_action_bar">
-        <item name="android:elevation">10dp</item>
+    <style name="bottomSheetEditText">
+        <item name="android:textSize">24sp</item>
+        <item name="android:lines">1</item>
+    </style>
+
+    <style name="bottomSheetSmallText">
+        <item name="android:textSize">15sp</item>
     </style>
 </resources>

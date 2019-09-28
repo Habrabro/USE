@@ -8,12 +8,14 @@ public class App extends Application
 {
     private static App instance;
     private Fragment currentFragment;
+    private User user;
 
     @Override
     public void onCreate()
     {
         super.onCreate();
         instance = this;
+        user = new User();
     }
 
     public void setCurrentFragment(Fragment fragment)
@@ -25,6 +27,8 @@ public class App extends Application
     {
         return currentFragment;
     }
+
+    public User getUser() { return user; }
 
     public static App getInstance() { return instance; }
 }

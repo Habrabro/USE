@@ -44,7 +44,7 @@ public class NetworkService
 
     public void getSubjects(boolean updateData)
     {
-        if (checkNetworkService(updateData) && (savedSubjectResponse == null || updateData))
+        if (checkNetworkService() && (savedSubjectResponse == null || updateData))
         {
             Log.i("networking", "subjects is loading");
             savedSubjectResponse = null;
@@ -69,7 +69,7 @@ public class NetworkService
 
     public void getTopics(long subjectId, boolean updateData)
     {
-        if (checkNetworkService(updateData) && (savedTopicResponse == null || updateData))
+        if (checkNetworkService() && (savedTopicResponse == null || updateData))
         {
             savedTopicResponse = null;
             serverAPI = retrofit.create(ServerAPI.class);
@@ -93,7 +93,7 @@ public class NetworkService
 
     public void getExercises(long topicId, boolean updateData)
     {
-        if (checkNetworkService(updateData) && (savedExerciseResponse == null || updateData))
+        if (checkNetworkService() && (savedExerciseResponse == null || updateData))
         {
             savedExerciseResponse = null;
             serverAPI = retrofit.create(ServerAPI.class);
@@ -117,7 +117,7 @@ public class NetworkService
 
     public void getExercises(long topicId, long id, boolean updateData)
     {
-        if (checkNetworkService(updateData) && (savedExerciseResponse == null || updateData))
+        if (checkNetworkService() && (savedExerciseResponse == null || updateData))
         {
             savedExerciseResponse = null;
             serverAPI = retrofit.create(ServerAPI.class);
@@ -139,7 +139,18 @@ public class NetworkService
         }
     }
 
-    private boolean checkNetworkService(boolean updateData)
+    public void login(String login, String password)
+    {
+        if (checkNetworkService())
+        {
+            serverAPI = retrofit.create(ServerAPI.class);
+            serverAPI
+                    .login(login, password)
+                    .enqueue(new BaseCallback<UserResponse>(listener));
+        }
+    }
+
+    private boolean checkNetworkService()
     {
         if (isNetworkConnected())
         {
@@ -177,5 +188,8 @@ public class NetworkService
         Call<Exercise> getExercises(@Query("topicId") long topicId, @Query("id") long id);
         @GET("getExercises.php")
         Call<Exercise> getExercises(@Query("topicId") long topicId);
+
+        @GET("login.php")
+        Call<UserResponse> login(@Query("login") String login, @Query("password") String password);
     }
 }

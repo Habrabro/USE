@@ -16,7 +16,15 @@ public class BaseCallback<T extends BaseResponse> implements Callback<T>
     @Override
     public void onResponse(Call<T> call, Response<T> response)
     {
-        listener.onResponse(response.body());
+        BaseResponse responseBody = response.body();
+        if (responseBody.getStatus().equals("false"))
+        {
+            listener.onError(responseBody.getError());
+        }
+        else
+        {
+            listener.onResponse(responseBody);
+        }
     }
 
     @Override

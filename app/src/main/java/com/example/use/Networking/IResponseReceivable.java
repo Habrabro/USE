@@ -4,6 +4,6 @@ public interface IResponseReceivable
 {
     void onResponse(BaseResponse response);
     void onFailure(Throwable t);
-    void onError();
+    void onError(String error);
     void onDisconnected();
 }

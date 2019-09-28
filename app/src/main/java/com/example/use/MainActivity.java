@@ -12,6 +12,7 @@ import android.widget.Button;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -92,8 +93,13 @@ public class MainActivity extends AppCompatActivity implements SubjectMenuFragme
     @OnClick(R.id.btnProfile)
     public void onProfileButtonClick()
     {
-        View bottomSheet = App.getInstance().getCurrentFragment().getView().findViewById(R.id.bottomSheet);
-        BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(bottomSheet);
-        behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+//        View bottomSheet = App.getInstance().getCurrentFragment().getView().findViewById(R.id.bottomSheet);
+//        BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(bottomSheet);
+//        behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        if (fragmentManager.findFragmentByTag("bottomSheet") == null)
+        {
+            BottomSheetFragment bottomSheet = BottomSheetFragment.newInstance();
+            bottomSheet.show(fragmentManager, "bottomSheet");
+        }
     }
 }

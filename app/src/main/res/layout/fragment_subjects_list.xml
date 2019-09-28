@@ -9,5 +9,4 @@
         android:layout_height="match_parent">
     </androidx.recyclerview.widget.RecyclerView>
 
-    <include layout="@layout/layout_bottom_sheet"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
