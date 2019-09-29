@@ -17,6 +17,10 @@ public class BaseCallback<T extends BaseResponse> implements Callback<T>
     public void onResponse(Call<T> call, Response<T> response)
     {
         BaseResponse responseBody = response.body();
+        if (responseBody == null)
+        {
+            responseBody = new BaseResponse("false", "Response is null");
+        }
         if (responseBody.getStatus().equals("false"))
         {
             listener.onError(responseBody.getError());

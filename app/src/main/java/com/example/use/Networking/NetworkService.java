@@ -115,14 +115,14 @@ public class NetworkService
         }
     }
 
-    public void getExercises(long topicId, long id, boolean updateData)
+    public void getExercise(long topicId, long id, boolean updateData)
     {
         if (checkNetworkService() && (savedExerciseResponse == null || updateData))
         {
             savedExerciseResponse = null;
             serverAPI = retrofit.create(ServerAPI.class);
             serverAPI
-                    .getExercises(topicId, id)
+                    .getExercise(topicId, id)
                     .enqueue(new BaseCallback<Exercise>(listener)
                     {
                         @Override
@@ -185,7 +185,7 @@ public class NetworkService
         @GET("getTopics.php")
         Call<Topic> getTopics(@Query("subjectId") long subjectId);
         @GET("getExercises.php")
-        Call<Exercise> getExercises(@Query("topicId") long topicId, @Query("id") long id);
+        Call<Exercise> getExercise(@Query("topicId") long topicId, @Query("id") long id);
         @GET("getExercises.php")
         Call<Exercise> getExercises(@Query("topicId") long topicId);
 

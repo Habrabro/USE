@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.use.Networking.BaseResponse;
 import com.example.use.Networking.IResponseReceivable;
+import com.google.android.material.snackbar.Snackbar;
 
 public class BaseFragment extends Fragment implements IResponseReceivable
 {
@@ -44,7 +45,7 @@ public class BaseFragment extends Fragment implements IResponseReceivable
     @Override
     public void onDisconnected()
     {
-
+        Snackbar.make(this.getView(), "Disconnected", Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
