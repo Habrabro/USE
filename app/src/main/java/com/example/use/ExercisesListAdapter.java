@@ -56,6 +56,7 @@ public class ExercisesListAdapter extends RecyclerView.Adapter<ExercisesListAdap
                 .placeholder(new ColorDrawable(Color.GREEN))
                 .error(new ColorDrawable(Color.RED))
                 .fallback(new ColorDrawable(Color.GRAY))
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(holder.imageView);
         holder.rightAnswerView.setText(exercise.getRightAnswer());
     }

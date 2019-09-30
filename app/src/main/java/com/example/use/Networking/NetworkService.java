@@ -30,6 +30,7 @@ public class NetworkService
                 .baseUrl(baseURL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
+        serverAPI = retrofit.create(ServerAPI.class);
     }
 
     public static NetworkService getInstance(IResponseReceivable _listener)
@@ -46,9 +47,7 @@ public class NetworkService
     {
         if (checkNetworkService() && (savedSubjectResponse == null || updateData))
         {
-            Log.i("networking", "subjects is loading");
             savedSubjectResponse = null;
-            serverAPI = retrofit.create(ServerAPI.class);
             serverAPI
                     .getSubjects()
                     .enqueue(new BaseCallback<Subject>(listener)
@@ -72,7 +71,6 @@ public class NetworkService
         if (checkNetworkService() && (savedTopicResponse == null || updateData))
         {
             savedTopicResponse = null;
-            serverAPI = retrofit.create(ServerAPI.class);
             serverAPI
                     .getTopics(subjectId)
                     .enqueue(new BaseCallback<Topic>(listener)
@@ -96,7 +94,6 @@ public class NetworkService
         if (checkNetworkService() && (savedExerciseResponse == null || updateData))
         {
             savedExerciseResponse = null;
-            serverAPI = retrofit.create(ServerAPI.class);
             serverAPI
                     .getExercises(topicId)
                     .enqueue(new BaseCallback<Exercise>(listener)
@@ -120,7 +117,6 @@ public class NetworkService
         if (checkNetworkService() && (savedExerciseResponse == null || updateData))
         {
             savedExerciseResponse = null;
-            serverAPI = retrofit.create(ServerAPI.class);
             serverAPI
                     .getExercise(topicId, id)
                     .enqueue(new BaseCallback<Exercise>(listener)
@@ -143,7 +139,6 @@ public class NetworkService
     {
         if (checkNetworkService())
         {
-            serverAPI = retrofit.create(ServerAPI.class);
             serverAPI
                     .login(login, password)
                     .enqueue(new BaseCallback<UserResponse>(listener));
