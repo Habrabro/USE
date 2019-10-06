@@ -1,13 +1,27 @@
 package com.example.use.Networking;
 
-import java.util.List;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
-public class Subject extends BaseResponse
+@Entity
+public class Subject
 {
-    private List<SubjectDatum> data = null;
+    @PrimaryKey
+    private long id;
+    private String name;
+    private String img;
 
-    public List<SubjectDatum> getData()
-    {
-        return data;
+    public long getId() {
+        return id;
     }
+    public String getName() {
+        return name;
+    }
+    public String getImg() {
+        return img;
+    }
+
+    public void setId(long id) { this.id = id; }
+    public void setName(String name) { this.name = name; }
+    public void setImg(String img) { this.img = img; }
 }

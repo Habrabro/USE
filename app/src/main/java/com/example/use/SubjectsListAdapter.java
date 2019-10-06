@@ -2,28 +2,17 @@ package com.example.use;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.example.use.Networking.ExerciseDatum;
 import com.example.use.Networking.Subject;
-import com.example.use.Networking.SubjectDatum;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.List;
 
 import butterknife.BindView;
@@ -32,10 +21,10 @@ import butterknife.ButterKnife;
 public class SubjectsListAdapter extends RecyclerView.Adapter<SubjectsListAdapter.ViewHolder>
 {
     private LayoutInflater inflater;
-    private List<SubjectDatum> subjects;
+    private List<Subject> subjects;
     private Listener listener;
 
-    SubjectsListAdapter(Listener listener, List<SubjectDatum> subjects)
+    SubjectsListAdapter(Listener listener, List<Subject> subjects)
     {
         this.subjects = subjects;
         if (listener instanceof Listener)
@@ -61,7 +50,7 @@ public class SubjectsListAdapter extends RecyclerView.Adapter<SubjectsListAdapte
         int bottomPadding = position == subjects.size() - 1 ?outerPadding :0;
         holder.view.setPadding(leftPadding, outerPadding, rightPadding, bottomPadding);
 
-        SubjectDatum subject = subjects.get(position);
+        Subject subject = subjects.get(position);
         Glide
                 .with(App.getInstance())
                 .load(subject.getImg())
@@ -99,7 +88,7 @@ public class SubjectsListAdapter extends RecyclerView.Adapter<SubjectsListAdapte
         @Override
         public void onClick(View view)
         {
-            SubjectDatum subject = subjects.get(getAdapterPosition());
+            Subject subject = subjects.get(getAdapterPosition());
             listener.OnViewHolderClick(getAdapterPosition(), subject.getId());
         }
     }

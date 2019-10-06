@@ -1,12 +1,11 @@
 package com.example.use;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
+import android.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,21 +13,24 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.use.Networking.BaseResponse;
-import com.example.use.Networking.Exercise;
+import com.example.use.Networking.SubjectsResponse;
 import com.example.use.Networking.Subject;
-import com.example.use.Networking.SubjectDatum;
 import com.example.use.Networking.NetworkService;
+import com.example.use.Networking.TopicDatum;
+import com.example.use.Networking.UpdatesResponse;
+import com.example.use.database.DbService;
+import com.example.use.database.SubjectsDao;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.IntStream;
 
 public class SubjectsListFragment extends BaseFragment implements SubjectsListAdapter.Listener
 {
     private Listener mListener;
     private SubjectsListAdapter subjectsListAdapter;
 
-    private List<SubjectDatum> subjects = new ArrayList<>();
+    private List<Subject> subjects = new ArrayList<>();
 
     public SubjectsListFragment()
     {
@@ -67,7 +69,11 @@ public class SubjectsListFragment extends BaseFragment implements SubjectsListAd
         recyclerView.setAdapter(subjectsListAdapter);
 
         NetworkService networkService = NetworkService.getInstance(this);
-        networkService.getSubjects(false);
+//        networkService.getUpdates("2019-10-01", "13-00");
+        networkService.getSubjects(true);
+        DbService dbService = DbService.getInstance();
+        dbService.setListener(this);
+        dbService.getSubjects();
     }
 
     @Override
@@ -87,9 +93,15 @@ public class SubjectsListFragment extends BaseFragment implements SubjectsListAd
     @Override
     public void onResponse(BaseResponse response)
     {
-        Subject subject = (Subject)response;
         subjects.clear();
-        subjects.addAll(subject.getData());
+        if (response.getClass() == SubjectsResponse.class)
+        {
+            subjects.addAll(((SubjectsResponse)response).getData());
+        }
+        if (response.getClass() == UpdatesResponse.class)
+        {
+
+        }
         subjectsListAdapter.notifyDataSetChanged();
     }
 

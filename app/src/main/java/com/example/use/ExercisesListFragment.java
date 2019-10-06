@@ -1,7 +1,6 @@
 package com.example.use;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,15 +8,12 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.use.Networking.BaseResponse;
 import com.example.use.Networking.Exercise;
 import com.example.use.Networking.ExerciseDatum;
-import com.example.use.Networking.IResponseReceivable;
 import com.example.use.Networking.NetworkService;
 
 import java.util.ArrayList;

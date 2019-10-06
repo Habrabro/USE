@@ -2,7 +2,6 @@ package com.example.use.Networking;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
-import android.util.Log;
 
 import com.example.use.App;
 
@@ -18,7 +17,7 @@ public class NetworkService
     private static NetworkService instance;
     private String baseURL = "https://usetrainingadmin.000webhostapp.com/api/";
     private static IResponseReceivable listener;
-    private Subject savedSubjectResponse;
+    private SubjectsResponse savedSubjectResponse;
     private Topic savedTopicResponse;
     private Exercise savedExerciseResponse;
     private Retrofit retrofit;
@@ -43,17 +42,17 @@ public class NetworkService
         return instance;
     }
 
-    public void getSubjects(boolean updateData)
+    public void getSubjects(boolean forceUpdate)
     {
-        if (checkNetworkService() && (savedSubjectResponse == null || updateData))
+        if (checkNetworkService() && (savedSubjectResponse == null || forceUpdate))
         {
             savedSubjectResponse = null;
             serverAPI
                     .getSubjects()
-                    .enqueue(new BaseCallback<Subject>(listener)
+                    .enqueue(new BaseCallback<SubjectsResponse>(listener)
                     {
                         @Override
-                        public void onResponse(Call<Subject> call, Response<Subject> response)
+                        public void onResponse(Call<SubjectsResponse> call, Response<SubjectsResponse> response)
                         {
                             super.onResponse(call, response);
                             savedSubjectResponse = response.body();
@@ -145,6 +144,16 @@ public class NetworkService
         }
     }
 
+    public void getUpdates(String afterDate, String afterTime)
+    {
+        if (isNetworkConnected())
+        {
+            serverAPI
+                    .getUpdates(afterDate, afterTime)
+                    .enqueue(new BaseCallback<UpdatesResponse>(listener));
+        }
+    }
+
     private boolean checkNetworkService()
     {
         if (isNetworkConnected())
@@ -165,6 +174,7 @@ public class NetworkService
                 .baseUrl(baseURL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
+        serverAPI = retrofit.create(ServerAPI.class);
     }
 
     private boolean isNetworkConnected()
@@ -176,7 +186,7 @@ public class NetworkService
     public interface ServerAPI
     {
         @GET("getSubjects.php")
-        Call<Subject> getSubjects();
+        Call<SubjectsResponse> getSubjects();
         @GET("getTopics.php")
         Call<Topic> getTopics(@Query("subjectId") long subjectId);
         @GET("getExercises.php")
@@ -186,5 +196,10 @@ public class NetworkService
 
         @GET("login.php")
         Call<UserResponse> login(@Query("login") String login, @Query("password") String password);
+
+        @GET("getUpdates.php")
+        Call<UpdatesResponse> getUpdates(
+                @Query("afterDate") String afterDate,
+                @Query("afterTime") String afterTime);
     }
 }

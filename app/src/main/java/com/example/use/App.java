@@ -20,7 +20,8 @@ public class App extends Application
         super.onCreate();
         instance = this;
         user = new User();
-        database = Room.databaseBuilder(this, Db.class, "database")
+        database = Room
+                .databaseBuilder(this, Db.class, "database")
                 .build();
     }
 

@@ -1,9 +1,6 @@
 package com.example.use;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,15 +9,11 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.use.Networking.BaseResponse;
-import com.example.use.Networking.IResponseReceivable;
 import com.example.use.Networking.NetworkService;
-import com.example.use.Networking.Subject;
-import com.example.use.Networking.SubjectDatum;
 import com.example.use.Networking.Topic;
 import com.example.use.Networking.TopicDatum;
 
