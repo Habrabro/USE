@@ -25,7 +25,7 @@ public class DbService
         database = Room
                 .databaseBuilder(App.getInstance(), Db.class, "database")
                 .build();
-        dbUpdateManager = new DbUpdateManager();
+        dbUpdateManager = new DbUpdateManager(database);
     }
 
     public static DbService getInstance()
@@ -43,6 +43,8 @@ public class DbService
     }
 
     public Db getDatabase() { return database; }
+
+    public DbUpdateManager getUpdateManager() { return dbUpdateManager; }
 
     public void getRecord(String tableName, long id, IDbResponseReceivable listener)
     {

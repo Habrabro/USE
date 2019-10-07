@@ -3,6 +3,7 @@ package com.example.use.database;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import com.example.use.Networking.Subject;
 
@@ -19,4 +20,7 @@ public interface SubjectsDao
 
     @Insert
     void insert(Subject subject);
+
+    @Update
+    void update(Subject subject);
 }

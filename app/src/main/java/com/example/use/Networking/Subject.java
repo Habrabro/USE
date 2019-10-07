@@ -11,6 +11,13 @@ public class Subject
     private String name;
     private String img;
 
+    public Subject(long id, String name, String img)
+    {
+        this.id = id;
+        this.name = name;
+        this.img = img;
+    }
+
     public long getId() {
         return id;
     }
@@ -20,8 +27,4 @@ public class Subject
     public String getImg() {
         return img;
     }
-
-    public void setId(long id) { this.id = id; }
-    public void setName(String name) { this.name = name; }
-    public void setImg(String img) { this.img = img; }
 }

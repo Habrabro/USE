@@ -1,6 +1,7 @@
 package com.example.use;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.ArrayMap;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import com.example.use.Networking.NetworkService;
 import com.example.use.Networking.TopicDatum;
 import com.example.use.Networking.UpdatesResponse;
 import com.example.use.database.DbService;
+import com.example.use.database.OnDbUpdatedListener;
 import com.example.use.database.SubjectsDao;
 
 import java.util.ArrayList;
@@ -68,12 +70,27 @@ public class SubjectsListFragment extends BaseFragment implements SubjectsListAd
         subjectsListAdapter = new SubjectsListAdapter(this, subjects);
         recyclerView.setAdapter(subjectsListAdapter);
 
-        NetworkService networkService = NetworkService.getInstance(this);
-//        networkService.getUpdates("2019-10-01", "13-00");
-        networkService.getSubjects(true);
-        DbService dbService = DbService.getInstance();
-        dbService.setListener(this);
-        dbService.getSubjects();
+        new AsyncTask<Void, Void, List<Subject>>()
+        {
+            @Override
+            protected List<Subject> doInBackground(Void... voids)
+            {
+                SubjectsDao subjectsDao = DbService.getInstance().getDatabase().subjectsDao();
+                List<Subject> _subjects = subjectsDao.getAll();
+                return _subjects;
+            }
+
+            @Override
+            protected void onPostExecute(List<Subject> _subjects)
+            {
+                super.onPostExecute(_subjects);
+                subjects.addAll(_subjects);
+                subjectsListAdapter.notifyDataSetChanged();
+
+                NetworkService.getInstance(SubjectsListFragment.this)
+                        .getUpdates("2019-09-01", null);
+            }
+        }.execute();
     }
 
     @Override
@@ -100,9 +117,33 @@ public class SubjectsListFragment extends BaseFragment implements SubjectsListAd
         }
         if (response.getClass() == UpdatesResponse.class)
         {
+            DbService.getInstance().getUpdateManager().update(
+                    ((UpdatesResponse) response).getData(), new OnDbUpdatedListener()
+                    {
+                        @Override
+                        public void onDbUpdated()
+                        {
+                            new AsyncTask<Void, Void, List<Subject>>()
+                            {
+                                @Override
+                                protected List<Subject> doInBackground(Void... voids)
+                                {
+                                    SubjectsDao subjectsDao = DbService.getInstance().getDatabase().subjectsDao();
+                                    List<Subject> _subjects = subjectsDao.getAll();
+                                    return _subjects;
+                                }
 
+                                @Override
+                                protected void onPostExecute(List<Subject> _subjects)
+                                {
+                                    super.onPostExecute(_subjects);
+                                    subjects.addAll(_subjects);
+                                    subjectsListAdapter.notifyDataSetChanged();
+                                }
+                            }.execute();
+                        }
+                    });
         }
-        subjectsListAdapter.notifyDataSetChanged();
     }
 
     @Override

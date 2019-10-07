@@ -42,13 +42,13 @@ public class NetworkService
         return instance;
     }
 
-    public void getSubjects(boolean forceUpdate)
+    public void getSubjects(Long id, boolean forceUpdate)
     {
         if (checkNetworkService() && (savedSubjectResponse == null || forceUpdate))
         {
             savedSubjectResponse = null;
             serverAPI
-                    .getSubjects()
+                    .getSubjects(id)
                     .enqueue(new BaseCallback<SubjectsResponse>(listener)
                     {
                         @Override
@@ -186,7 +186,7 @@ public class NetworkService
     public interface ServerAPI
     {
         @GET("getSubjects.php")
-        Call<SubjectsResponse> getSubjects();
+        Call<SubjectsResponse> getSubjects(@Query("id") Long id);
         @GET("getTopics.php")
         Call<Topic> getTopics(@Query("subjectId") long subjectId);
         @GET("getExercises.php")
