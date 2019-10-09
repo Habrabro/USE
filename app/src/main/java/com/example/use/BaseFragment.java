@@ -45,7 +45,12 @@ public class BaseFragment extends Fragment implements IResponseReceivable
     @Override
     public void onDisconnected()
     {
-        Snackbar.make(this.getView(), "Disconnected", Snackbar.LENGTH_SHORT).show();
+        Snackbar snackbar = Snackbar.make(
+                this.getView(),
+                "Disconnected",
+                Snackbar.LENGTH_SHORT);
+        snackbar.getView().setTranslationZ(130);
+        snackbar.show();
     }
 
     @Override

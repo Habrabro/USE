@@ -179,8 +179,14 @@ public class NetworkService
 
     private boolean isNetworkConnected()
     {
-        ConnectivityManager cm = (ConnectivityManager) App.getInstance().getSystemService(Context.CONNECTIVITY_SERVICE);
-        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+        ConnectivityManager cm = (ConnectivityManager) App.getInstance()
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        boolean isNetworkConnected = cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+        if (!isNetworkConnected)
+        {
+            listener.onDisconnected();
+        }
+        return isNetworkConnected;
     }
 
     public interface ServerAPI

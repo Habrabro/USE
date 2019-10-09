@@ -61,7 +61,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
     public void setupDialog(@NonNull Dialog dialog, int style)
     {
         super.setupDialog(dialog, style);
-            contentView = View.inflate(getContext(), R.layout.layout_bottom_sheet, null);
+        contentView = View.inflate(getContext(), R.layout.layout_bottom_sheet, null);
         dialog.setContentView(contentView);
         ButterKnife.bind(this, contentView);
         CoordinatorLayout.LayoutParams layoutParams = ((CoordinatorLayout.LayoutParams) ((View) contentView.getParent()).getLayoutParams());
@@ -88,11 +88,15 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
     @Override
     public void onResponse(BaseResponse response)
     {
-
         UserResponse user = (UserResponse)response;
         App.getInstance().getUser().authorize(user.getData());
-        Snackbar.make(contentView, "Authorized", Snackbar.LENGTH_SHORT).show();
-        Toast.makeText(getContext(), "Authorized", Toast.LENGTH_SHORT).show();
+
+        Snackbar snackbar = Snackbar.make(
+                contentView,
+                "Authorized",
+                Snackbar.LENGTH_SHORT);
+        snackbar.getView().setTranslationZ(30);
+        snackbar.show();
     }
 
     @Override
@@ -113,8 +117,12 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
         switch (error)
         {
             case "401":
-                Snackbar.make(contentView, "Incorrect login/password", Snackbar.LENGTH_SHORT).show();
-                Toast.makeText(getContext(), "Incorrect login/password", Toast.LENGTH_SHORT).show();
+                Snackbar snackbar = Snackbar.make(
+                        contentView,
+                        "Incorrect login/password",
+                        Snackbar.LENGTH_SHORT);
+                snackbar.getView().setTranslationZ(30);
+                snackbar.show();
         }
     }
 }
