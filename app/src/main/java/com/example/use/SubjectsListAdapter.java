@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.VectorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,9 +55,10 @@ public class SubjectsListAdapter extends RecyclerView.Adapter<SubjectsListAdapte
         Glide
                 .with(App.getInstance())
                 .load(subject.getImg())
-                .placeholder(new ColorDrawable(Color.GREEN))
-                .error(new ColorDrawable(Color.RED))
-                .fallback(new ColorDrawable(Color.GRAY))
+                .placeholder(new ColorDrawable(
+                        App.getInstance().getResources().getColor(R.color.glidePlaceholderColor)))
+                .error(R.drawable.ic_broken_image)
+                .fallback(R.drawable.ic_broken_image)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(holder.subjectIconView);
     }

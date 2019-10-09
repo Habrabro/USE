@@ -1,9 +1,8 @@
 package com.example.use;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.ArrayMap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,14 +13,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.use.Networking.BaseResponse;
-import com.example.use.Networking.SubjectsResponse;
 import com.example.use.Networking.Subject;
-import com.example.use.Networking.NetworkService;
-import com.example.use.Networking.TopicDatum;
-import com.example.use.Networking.UpdatesResponse;
 import com.example.use.database.DbService;
-import com.example.use.database.OnDbUpdatedListener;
-import com.example.use.database.SubjectsDao;
+import com.example.use.database.DbRequestListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,8 +25,8 @@ public class SubjectsListFragment extends BaseFragment implements SubjectsListAd
 {
     private Listener mListener;
     private SubjectsListAdapter subjectsListAdapter;
-
-    private List<Subject> subjects = new ArrayList<>();
+    private HashMap<String, IDbOperationable> tableOperationsMap;
+    private List<Subject> subjects;
 
     public SubjectsListFragment()
     {
@@ -64,33 +58,42 @@ public class SubjectsListFragment extends BaseFragment implements SubjectsListAd
     {
         super.onViewCreated(view, savedInstanceState);
 
+        subjects = new ArrayList<>();
         RecyclerView recyclerView = view.findViewById(R.id.rvSubjectsList);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(view.getContext(), 2);
         recyclerView.setLayoutManager(gridLayoutManager);
         subjectsListAdapter = new SubjectsListAdapter(this, subjects);
         recyclerView.setAdapter(subjectsListAdapter);
 
-        new AsyncTask<Void, Void, List<Subject>>()
+        DbService.getInstance().getSubjects(new DbRequestListener<List<Subject>>()
         {
             @Override
-            protected List<Subject> doInBackground(Void... voids)
+            public void onRequestCompleted(List<Subject> subjects)
             {
-                SubjectsDao subjectsDao = DbService.getInstance().getDatabase().subjectsDao();
-                List<Subject> _subjects = subjectsDao.getAll();
-                return _subjects;
-            }
-
-            @Override
-            protected void onPostExecute(List<Subject> _subjects)
-            {
-                super.onPostExecute(_subjects);
-                subjects.addAll(_subjects);
+                SubjectsListFragment.this.subjects.addAll(subjects);
                 subjectsListAdapter.notifyDataSetChanged();
-
-                NetworkService.getInstance(SubjectsListFragment.this)
-                        .getUpdates("2019-09-01", null);
+                DbService.getInstance().updateDb(new DbRequestListener()
+                {
+                    @Override
+                    public void onRequestCompleted(Object result)
+                    {
+                        DbService.getInstance().getSubjects(new DbRequestListener<List<Subject>>()
+                        {
+                            @Override
+                            public void onRequestCompleted(List<Subject> subjects)
+                            {
+                                SubjectsListFragment.this.subjects.clear();
+                                SubjectsListFragment.this.subjects.addAll(subjects);
+                                subjectsListAdapter.notifyDataSetChanged();
+                            }
+                        });
+                        Log.i("Hello", "adawd");
+                    }
+                });
             }
-        }.execute();
+        });
+
+
     }
 
     @Override
@@ -110,40 +113,7 @@ public class SubjectsListFragment extends BaseFragment implements SubjectsListAd
     @Override
     public void onResponse(BaseResponse response)
     {
-        subjects.clear();
-        if (response.getClass() == SubjectsResponse.class)
-        {
-            subjects.addAll(((SubjectsResponse)response).getData());
-        }
-        if (response.getClass() == UpdatesResponse.class)
-        {
-            DbService.getInstance().getUpdateManager().update(
-                    ((UpdatesResponse) response).getData(), new OnDbUpdatedListener()
-                    {
-                        @Override
-                        public void onDbUpdated()
-                        {
-                            new AsyncTask<Void, Void, List<Subject>>()
-                            {
-                                @Override
-                                protected List<Subject> doInBackground(Void... voids)
-                                {
-                                    SubjectsDao subjectsDao = DbService.getInstance().getDatabase().subjectsDao();
-                                    List<Subject> _subjects = subjectsDao.getAll();
-                                    return _subjects;
-                                }
 
-                                @Override
-                                protected void onPostExecute(List<Subject> _subjects)
-                                {
-                                    super.onPostExecute(_subjects);
-                                    subjects.addAll(_subjects);
-                                    subjectsListAdapter.notifyDataSetChanged();
-                                }
-                            }.execute();
-                        }
-                    });
-        }
     }
 
     @Override

@@ -3,4 +3,6 @@
     <color name="colorPrimary">#8E78FF</color>
     <color name="colorPrimaryDark">#7462CE</color>
     <color name="colorAccent">#D81B60</color>
+
+    <color name="glidePlaceholderColor">#EFEFEF</color>
 </resources>

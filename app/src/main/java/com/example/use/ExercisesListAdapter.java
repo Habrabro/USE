@@ -53,9 +53,10 @@ public class ExercisesListAdapter extends RecyclerView.Adapter<ExercisesListAdap
         Glide
                 .with(App.getInstance())
                 .load(exercise.getImg())
-                .placeholder(new ColorDrawable(Color.GREEN))
-                .error(new ColorDrawable(Color.RED))
-                .fallback(new ColorDrawable(Color.GRAY))
+                .placeholder(new ColorDrawable(
+                        App.getInstance().getResources().getColor(R.color.glidePlaceholderColor)))
+                .error(R.drawable.ic_broken_image)
+                .fallback(R.drawable.ic_broken_image)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(holder.imageView);
         holder.rightAnswerView.setText(exercise.getRightAnswer());

@@ -3,14 +3,18 @@ package com.example.use.database;
 import android.os.AsyncTask;
 
 import androidx.room.Room;
-import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import com.example.use.App;
+import com.example.use.IDbOperationable;
+import com.example.use.Networking.BaseResponse;
 import com.example.use.Networking.IResponseReceivable;
+import com.example.use.Networking.NetworkService;
 import com.example.use.Networking.Subject;
 import com.example.use.Networking.SubjectsResponse;
 import com.example.use.DbUpdateManager;
+import com.example.use.Networking.Update;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class DbService
@@ -18,140 +22,125 @@ public class DbService
     private static DbService instance;
     private Db database;
     private DbUpdateManager dbUpdateManager;
-    private IResponseReceivable listener;
 
     DbService()
     {
         database = Room
                 .databaseBuilder(App.getInstance(), Db.class, "database")
                 .build();
-        dbUpdateManager = new DbUpdateManager(database);
+        dbUpdateManager = new DbUpdateManager(database, tableOperationsMapInit());
     }
 
     public static DbService getInstance()
     {
-        if (instance == null)
-        {
+        if (instance == null) {
             instance = new DbService();
         }
         return instance;
-    }
-
-    public void setListener(IResponseReceivable listener)
-    {
-        this.listener = listener;
     }
 
     public Db getDatabase() { return database; }
 
     public DbUpdateManager getUpdateManager() { return dbUpdateManager; }
 
-    public void getRecord(String tableName, long id, IDbResponseReceivable listener)
+    public void updateDb(DbRequestListener listener)
     {
-        AsyncTask<Void, Void, Object> asyncTask = new AsyncTask<Void, Void, Object>()
-        {
-            public List<Object> records;
-
-            @Override
-            protected Object doInBackground(Void... voids)
-            {
-                RawDao rawDao = database.rawDao();
-                SimpleSQLiteQuery query = new SimpleSQLiteQuery(
-                        "SELECT * FROM ? WHERE id = ? LIMIT 1",
-                        new Object[]{tableName, id});
-                List<Object> records = rawDao.queryWithReturn(query);
-                return records.get(0);
-            }
-
-            @Override
-            protected void onPostExecute(Object record)
-            {
-                super.onPostExecute(record);
-                listener.onResponse(record);
-            }
-        };
-        asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
+        dbUpdateManager.updateDb(listener);
     }
 
-    public void rawQuery(String query)
+    public void getSubjects(DbRequestListener listener)
     {
-        AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>()
+        new AsyncTask<Void, Void, List<Subject>>()
         {
-            @Override
-            protected Void doInBackground(Void... voids)
-            {
-                RawDao rawDao = database.rawDao();
-                SimpleSQLiteQuery sqLiteQuery = new SimpleSQLiteQuery(query);
-//                rawDao.query(sqLiteQuery);
-                return null;
-            }
-        };
-        asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
-    }
-
-    public void getSubjects()
-    {
-        AsyncTask<Void, Void, List<Subject>> asyncTask = new AsyncTask<Void, Void, List<Subject>>()
-        {
-            public List<Subject> subjects;
-
             @Override
             protected List<Subject> doInBackground(Void... voids)
             {
-                SubjectsDao subjectsDao = database.subjectsDao();
-                List<Subject> subjects = subjectsDao.getAll();
-                return subjects;
+                SubjectsDao subjectsDao = DbService.getInstance().getDatabase().subjectsDao();
+                List<Subject> _subjects = subjectsDao.getAll();
+                return _subjects;
             }
 
             @Override
-            protected void onPostExecute(List<Subject> subjects)
+            protected void onPostExecute(List<Subject> _subjects)
             {
-                super.onPostExecute(subjects);
-                SubjectsResponse subjectsResponse = new SubjectsResponse(subjects);
-                listener.onResponse(subjectsResponse);
+                super.onPostExecute(_subjects);
+                listener.onRequestCompleted(_subjects);
             }
-        };
-        asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
+        }.execute();
     }
 
-    public void getSubject(long id)
+    HashMap<String, IDbOperationable> tableOperationsMapInit()
     {
-        AsyncTask<Long, Void, List<Subject>> asyncTask = new AsyncTask<Long, Void, List<Subject>>()
-        {
-            public List<Subject> subjects;
-
-            @Override
-            protected List<Subject> doInBackground(Long... longs)
-            {
-                SubjectsDao subjectsDao = database.subjectsDao();
-                Subject subject = subjectsDao.getSubject(id);
-                subjects.add(subject);
-                return subjects;
-            }
-
-            @Override
-            protected void onPostExecute(List<Subject> subjects)
-            {
-                super.onPostExecute(subjects);
-                SubjectsResponse subjectsResponse = new SubjectsResponse(subjects);
-                listener.onResponse(subjectsResponse);
-            }
-        };
-        asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
-    }
-
-    public void insertSubject(Subject subject)
-    {
-        AsyncTask<Subject, Void, Void> asyncTask = new AsyncTask<Subject, Void, Void>()
+        HashMap<String, IDbOperationable> tableOperationsMap = new HashMap<>();
+        tableOperationsMap.put("subjects", new IDbOperationable()
         {
             @Override
-            protected Void doInBackground(Subject... subjects)
+            public void insertOrUpdate(Update update, DbRequestListener listener)
             {
-                SubjectsDao subjectsDao = database.subjectsDao();
-                subjectsDao.insert(subjects[0]);
-                return null;
+                NetworkService.getInstance(new IResponseReceivable()
+                {
+                    @Override
+                    public void onResponse(BaseResponse response)
+                    {
+                        Subject serverSubject = ((SubjectsResponse)response).getData().get(0);
+                        new AsyncTask<Subject, Void, Void>()
+                        {
+                            @Override
+                            protected Void doInBackground(Subject... subjects)
+                            {
+                                Subject serverSubject = subjects[0];
+                                Subject subject = new Subject(
+                                        serverSubject.getId(),
+                                        serverSubject.getName(),
+                                        serverSubject.getImg());
+                                SubjectsDao subjectsDao = database.subjectsDao();
+                                Subject localSubject = subjectsDao.getSubject(serverSubject.getId());
+                                if (localSubject == null)
+                                {
+                                    subjectsDao.insert(subject);
+                                }
+                                else
+                                {
+                                    subjectsDao.update(subject);
+                                }
+                                return null;
+                            }
+
+                            @Override
+                            protected void onPostExecute(Void aVoid)
+                            {
+                                super.onPostExecute(aVoid);
+                                listener.onRequestCompleted(update.getId());
+                            }
+                        }.execute(serverSubject);
+                    }
+                    @Override public void onFailure(Throwable t) { }
+                    @Override public void onError(String error) { }
+                    @Override public void onDisconnected() { }
+                }).getSubjects(update.getRowId(), true);
             }
-        };
-        asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
+
+            public void delete(Update update, DbRequestListener listener)
+            {
+                new AsyncTask<Subject, Void, Void>()
+                {
+                    @Override
+                    protected Void doInBackground(Subject... subjects)
+                    {
+                        SubjectsDao subjectsDao = database.subjectsDao();
+                        subjectsDao.delete(update.getRowId());
+                        return null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Void aVoid)
+                    {
+                        super.onPostExecute(aVoid);
+                        listener.onRequestCompleted(update.getId());
+                    }
+                }.execute();
+            }
+        });
+        return tableOperationsMap;
     }
 }

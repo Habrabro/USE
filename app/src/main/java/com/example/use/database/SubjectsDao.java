@@ -1,6 +1,7 @@
 package com.example.use.database;
 
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
@@ -23,4 +24,7 @@ public interface SubjectsDao
 
     @Update
     void update(Subject subject);
+
+    @Query("DELETE FROM Subject WHERE id = :id")
+    void delete(long id);
 }
