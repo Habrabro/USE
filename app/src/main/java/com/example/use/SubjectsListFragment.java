@@ -87,7 +87,6 @@ public class SubjectsListFragment extends BaseFragment implements SubjectsListAd
                                 subjectsListAdapter.notifyDataSetChanged();
                             }
                         });
-                        Log.i("Hello", "adawd");
                     }
                 });
             }

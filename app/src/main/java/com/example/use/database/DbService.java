@@ -14,6 +14,7 @@ import com.example.use.Networking.SubjectsResponse;
 import com.example.use.DbUpdateManager;
 import com.example.use.Networking.Update;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class DbService
 {
     private static DbService instance;
     private Db database;
+    private Date lastUpdate;
     private DbUpdateManager dbUpdateManager;
 
     DbService()
@@ -39,13 +41,18 @@ public class DbService
         return instance;
     }
 
+    public void setLastUpdate(Date lastUpdate)
+    {
+        this.lastUpdate = lastUpdate;
+    }
+
     public Db getDatabase() { return database; }
 
     public DbUpdateManager getUpdateManager() { return dbUpdateManager; }
 
     public void updateDb(DbRequestListener listener)
     {
-        dbUpdateManager.updateDb(listener);
+        dbUpdateManager.updateDb(lastUpdate, listener);
     }
 
     public void getSubjects(DbRequestListener listener)

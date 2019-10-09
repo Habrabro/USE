@@ -21,7 +21,6 @@ import java.util.List;
 
 public class DbUpdateManager
 {
-    private Date lastUpdate;
     private Object record;
     private Db database;
     private HashMap<String, IDbOperationable> tableOperationsMap = new HashMap<>();
@@ -32,7 +31,7 @@ public class DbUpdateManager
         this.tableOperationsMap = tableOperationsMap;
     }
 
-    public void updateDb(DbRequestListener listener)
+    public void updateDb(Date lastUpdate, DbRequestListener listener)
     {
         NetworkService.getInstance(new IResponseReceivable()
         {

@@ -7,6 +7,7 @@ public class User
 
     public long getId() { return id; }
     public boolean isAuthorized() { return isAuthorized; }
+
     public void authorize(long id)
     {
         this.id = id;
