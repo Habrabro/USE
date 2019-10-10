@@ -1,28 +1,29 @@
 package com.example.use;
 
 import android.app.Application;
+import android.icu.util.Calendar;
 
 import androidx.fragment.app.Fragment;
 import androidx.room.Room;
 
 import com.example.use.database.Db;
+import com.example.use.database.DbRequestListener;
+import com.example.use.database.DbService;
+
+import java.util.GregorianCalendar;
 
 public class App extends Application
 {
     private static App instance;
     private Fragment currentFragment;
     private User user;
-    private Db database;
 
     @Override
     public void onCreate()
     {
         super.onCreate();
         instance = this;
-        user = new User();
-        database = Room
-                .databaseBuilder(this, Db.class, "database")
-                .build();
+        DbService.getInstance().getUser(result -> user = result);
     }
 
     public void setCurrentFragment(Fragment fragment)
@@ -36,8 +37,6 @@ public class App extends Application
     }
 
     public User getUser() { return user; }
-
-    public Db getDatabase() { return database; }
 
     public static App getInstance() { return instance; }
 }

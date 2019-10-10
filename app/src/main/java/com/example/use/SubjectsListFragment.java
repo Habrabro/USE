@@ -65,31 +65,16 @@ public class SubjectsListFragment extends BaseFragment implements SubjectsListAd
         subjectsListAdapter = new SubjectsListAdapter(this, subjects);
         recyclerView.setAdapter(subjectsListAdapter);
 
-        DbService.getInstance().getSubjects(new DbRequestListener<List<Subject>>()
+        DbService.getInstance().getSubjects((DbRequestListener<List<Subject>>) subjects ->
         {
-            @Override
-            public void onRequestCompleted(List<Subject> subjects)
+            SubjectsListFragment.this.subjects.addAll(subjects);
+            subjectsListAdapter.notifyDataSetChanged();
+            DbService.getInstance().updateDb(result -> DbService.getInstance().getSubjects((DbRequestListener<List<Subject>>) subjects1 ->
             {
-                SubjectsListFragment.this.subjects.addAll(subjects);
+                SubjectsListFragment.this.subjects.clear();
+                SubjectsListFragment.this.subjects.addAll(subjects1);
                 subjectsListAdapter.notifyDataSetChanged();
-                DbService.getInstance().updateDb(new DbRequestListener()
-                {
-                    @Override
-                    public void onRequestCompleted(Object result)
-                    {
-                        DbService.getInstance().getSubjects(new DbRequestListener<List<Subject>>()
-                        {
-                            @Override
-                            public void onRequestCompleted(List<Subject> subjects)
-                            {
-                                SubjectsListFragment.this.subjects.clear();
-                                SubjectsListFragment.this.subjects.addAll(subjects);
-                                subjectsListAdapter.notifyDataSetChanged();
-                            }
-                        });
-                    }
-                });
-            }
+            }));
         });
 
 

@@ -13,8 +13,10 @@ import com.example.use.Networking.Subject;
 import com.example.use.Networking.SubjectsResponse;
 import com.example.use.DbUpdateManager;
 import com.example.use.Networking.Update;
+import com.example.use.User;
 
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,6 +31,7 @@ public class DbService
     {
         database = Room
                 .databaseBuilder(App.getInstance(), Db.class, "database")
+                .fallbackToDestructiveMigration()
                 .build();
         dbUpdateManager = new DbUpdateManager(database, tableOperationsMapInit());
     }
@@ -44,6 +47,17 @@ public class DbService
     public void setLastUpdate(Date lastUpdate)
     {
         this.lastUpdate = lastUpdate;
+        App.getInstance().getUser().setLastUpdate(lastUpdate);
+        new AsyncTask<Void, Void, Void>()
+        {
+            @Override
+            protected Void doInBackground(Void... voids)
+            {
+                UserDao userDao = getDatabase().userDao();
+                userDao.update(App.getInstance().getUser());
+                return null;
+            }
+        }.execute();
     }
 
     public Db getDatabase() { return database; }
@@ -53,6 +67,33 @@ public class DbService
     public void updateDb(DbRequestListener listener)
     {
         dbUpdateManager.updateDb(lastUpdate, listener);
+    }
+
+    public void getUser(DbRequestListener<User> listener)
+    {
+        new AsyncTask<Void, Void, User>()
+        {
+            @Override
+            protected User doInBackground(Void... voids)
+            {
+                UserDao userDao = getDatabase().userDao();
+                User user = userDao.getUser();
+                if (user == null)
+                {
+                    user = new User(new Date(0));
+                    userDao.insert(user);
+                }
+                lastUpdate = user.getLastUpdate();
+                return user;
+            }
+
+            @Override
+            protected void onPostExecute(User user)
+            {
+                super.onPostExecute(user);
+                listener.onRequestCompleted(user);
+            }
+        }.execute();
     }
 
     public void getSubjects(DbRequestListener listener)
