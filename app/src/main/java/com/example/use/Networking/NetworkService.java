@@ -2,6 +2,7 @@ package com.example.use.Networking;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
+import android.util.Log;
 
 import com.example.use.App;
 
@@ -18,8 +19,8 @@ public class NetworkService
     private String baseURL = "https://usetrainingadmin.000webhostapp.com/api/";
     private static IResponseReceivable listener;
     private SubjectsResponse savedSubjectResponse;
-    private Topic savedTopicResponse;
-    private Exercise savedExerciseResponse;
+    private TopicResponse savedTopicResponseResponse;
+    private ExerciseResponse savedExerciseResponseResponse;
     private Retrofit retrofit;
     private ServerAPI serverAPI;
 
@@ -65,72 +66,70 @@ public class NetworkService
         }
     }
 
-    public void getTopics(long subjectId, boolean updateData)
+    public void getTopics(Long id, Long subjectId, boolean updateData)
     {
-        if (checkNetworkService() && (savedTopicResponse == null || updateData))
+        if (checkNetworkService() && (savedTopicResponseResponse == null || updateData))
         {
-            savedTopicResponse = null;
+            savedTopicResponseResponse = null;
             serverAPI
-                    .getTopics(subjectId)
-                    .enqueue(new BaseCallback<Topic>(listener)
+                    .getTopics(id, subjectId)
+                    .enqueue(new BaseCallback<TopicResponse>(listener)
                     {
                         @Override
-                        public void onResponse(Call<Topic> call, Response<Topic> response)
+                        public void onResponse(Call<TopicResponse> call, Response<TopicResponse> response)
                         {
                             super.onResponse(call, response);
-                            savedTopicResponse = response.body();
+                            savedTopicResponseResponse = response.body();
                         }
                     });
         }
         else
         {
-            listener.onResponse(savedTopicResponse);
+            listener.onResponse(savedTopicResponseResponse);
         }
     }
 
-    public void getExercises(long topicId, boolean updateData)
+    public void getExercises(Long id, Long topicId, String limit, boolean updateData)
     {
-        if (checkNetworkService() && (savedExerciseResponse == null || updateData))
+        if (checkNetworkService() && (savedExerciseResponseResponse == null || updateData))
         {
-            savedExerciseResponse = null;
+            savedExerciseResponseResponse = null;
             serverAPI
-                    .getExercises(topicId)
-                    .enqueue(new BaseCallback<Exercise>(listener)
+                    .getExercises(id, topicId, limit)
+                    .enqueue(new BaseCallback<ExerciseResponse>(listener)
                     {
                         @Override
-                        public void onResponse(Call<Exercise> call, Response<Exercise> response)
+                        public void onResponse(Call<ExerciseResponse> call, Response<ExerciseResponse> response)
                         {
                             super.onResponse(call, response);
-                            savedExerciseResponse = response.body();
+                            savedExerciseResponseResponse = response.body();
                         }
                     });
         }
         else
         {
-            listener.onResponse(savedExerciseResponse);
+            listener.onResponse(savedExerciseResponseResponse);
         }
     }
 
-    public void getExercise(long topicId, long id, boolean updateData)
+    public void getDirectories(Long id, Long subjectId, String limit)
     {
-        if (checkNetworkService() && (savedExerciseResponse == null || updateData))
+        if (checkNetworkService())
         {
-            savedExerciseResponse = null;
             serverAPI
-                    .getExercise(topicId, id)
-                    .enqueue(new BaseCallback<Exercise>(listener)
+                    .getDirectories(id, subjectId, limit)
+                    .enqueue(new BaseCallback<DirectoryResponse>(listener)
                     {
                         @Override
-                        public void onResponse(Call<Exercise> call, Response<Exercise> response)
+                        public void onResponse(Call<DirectoryResponse> call, Response<DirectoryResponse> response)
                         {
                             super.onResponse(call, response);
-                            savedExerciseResponse = response.body();
                         }
                     });
         }
         else
         {
-            listener.onResponse(savedExerciseResponse);
+            listener.onResponse(savedExerciseResponseResponse);
         }
     }
 
@@ -194,11 +193,15 @@ public class NetworkService
         @GET("getSubjects.php")
         Call<SubjectsResponse> getSubjects(@Query("id") Long id);
         @GET("getTopics.php")
-        Call<Topic> getTopics(@Query("subjectId") long subjectId);
+        Call<TopicResponse> getTopics(@Query("id") Long id, @Query("subjectId") Long subjectId);
         @GET("getExercises.php")
-        Call<Exercise> getExercise(@Query("topicId") long topicId, @Query("id") long id);
-        @GET("getExercises.php")
-        Call<Exercise> getExercises(@Query("topicId") long topicId);
+        Call<ExerciseResponse> getExercises(@Query("id") Long id,
+                                            @Query("topicId") Long topicId,
+                                            @Query("limit") String limit);
+        @GET("getDirectoryTopics.php")
+        Call<DirectoryResponse> getDirectories(@Query("id") Long id,
+                                               @Query("topicId") Long subjectId,
+                                               @Query("limit") String limit);
 
         @GET("login.php")
         Call<UserResponse> login(@Query("login") String login, @Query("password") String password);

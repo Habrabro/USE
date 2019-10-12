@@ -2,7 +2,6 @@ package com.example.use;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.example.use.Networking.ExerciseDatum;
+import com.example.use.Networking.Exercise;
 
 import java.util.List;
 
@@ -23,11 +22,33 @@ import butterknife.ButterKnife;
 public class ExercisesListAdapter extends RecyclerView.Adapter<ExercisesListAdapter.ViewHolder>
 {
     private LayoutInflater inflater;
-    private List<ExerciseDatum> exercises;
+    private List<Exercise> exercises;
     private Listener listener;
     private long topicId;
+    private boolean dataIsLoading = true;
+    private boolean allDataLoaded = false;
 
-    ExercisesListAdapter(Listener listener, List<ExerciseDatum> exercises, long topicId)
+    public boolean isDataIsLoading()
+    {
+        return dataIsLoading;
+    }
+
+    public void setDataIsLoading(boolean dataIsLoading)
+    {
+        this.dataIsLoading = dataIsLoading;
+    }
+
+    public boolean isAllDataLoaded()
+    {
+        return allDataLoaded;
+    }
+
+    public void setAllDataLoaded(boolean allDataLoaded)
+    {
+        this.allDataLoaded = allDataLoaded;
+    }
+
+    ExercisesListAdapter(Listener listener, List<Exercise> exercises, long topicId)
     {
         this.exercises = exercises;
         this.topicId = topicId;
@@ -47,7 +68,7 @@ public class ExercisesListAdapter extends RecyclerView.Adapter<ExercisesListAdap
     @Override
     public void onBindViewHolder(ExercisesListAdapter.ViewHolder holder, int position)
     {
-        ExerciseDatum exercise = exercises.get(position);
+        Exercise exercise = exercises.get(position);
         holder.idView.setText(topicId + "." + Long.toString(exercise.getId()));
         holder.descriptionView.setText(exercise.getDescription());
         Glide

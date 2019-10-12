@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.use.Networking.TopicDatum;
+import com.example.use.Networking.Topic;
 
 import java.util.List;
 
@@ -17,10 +17,10 @@ import butterknife.ButterKnife;
 public class TopicsListAdapter extends RecyclerView.Adapter<TopicsListAdapter.ViewHolder>
 {
     private LayoutInflater inflater;
-    private List<TopicDatum> topics;
+    private List<Topic> topics;
     private Listener listener;
 
-    TopicsListAdapter(Listener listener, List<TopicDatum> topics)
+    TopicsListAdapter(Listener listener, List<Topic> topics)
     {
         this.topics = topics;
         if (listener instanceof Listener)
@@ -39,7 +39,7 @@ public class TopicsListAdapter extends RecyclerView.Adapter<TopicsListAdapter.Vi
     @Override
     public void onBindViewHolder(TopicsListAdapter.ViewHolder holder, int position)
     {
-        TopicDatum topic = topics.get(position);
+        Topic topic = topics.get(position);
         holder.topicTitleView.setText(topic.getNumber() + ". " + topic.getTitle());
     }
 
@@ -69,7 +69,7 @@ public class TopicsListAdapter extends RecyclerView.Adapter<TopicsListAdapter.Vi
 
         @Override
         public void onClick(View view)
-        {   TopicDatum topic = topics.get(getAdapterPosition());
+        {   Topic topic = topics.get(getAdapterPosition());
             listener.OnViewHolderClick(getAdapterPosition(), topic.getId(), topic.getNumber());
         }
     }

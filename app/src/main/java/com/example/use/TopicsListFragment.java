@@ -14,8 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.use.Networking.BaseResponse;
 import com.example.use.Networking.NetworkService;
+import com.example.use.Networking.Subject;
+import com.example.use.Networking.TopicResponse;
 import com.example.use.Networking.Topic;
-import com.example.use.Networking.TopicDatum;
+import com.example.use.database.DbRequestListener;
+import com.example.use.database.DbService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +31,7 @@ public class TopicsListFragment extends BaseFragment implements TopicsListAdapte
     private Listener mListener;
     private TopicsListAdapter topicsListAdapter;
 
-    private List<TopicDatum> topics = new ArrayList<>();
+    private List<Topic> topics;
 
     public TopicsListFragment()
     {
@@ -67,6 +70,7 @@ public class TopicsListFragment extends BaseFragment implements TopicsListAdapte
     {
         super.onViewCreated(view, savedInstanceState);
 
+        topics = new ArrayList<>();
         RecyclerView recyclerView = view.findViewById(R.id.rvTopicsList);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -78,8 +82,18 @@ public class TopicsListFragment extends BaseFragment implements TopicsListAdapte
         topicsListAdapter = new TopicsListAdapter(this, topics);
         recyclerView.setAdapter(topicsListAdapter);
 
-        NetworkService networkService = NetworkService.getInstance(this);
-        networkService.getTopics(subjectId,true);
+        DbService.getInstance().getTopics(subjectId, (DbRequestListener<List<Topic>>) topics ->
+        {
+            TopicsListFragment.this.topics.addAll(topics);
+            topicsListAdapter.notifyDataSetChanged();
+            DbService.getInstance().updateDb(result ->
+                    DbService.getInstance().getTopics(subjectId, (DbRequestListener<List<Topic>>) topics1 ->
+            {
+                TopicsListFragment.this.topics.clear();
+                TopicsListFragment.this.topics.addAll(topics1);
+                topicsListAdapter.notifyDataSetChanged();
+            }));
+        });
     }
 
     @Override
@@ -99,10 +113,7 @@ public class TopicsListFragment extends BaseFragment implements TopicsListAdapte
     @Override
     public void onResponse(BaseResponse response)
     {
-        Topic topic = (Topic) response;
-        topics.clear();
-        topics.addAll(topic.getData());
-        topicsListAdapter.notifyDataSetChanged();
+
     }
 
     @Override

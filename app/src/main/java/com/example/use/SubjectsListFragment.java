@@ -69,15 +69,14 @@ public class SubjectsListFragment extends BaseFragment implements SubjectsListAd
         {
             SubjectsListFragment.this.subjects.addAll(subjects);
             subjectsListAdapter.notifyDataSetChanged();
-            DbService.getInstance().updateDb(result -> DbService.getInstance().getSubjects((DbRequestListener<List<Subject>>) subjects1 ->
+            DbService.getInstance().updateDb(result ->
+                    DbService.getInstance().getSubjects((DbRequestListener<List<Subject>>) subjects1 ->
             {
                 SubjectsListFragment.this.subjects.clear();
                 SubjectsListFragment.this.subjects.addAll(subjects1);
                 subjectsListAdapter.notifyDataSetChanged();
             }));
         });
-
-
     }
 
     @Override

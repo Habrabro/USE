@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.use.Networking.Directory;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -63,7 +64,21 @@ public class MainActivity extends AppCompatActivity implements SubjectMenuFragme
     }
 
     @Override
-    public void onSubjectMenuFragmentInteraction(long subjectId)
+    public void onDirectoryFragmentDisplay(long subjectId)
+    {
+        if (fragmentManager.findFragmentByTag("subjectMenuFragment") != null &&
+                fragmentManager.findFragmentByTag("directoryFragment") == null)
+        {
+            DirectoryFragment directoryFragment = DirectoryFragment.newInstance(subjectId);
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragmentContainer, directoryFragment, "directoryFragment")
+                    .addToBackStack(null)
+                    .commit();
+        }
+    }
+
+    @Override
+    public void onTopicsListFragmentDisplay(long subjectId)
     {
         if (fragmentManager.findFragmentByTag("subjectMenuFragment") != null &&
                 fragmentManager.findFragmentByTag("topicsListFragment") == null)

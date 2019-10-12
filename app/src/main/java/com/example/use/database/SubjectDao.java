@@ -11,7 +11,7 @@ import com.example.use.Networking.Subject;
 import java.util.List;
 
 @Dao
-public interface SubjectsDao
+public interface SubjectDao
 {
     @Query("SELECT * FROM Subject")
     List<Subject> getAll();

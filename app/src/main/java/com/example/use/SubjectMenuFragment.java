@@ -21,7 +21,7 @@ public class SubjectMenuFragment extends BaseFragment
 
     @BindView(R.id.btnDirectory) Button directoryView;
     @BindView(R.id.btnStartTraining) Button startTrainingView;
-    @BindView(R.id.btnVariantsList) Button variantsListView;
+    @BindView(R.id.btnTopicsList) Button topicsListView;
 
     private SubjectMenuFragment.Listener mListener;
 
@@ -64,7 +64,7 @@ public class SubjectMenuFragment extends BaseFragment
         ButterKnife.bind(this, view);
         directoryView.setOutlineProvider(new SubjectMenuButtonOutlineProvider());
         startTrainingView.setOutlineProvider(new SubjectMenuButtonOutlineProvider());
-        variantsListView.setOutlineProvider(new SubjectMenuButtonOutlineProvider());
+        topicsListView.setOutlineProvider(new SubjectMenuButtonOutlineProvider());
     }
 
     @Override
@@ -81,14 +81,21 @@ public class SubjectMenuFragment extends BaseFragment
         mListener = null;
     }
 
-    @OnClick(R.id.btnVariantsList)
+    @OnClick(R.id.btnDirectory)
     public void onDirectoryViewClick()
     {
-        mListener.onSubjectMenuFragmentInteraction(subjectId);
+        mListener.onDirectoryFragmentDisplay(subjectId);
+    }
+
+    @OnClick(R.id.btnTopicsList)
+    public void onTopicsListViewClick()
+    {
+        mListener.onTopicsListFragmentDisplay(subjectId);
     }
 
     interface Listener
     {
-        void onSubjectMenuFragmentInteraction(long subjectId);
+        void onDirectoryFragmentDisplay(long subjectId);
+        void onTopicsListFragmentDisplay(long subjectId);
     }
 }

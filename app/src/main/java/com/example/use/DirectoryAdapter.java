@@ -1,0 +1,108 @@
+package com.example.use;
+
+import android.graphics.drawable.ColorDrawable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.use.Networking.Directory;
+import com.example.use.Networking.Exercise;
+
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.ViewHolder>
+{
+    private LayoutInflater inflater;
+    private List<Directory> directories;
+    private DirectoryAdapter.Listener listener;
+    private long subjectId;
+    private boolean dataIsLoading = true;
+    private boolean allDataLoaded = false;
+
+    public boolean isDataIsLoading()
+    {
+        return dataIsLoading;
+    }
+
+    public void setDataIsLoading(boolean dataIsLoading)
+    {
+        this.dataIsLoading = dataIsLoading;
+    }
+
+    public boolean isAllDataLoaded()
+    {
+        return allDataLoaded;
+    }
+
+    public void setAllDataLoaded(boolean allDataLoaded)
+    {
+        this.allDataLoaded = allDataLoaded;
+    }
+
+    DirectoryAdapter(DirectoryAdapter.Listener listener, List<Directory> directories, long subjectId)
+    {
+        this.directories = directories;
+        this.subjectId = subjectId;
+        if (listener instanceof DirectoryAdapter.Listener)
+        {
+            this.listener = listener;
+        }
+    }
+    @Override
+    public DirectoryAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+    {
+        inflater = LayoutInflater.from(parent.getContext());
+        View view = inflater.inflate(R.layout.fragment_directory_item, parent, false);
+        return new DirectoryAdapter.ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(DirectoryAdapter.ViewHolder holder, int position)
+    {
+        Directory directory = directories.get(position);
+        holder.fragmentDirectoryTitle.setText(directory.getTitle());
+        holder.fragmentDirectoryContent.setText(directory.getContent());
+    }
+
+    @Override
+    public int getItemCount()
+    {
+        return directories.size();
+    }
+
+    public interface Listener
+    {
+        void OnViewHolderClick(int position);
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
+    {
+        @BindView(R.id.tvFragmentDirectoryTitle)
+        TextView fragmentDirectoryTitle;
+        @BindView(R.id.tvFragmentDirectoryContent)
+        TextView fragmentDirectoryContent;
+
+        ViewHolder(View view)
+        {
+            super(view);
+            ButterKnife.bind(this, view);
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view)
+        {
+            listener.OnViewHolderClick(getAdapterPosition());
+        }
+    }
+}

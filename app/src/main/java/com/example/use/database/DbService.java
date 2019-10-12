@@ -12,11 +12,12 @@ import com.example.use.Networking.NetworkService;
 import com.example.use.Networking.Subject;
 import com.example.use.Networking.SubjectsResponse;
 import com.example.use.DbUpdateManager;
+import com.example.use.Networking.Topic;
+import com.example.use.Networking.TopicResponse;
 import com.example.use.Networking.Update;
 import com.example.use.User;
 
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -103,8 +104,8 @@ public class DbService
             @Override
             protected List<Subject> doInBackground(Void... voids)
             {
-                SubjectsDao subjectsDao = DbService.getInstance().getDatabase().subjectsDao();
-                List<Subject> _subjects = subjectsDao.getAll();
+                SubjectDao subjectDao = DbService.getInstance().getDatabase().subjectsDao();
+                List<Subject> _subjects = subjectDao.getAll();
                 return _subjects;
             }
 
@@ -117,9 +118,31 @@ public class DbService
         }.execute();
     }
 
+    public void getTopics(long subjectId, DbRequestListener listener)
+    {
+        new AsyncTask<Void, Void, List<Topic>>()
+        {
+            @Override
+            protected List<Topic> doInBackground(Void... voids)
+            {
+                TopicDao topicDao = DbService.getInstance().getDatabase().topicDao();
+                List<Topic> _topics = topicDao.getTopics(subjectId);
+                return _topics;
+            }
+
+            @Override
+            protected void onPostExecute(List<Topic> _topics)
+            {
+                super.onPostExecute(_topics);
+                listener.onRequestCompleted(_topics);
+            }
+        }.execute();
+    }
+
     HashMap<String, IDbOperationable> tableOperationsMapInit()
     {
         HashMap<String, IDbOperationable> tableOperationsMap = new HashMap<>();
+
         tableOperationsMap.put("subjects", new IDbOperationable()
         {
             @Override
@@ -141,15 +164,15 @@ public class DbService
                                         serverSubject.getId(),
                                         serverSubject.getName(),
                                         serverSubject.getImg());
-                                SubjectsDao subjectsDao = database.subjectsDao();
-                                Subject localSubject = subjectsDao.getSubject(serverSubject.getId());
+                                SubjectDao subjectDao = database.subjectsDao();
+                                Subject localSubject = subjectDao.getSubject(serverSubject.getId());
                                 if (localSubject == null)
                                 {
-                                    subjectsDao.insert(subject);
+                                    subjectDao.insert(subject);
                                 }
                                 else
                                 {
-                                    subjectsDao.update(subject);
+                                    subjectDao.update(subject);
                                 }
                                 return null;
                             }
@@ -175,8 +198,8 @@ public class DbService
                     @Override
                     protected Void doInBackground(Subject... subjects)
                     {
-                        SubjectsDao subjectsDao = database.subjectsDao();
-                        subjectsDao.delete(update.getRowId());
+                        SubjectDao subjectDao = database.subjectsDao();
+                        subjectDao.delete(update.getRowId());
                         return null;
                     }
 
@@ -189,6 +212,79 @@ public class DbService
                 }.execute();
             }
         });
+
+        tableOperationsMap.put("topics", new IDbOperationable()
+        {
+            @Override
+            public void insertOrUpdate(Update update, DbRequestListener listener)
+            {
+                long id = update.getRowId();
+                NetworkService.getInstance(new IResponseReceivable()
+                {
+                    @Override
+                    public void onResponse(BaseResponse response)
+                    {
+                        Topic serverTopic = ((TopicResponse)response).getData().get(0);
+                        new AsyncTask<Topic, Void, Void>()
+                        {
+                            @Override
+                            protected Void doInBackground(Topic... topics)
+                            {
+                                Topic serverTopic = topics[0];
+                                Topic topic = new Topic(
+                                        serverTopic.getId(),
+                                        serverTopic.getNumber(),
+                                        serverTopic.getTitle(),
+                                        serverTopic.getSubjectId());
+                                TopicDao topicDao = database.topicDao();
+                                Topic localTopic = topicDao.getTopic(serverTopic.getId());
+                                if (localTopic == null)
+                                {
+                                    topicDao.insert(topic);
+                                }
+                                else
+                                {
+                                    topicDao.update(topic);
+                                }
+                                return null;
+                            }
+
+                            @Override
+                            protected void onPostExecute(Void aVoid)
+                            {
+                                super.onPostExecute(aVoid);
+                                listener.onRequestCompleted(update.getId());
+                            }
+                        }.execute(serverTopic);
+                    }
+                    @Override public void onFailure(Throwable t) { }
+                    @Override public void onError(String error) { }
+                    @Override public void onDisconnected() { }
+                }).getTopics(update.getRowId(), null, true);
+            }
+
+            public void delete(Update update, DbRequestListener listener)
+            {
+                new AsyncTask<Topic, Void, Void>()
+                {
+                    @Override
+                    protected Void doInBackground(Topic... topics)
+                    {
+                        TopicDao topicDao = database.topicDao();
+                        topicDao.delete(update.getRowId());
+                        return null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Void aVoid)
+                    {
+                        super.onPostExecute(aVoid);
+                        listener.onRequestCompleted(update.getId());
+                    }
+                }.execute();
+            }
+        });
+
         return tableOperationsMap;
     }
 }

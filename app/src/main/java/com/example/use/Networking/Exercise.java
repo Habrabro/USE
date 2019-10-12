@@ -1,13 +1,40 @@
 package com.example.use.Networking;
 
-import java.util.List;
-
-public class Exercise extends BaseResponse
+public class Exercise
 {
-    private List<ExerciseDatum> data = null;
+    private long id;
+    private long topicId;
+    private String description;
+    private String img;
+    private String rightAnswer;
+    private int version;
+    private boolean status;
 
-    public List<ExerciseDatum> getData()
-    {
-        return data;
+    public long getId() {
+        return id;
+    }
+
+    public long getTopicId() {
+        return topicId;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public String getRightAnswer() {
+        return rightAnswer;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public boolean getStatus() {
+        return status;
     }
 }

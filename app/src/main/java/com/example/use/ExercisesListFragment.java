@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,9 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.use.Networking.BaseResponse;
+import com.example.use.Networking.ExerciseResponse;
 import com.example.use.Networking.Exercise;
-import com.example.use.Networking.ExerciseDatum;
 import com.example.use.Networking.NetworkService;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,12 +25,18 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
 {
     private final static String PARAM_1 = "param_1";
     private final static String PARAM_2 = "param_2";
+
+    private final int itemsPerLoad = 30;
+    private int page = 0;
+
     private long topicId, number;
 
     private Listener mListener;
     private ExercisesListAdapter exercisesListAdapter;
 
-    private List<ExerciseDatum> exercises = new ArrayList<>();
+    private List<Exercise> exercises;
+
+    private Snackbar snackbar;
 
     public ExercisesListFragment()
     {
@@ -69,6 +77,9 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
     {
         super.onViewCreated(view, savedInstanceState);
 
+        exercises = new ArrayList<>();
+        snackbar = Snackbar.make(getView(), "Loading", Snackbar.LENGTH_INDEFINITE);
+
         RecyclerView recyclerView = view.findViewById(R.id.rvExercisesList);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -76,7 +87,26 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
         recyclerView.setAdapter(exercisesListAdapter);
 
         NetworkService networkService = NetworkService.getInstance(this);
-        networkService.getExercises(topicId, true);
+        networkService.getExercises(null, topicId, page + "," + itemsPerLoad, true);
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
+        {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState)
+            {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if (!recyclerView.canScrollVertically(1)
+                        && !exercisesListAdapter.isDataIsLoading()
+                        && !exercisesListAdapter.isAllDataLoaded())
+                {
+                    networkService.getExercises(
+                            null, topicId, page * itemsPerLoad + "," + itemsPerLoad, true);
+                    exercisesListAdapter.setDataIsLoading(true);
+                    snackbar.show();
+                }
+            }
+        });
     }
 
     @Override
@@ -95,8 +125,22 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
     @Override
     public void onResponse(BaseResponse response)
     {
-        Exercise exercise = (Exercise)response;
-        exercises.addAll(exercise.getData());
+        if (!exercisesListAdapter.isDataIsLoading())
+        {
+            exercises.clear();
+        }
+        else
+        {
+            page++;
+            exercisesListAdapter.setDataIsLoading(false);
+        }
+        if (snackbar != null) { snackbar.dismiss(); }
+        ExerciseResponse exerciseResponse = (ExerciseResponse)response;
+        if (exerciseResponse.getData().size() == 0)
+        {
+            exercisesListAdapter.setAllDataLoaded(true);
+        }
+        exercises.addAll(exerciseResponse.getData());
         exercisesListAdapter.notifyDataSetChanged();
     }
 

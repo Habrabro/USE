@@ -33,7 +33,7 @@ public class BaseFragment extends Fragment implements IResponseReceivable
     @Override
     public void onResponse(BaseResponse response)
     {
-
+//
     }
 
     @Override
