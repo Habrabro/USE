@@ -3,8 +3,14 @@ package com.example.use.Networking;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.util.Log;
+import android.widget.FrameLayout;
+
+import androidx.fragment.app.Fragment;
 
 import com.example.use.App;
+import com.example.use.BaseFragment;
+import com.example.use.R;
+import com.google.android.material.snackbar.Snackbar;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -43,99 +49,69 @@ public class NetworkService
         return instance;
     }
 
-    public void getSubjects(Long id, boolean forceUpdate)
+    public void getSubjects(Long id)
     {
-        if (checkNetworkService() && (savedSubjectResponse == null || forceUpdate))
+        if (isNetworkConnected())
         {
             savedSubjectResponse = null;
             serverAPI
                     .getSubjects(id)
-                    .enqueue(new BaseCallback<SubjectsResponse>(listener)
-                    {
-                        @Override
-                        public void onResponse(Call<SubjectsResponse> call, Response<SubjectsResponse> response)
-                        {
-                            super.onResponse(call, response);
-                            savedSubjectResponse = response.body();
-                        }
-                    });
-        }
-        else
-        {
-            listener.onResponse(savedSubjectResponse);
+                    .enqueue(new BaseCallback<SubjectsResponse>(listener));
         }
     }
 
-    public void getTopics(Long id, Long subjectId, boolean updateData)
+    public void getTopics(Long id, Long subjectId)
     {
-        if (checkNetworkService() && (savedTopicResponseResponse == null || updateData))
+        if (isNetworkConnected())
         {
             savedTopicResponseResponse = null;
             serverAPI
                     .getTopics(id, subjectId)
-                    .enqueue(new BaseCallback<TopicResponse>(listener)
-                    {
-                        @Override
-                        public void onResponse(Call<TopicResponse> call, Response<TopicResponse> response)
-                        {
-                            super.onResponse(call, response);
-                            savedTopicResponseResponse = response.body();
-                        }
-                    });
-        }
-        else
-        {
-            listener.onResponse(savedTopicResponseResponse);
+                    .enqueue(new BaseCallback<TopicResponse>(listener));
         }
     }
 
-    public void getExercises(Long id, Long topicId, String limit, boolean updateData)
+    public void getExercises(Long id, Long topicId, String limit, boolean showLoadingSnackbar)
     {
-        if (checkNetworkService() && (savedExerciseResponseResponse == null || updateData))
+        if (isNetworkConnected())
         {
             savedExerciseResponseResponse = null;
             serverAPI
                     .getExercises(id, topicId, limit)
-                    .enqueue(new BaseCallback<ExerciseResponse>(listener)
-                    {
-                        @Override
-                        public void onResponse(Call<ExerciseResponse> call, Response<ExerciseResponse> response)
-                        {
-                            super.onResponse(call, response);
-                            savedExerciseResponseResponse = response.body();
-                        }
-                    });
+                    .enqueue(new BaseCallback<ExerciseResponse>(listener));
+            if (showLoadingSnackbar)
+            {
+                BaseFragment.snackbar = Snackbar.make(
+                        App.getInstance().getCurrentFragment().getActivity().findViewById(R.id.fragmentContainer),
+                        "Loading",
+                        Snackbar.LENGTH_INDEFINITE);
+                BaseFragment.snackbar.show();
+            }
         }
-        else
-        {
-            listener.onResponse(savedExerciseResponseResponse);
-        }
+
     }
 
-    public void getDirectories(Long id, Long subjectId, String limit)
+    public void getDirectories(Long id, Long subjectId, String limit, boolean showLoadingSnackbar)
     {
-        if (checkNetworkService())
+        if (isNetworkConnected())
         {
             serverAPI
                     .getDirectories(id, subjectId, limit)
-                    .enqueue(new BaseCallback<DirectoryResponse>(listener)
-                    {
-                        @Override
-                        public void onResponse(Call<DirectoryResponse> call, Response<DirectoryResponse> response)
-                        {
-                            super.onResponse(call, response);
-                        }
-                    });
-        }
-        else
-        {
-            listener.onResponse(savedExerciseResponseResponse);
+                    .enqueue(new BaseCallback<DirectoryResponse>(listener));
+            if (showLoadingSnackbar)
+            {
+                BaseFragment.snackbar = Snackbar.make(
+                        App.getInstance().getCurrentFragment().getActivity().findViewById(R.id.fragmentContainer),
+                        "Loading",
+                        Snackbar.LENGTH_INDEFINITE);
+                BaseFragment.snackbar.show();
+            }
         }
     }
 
     public void login(String login, String password)
     {
-        if (checkNetworkService())
+        if (isNetworkConnected())
         {
             serverAPI
                     .login(login, password)
@@ -150,19 +126,11 @@ public class NetworkService
             serverAPI
                     .getUpdates(afterDate, afterTime)
                     .enqueue(new BaseCallback<UpdatesResponse>(listener));
-        }
-    }
-
-    private boolean checkNetworkService()
-    {
-        if (isNetworkConnected())
-        {
-            return true;
+            App.getInstance().onResponse(null);
         }
         else
         {
-            listener.onDisconnected();
-            return false;
+            App.getInstance().onDisconnected();
         }
     }
 
@@ -200,7 +168,7 @@ public class NetworkService
                                             @Query("limit") String limit);
         @GET("getDirectoryTopics.php")
         Call<DirectoryResponse> getDirectories(@Query("id") Long id,
-                                               @Query("topicId") Long subjectId,
+                                               @Query("subjectId") Long subjectId,
                                                @Query("limit") String limit);
 
         @GET("login.php")

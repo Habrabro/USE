@@ -5,4 +5,5 @@
     <color name="colorAccent">#D81B60</color>
 
     <color name="glidePlaceholderColor">#EFEFEF</color>
+    <color name="textContentColor">#000000</color>
 </resources>

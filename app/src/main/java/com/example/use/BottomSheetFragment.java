@@ -66,23 +66,17 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
         ButterKnife.bind(this, contentView);
         CoordinatorLayout.LayoutParams layoutParams = ((CoordinatorLayout.LayoutParams) ((View) contentView.getParent()).getLayoutParams());
         CoordinatorLayout.Behavior behavior = layoutParams.getBehavior();
-        if (behavior != null && behavior instanceof BottomSheetBehavior) {
-            ((BottomSheetBehavior) behavior).setExpandedOffset(getResources().getDimensionPixelSize(R.dimen.bottomSheetExpandOffset));
+        if (behavior != null && behavior instanceof BottomSheetBehavior)
+        {
+
         }
     }
 
     @OnClick(R.id.btnLogin)
     public void onLoginButtonClick()
     {
-        Toast.makeText(getContext(), "Руддщ", Toast.LENGTH_SHORT);
         NetworkService networkService = NetworkService.getInstance(this);
         networkService.login(etLogin.getText().toString(), etPassword.getText().toString());
-    }
-
-    @OnClick(R.id.etLogin)
-    public void awdaw()
-    {
-        Log.i("awd","wad");
     }
 
     @Override
@@ -102,7 +96,12 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
     @Override
     public void onDisconnected()
     {
-
+        Snackbar snackbar = Snackbar.make(
+                contentView,
+                "Disconnected",
+                Snackbar.LENGTH_INDEFINITE);
+        snackbar.getView().setTranslationZ(130);
+        snackbar.show();
     }
 
     @Override

@@ -188,7 +188,7 @@ public class DbService
                     @Override public void onFailure(Throwable t) { }
                     @Override public void onError(String error) { }
                     @Override public void onDisconnected() { }
-                }).getSubjects(update.getRowId(), true);
+                }).getSubjects(update.getRowId());
             }
 
             public void delete(Update update, DbRequestListener listener)
@@ -260,7 +260,7 @@ public class DbService
                     @Override public void onFailure(Throwable t) { }
                     @Override public void onError(String error) { }
                     @Override public void onDisconnected() { }
-                }).getTopics(update.getRowId(), null, true);
+                }).getTopics(update.getRowId(), null);
             }
 
             public void delete(Update update, DbRequestListener listener)

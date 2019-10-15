@@ -81,7 +81,7 @@ public class DirectoryFragment extends BaseFragment implements DirectoryAdapter.
         recyclerView.setAdapter(directoryAdapter);
 
         NetworkService networkService = NetworkService.getInstance(this);
-        networkService.getDirectories(null, subjectId, null);
+        networkService.getDirectories(null, subjectId, null, true);
     }
 
     @Override
@@ -100,6 +100,7 @@ public class DirectoryFragment extends BaseFragment implements DirectoryAdapter.
     @Override
     public void onResponse(BaseResponse response)
     {
+        super.onResponse(response);
         DirectoryResponse directoryResponse = ((DirectoryResponse)response);
         directories.clear();
         directories.addAll(directoryResponse.getData());

@@ -3,17 +3,9 @@ package com.example.use;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.Button;
-
-import com.example.use.Networking.Directory;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements SubjectMenuFragme
         {
             SubjectMenuFragment subjectMenuFragment = SubjectMenuFragment.newInstance(subjectId);
             fragmentManager.beginTransaction()
+                    .setCustomAnimations(R.animator.fragment_transition_slide_in,
+                            android.R.animator.fade_out)
                     .replace(R.id.fragmentContainer, subjectMenuFragment, "subjectMenuFragment")
                     .addToBackStack(null)
                     .commit();
@@ -71,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements SubjectMenuFragme
         {
             DirectoryFragment directoryFragment = DirectoryFragment.newInstance(subjectId);
             fragmentManager.beginTransaction()
+                    .setCustomAnimations(R.animator.fragment_transition_slide_in,
+                            android.R.animator.fade_out)
                     .replace(R.id.fragmentContainer, directoryFragment, "directoryFragment")
                     .addToBackStack(null)
                     .commit();
@@ -85,6 +81,8 @@ public class MainActivity extends AppCompatActivity implements SubjectMenuFragme
         {
             TopicsListFragment topicsListFragment = TopicsListFragment.newInstance(subjectId);
             fragmentManager.beginTransaction()
+                    .setCustomAnimations(R.animator.fragment_transition_slide_in,
+                            android.R.animator.fade_out)
                     .replace(R.id.fragmentContainer, topicsListFragment, "topicsListFragment")
                     .addToBackStack(null)
                     .commit();
@@ -99,6 +97,8 @@ public class MainActivity extends AppCompatActivity implements SubjectMenuFragme
         {
             ExercisesListFragment exercisesListFragment = ExercisesListFragment.newInstance(topicId, number);
             fragmentManager.beginTransaction()
+                    .setCustomAnimations(R.animator.fragment_transition_slide_in,
+                            android.R.animator.fade_out)
                     .replace(R.id.fragmentContainer, exercisesListFragment, "exercisesListFragment")
                     .addToBackStack(null)
                     .commit();

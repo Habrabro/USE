@@ -96,7 +96,7 @@ public class SubjectsListFragment extends BaseFragment implements SubjectsListAd
     @Override
     public void onResponse(BaseResponse response)
     {
-
+        super.onResponse(response);
     }
 
     @Override

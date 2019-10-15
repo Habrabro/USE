@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout android:id="@+id/llDirectoryItem"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="15dp">
@@ -10,11 +11,4 @@
         android:textSize="19sp"
         android:textStyle="bold"
         android:textColor="@android:color/black"/>
-
-    <TextView android:id="@+id/tvFragmentDirectoryContent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="7dp"
-        android:textColor="@android:color/black"
-        android:textSize="19sp"/>
 </LinearLayout>

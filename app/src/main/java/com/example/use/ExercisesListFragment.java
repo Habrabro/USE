@@ -36,8 +36,6 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
 
     private List<Exercise> exercises;
 
-    private Snackbar snackbar;
-
     public ExercisesListFragment()
     {
 
@@ -78,7 +76,6 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
         super.onViewCreated(view, savedInstanceState);
 
         exercises = new ArrayList<>();
-        snackbar = Snackbar.make(getView(), "Loading", Snackbar.LENGTH_INDEFINITE);
 
         RecyclerView recyclerView = view.findViewById(R.id.rvExercisesList);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
@@ -103,7 +100,6 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
                     networkService.getExercises(
                             null, topicId, page * itemsPerLoad + "," + itemsPerLoad, true);
                     exercisesListAdapter.setDataIsLoading(true);
-                    snackbar.show();
                 }
             }
         });
@@ -125,6 +121,7 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
     @Override
     public void onResponse(BaseResponse response)
     {
+        super.onResponse(response);
         if (!exercisesListAdapter.isDataIsLoading())
         {
             exercises.clear();
@@ -134,7 +131,6 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
             page++;
             exercisesListAdapter.setDataIsLoading(false);
         }
-        if (snackbar != null) { snackbar.dismiss(); }
         ExerciseResponse exerciseResponse = (ExerciseResponse)response;
         if (exerciseResponse.getData().size() == 0)
         {

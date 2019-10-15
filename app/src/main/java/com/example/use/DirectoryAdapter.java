@@ -1,6 +1,7 @@
 package com.example.use;
 
 import android.graphics.drawable.ColorDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,15 +17,20 @@ import com.example.use.Networking.Directory;
 import com.example.use.Networking.Exercise;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static java.util.regex.Pattern.compile;
 
 public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.ViewHolder>
 {
     private LayoutInflater inflater;
     private List<Directory> directories;
     private DirectoryAdapter.Listener listener;
+    private View view;
     private long subjectId;
     private boolean dataIsLoading = true;
     private boolean allDataLoaded = false;
@@ -62,7 +68,7 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
     public DirectoryAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
         inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.fragment_directory_item, parent, false);
+        view = inflater.inflate(R.layout.fragment_directory_item, parent, false);
         return new DirectoryAdapter.ViewHolder(view);
     }
 
@@ -71,7 +77,8 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
     {
         Directory directory = directories.get(position);
         holder.fragmentDirectoryTitle.setText(directory.getTitle());
-        holder.fragmentDirectoryContent.setText(directory.getContent());
+        DirectoryParser directoryParser = new DirectoryParser(view);
+        directoryParser.parseContent(directory.getContent());
     }
 
     @Override
@@ -89,8 +96,6 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
     {
         @BindView(R.id.tvFragmentDirectoryTitle)
         TextView fragmentDirectoryTitle;
-        @BindView(R.id.tvFragmentDirectoryContent)
-        TextView fragmentDirectoryContent;
 
         ViewHolder(View view)
         {

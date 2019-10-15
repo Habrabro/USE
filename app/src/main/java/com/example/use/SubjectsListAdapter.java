@@ -59,7 +59,7 @@ public class SubjectsListAdapter extends RecyclerView.Adapter<SubjectsListAdapte
                         App.getInstance().getResources().getColor(R.color.glidePlaceholderColor)))
                 .error(R.drawable.ic_broken_image)
                 .fallback(R.drawable.ic_broken_image)
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .into(holder.subjectIconView);
     }
 

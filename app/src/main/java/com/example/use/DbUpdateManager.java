@@ -10,6 +10,7 @@ import com.example.use.Networking.UpdatesResponse;
 import com.example.use.database.Db;
 import com.example.use.database.DbRequestListener;
 import com.example.use.database.DbService;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.text.DateFormat;
 import java.text.Format;
@@ -54,10 +55,19 @@ public class DbUpdateManager
                         @Override
                         public void onRequestCompleted(Long result)
                         {
+                            if (result == updates.get(0).getId())
+                            {
+                                BaseFragment.snackbar = Snackbar.make(
+                                        App.getInstance().getCurrentFragment().getActivity().findViewById(R.id.fragmentContainer),
+                                        "Loading",
+                                        Snackbar.LENGTH_INDEFINITE);
+                                BaseFragment.snackbar.show();
+                            }
                             if (result == updates.get(updates.size() - 1).getId())
                             {
                                 DbService.getInstance().setLastUpdate(new Date());
                                 listener.onRequestCompleted(null);
+                                BaseFragment.snackbar.dismiss();
                             }
                         }
                     };

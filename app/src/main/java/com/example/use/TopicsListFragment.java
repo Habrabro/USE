@@ -113,7 +113,7 @@ public class TopicsListFragment extends BaseFragment implements TopicsListAdapte
     @Override
     public void onResponse(BaseResponse response)
     {
-
+        super.onResponse(response);
     }
 
     @Override

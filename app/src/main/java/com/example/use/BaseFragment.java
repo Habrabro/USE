@@ -16,11 +16,12 @@ import java.util.List;
 
 public class BaseFragment extends Fragment implements IResponseReceivable
 {
+    public static Snackbar snackbar;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -33,7 +34,7 @@ public class BaseFragment extends Fragment implements IResponseReceivable
     @Override
     public void onResponse(BaseResponse response)
     {
-//
+        if (snackbar != null) { snackbar.dismiss(); }
     }
 
     @Override
@@ -45,10 +46,10 @@ public class BaseFragment extends Fragment implements IResponseReceivable
     @Override
     public void onDisconnected()
     {
-        Snackbar snackbar = Snackbar.make(
-                this.getView(),
+        snackbar = Snackbar.make(
+                this.getActivity().findViewById(R.id.fragmentContainer),
                 "Disconnected",
-                Snackbar.LENGTH_SHORT);
+                Snackbar.LENGTH_INDEFINITE);
         snackbar.getView().setTranslationZ(130);
         snackbar.show();
     }
