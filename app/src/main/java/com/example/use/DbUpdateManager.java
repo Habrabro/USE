@@ -40,13 +40,13 @@ public class DbUpdateManager
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH-mm-ss");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         timeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String dateTime = dateFormat.format(lastUpdate) + " " +
+                timeFormat.format(lastUpdate);
         NetworkService.getInstance(new IResponseReceivable()
         {
             @Override
             public void onResponse(BaseResponse response)
             {
-                String dateTime = dateFormat.format(lastUpdate) + " " +
-                        timeFormat.format(lastUpdate);
                 List<Update> updates = ((UpdatesResponse)response).getData();
                 for (Update update : updates)
                 {
@@ -55,19 +55,18 @@ public class DbUpdateManager
                         @Override
                         public void onRequestCompleted(Long result)
                         {
+                            Long result2 = result;
                             if (result == updates.get(0).getId())
                             {
-                                BaseFragment.snackbar = Snackbar.make(
-                                        App.getInstance().getCurrentFragment().getActivity().findViewById(R.id.fragmentContainer),
-                                        "Loading",
-                                        Snackbar.LENGTH_INDEFINITE);
-                                BaseFragment.snackbar.show();
+                                App.getInstance().getCurrentFragment().setSnackbar(
+                                        NetworkService.getInstance(null).getLoadingSnackbar());
+                                App.getInstance().getCurrentFragment().getSnackbar().show();
                             }
-                            if (result == updates.get(updates.size() - 1).getId())
+                            if (result == updates.get(updates.size() - 1).getId() || updates.size() == 0)
                             {
                                 DbService.getInstance().setLastUpdate(new Date());
                                 listener.onRequestCompleted(null);
-                                BaseFragment.snackbar.dismiss();
+                                App.getInstance().getCurrentFragment().getSnackbar().dismiss();
                             }
                         }
                     };

@@ -14,10 +14,10 @@ import com.example.use.database.DbService;
 
 import java.util.GregorianCalendar;
 
-public class App extends Application implements IResponseReceivable
+public class App extends Application
 {
     private static App instance;
-    private Fragment currentFragment;
+    private BaseFragment currentFragment;
     private User user;
 
     @Override
@@ -28,12 +28,12 @@ public class App extends Application implements IResponseReceivable
         DbService.getInstance().getUser(result -> user = result);
     }
 
-    public void setCurrentFragment(Fragment fragment)
+    public void setCurrentFragment(BaseFragment fragment)
     {
         currentFragment = fragment;
     }
 
-    public Fragment getCurrentFragment()
+    public BaseFragment getCurrentFragment()
     {
         return currentFragment;
     }
@@ -41,21 +41,4 @@ public class App extends Application implements IResponseReceivable
     public User getUser() { return user; }
 
     public static App getInstance() { return instance; }
-
-    @Override public void onDisconnected()
-    {
-        if (currentFragment instanceof IResponseReceivable)
-        {
-            ((IResponseReceivable)currentFragment).onDisconnected();
-        }
-    }
-    @Override public void onResponse(BaseResponse response)
-    {
-        if (currentFragment instanceof IResponseReceivable)
-        {
-            ((IResponseReceivable)currentFragment).onResponse(null);
-        }
-    }
-    @Override public void onFailure(Throwable t) { }
-    @Override public void onError(String error) { }
 }

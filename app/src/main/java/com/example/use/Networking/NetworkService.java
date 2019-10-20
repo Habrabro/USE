@@ -30,6 +30,13 @@ public class NetworkService
     private Retrofit retrofit;
     private ServerAPI serverAPI;
 
+    public Snackbar getLoadingSnackbar()
+    {
+        return loadingSnackbar;
+    }
+
+    private Snackbar loadingSnackbar;
+
     private NetworkService()
     {
         retrofit = new Retrofit.Builder()
@@ -37,6 +44,10 @@ public class NetworkService
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         serverAPI = retrofit.create(ServerAPI.class);
+        loadingSnackbar = Snackbar.make(
+                App.getInstance().getCurrentFragment().getActivity().findViewById(R.id.fragmentContainer),
+                "Loading",
+                Snackbar.LENGTH_INDEFINITE);
     }
 
     public static NetworkService getInstance(IResponseReceivable _listener)
@@ -81,11 +92,8 @@ public class NetworkService
                     .enqueue(new BaseCallback<ExerciseResponse>(listener));
             if (showLoadingSnackbar)
             {
-                BaseFragment.snackbar = Snackbar.make(
-                        App.getInstance().getCurrentFragment().getActivity().findViewById(R.id.fragmentContainer),
-                        "Loading",
-                        Snackbar.LENGTH_INDEFINITE);
-                BaseFragment.snackbar.show();
+                App.getInstance().getCurrentFragment().setSnackbar(loadingSnackbar);
+                App.getInstance().getCurrentFragment().getSnackbar().show();
             }
         }
 
@@ -100,11 +108,8 @@ public class NetworkService
                     .enqueue(new BaseCallback<DirectoryResponse>(listener));
             if (showLoadingSnackbar)
             {
-                BaseFragment.snackbar = Snackbar.make(
-                        App.getInstance().getCurrentFragment().getActivity().findViewById(R.id.fragmentContainer),
-                        "Loading",
-                        Snackbar.LENGTH_INDEFINITE);
-                BaseFragment.snackbar.show();
+                App.getInstance().getCurrentFragment().setSnackbar(loadingSnackbar);
+                App.getInstance().getCurrentFragment().getSnackbar().show();
             }
         }
     }
@@ -126,11 +131,6 @@ public class NetworkService
             serverAPI
                     .getUpdates(afterDate, afterTime)
                     .enqueue(new BaseCallback<UpdatesResponse>(listener));
-            App.getInstance().onResponse(null);
-        }
-        else
-        {
-            App.getInstance().onDisconnected();
         }
     }
 
@@ -149,9 +149,16 @@ public class NetworkService
         ConnectivityManager cm = (ConnectivityManager) App.getInstance()
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         boolean isNetworkConnected = cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
-        if (!isNetworkConnected)
+        if (isNetworkConnected)
         {
-            listener.onDisconnected();
+            if (App.getInstance().getCurrentFragment().getSnackbar() != null)
+            {
+                App.getInstance().getCurrentFragment().getSnackbar().dismiss();
+            }
+        }
+        else
+        {
+            ((IResponseReceivable)App.getInstance().getCurrentFragment()).onDisconnected();
         }
         return isNetworkConnected;
     }
