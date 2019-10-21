@@ -124,6 +124,26 @@ public class NetworkService
         }
     }
 
+    public void logout()
+    {
+        if (isNetworkConnected())
+        {
+            serverAPI
+                    .logout()
+                    .enqueue(new BaseCallback<UserResponse>(listener));
+        }
+    }
+
+    public void register(String login, String password, String email)
+    {
+        if (isNetworkConnected())
+        {
+            serverAPI
+                    .register(login, password, email)
+                    .enqueue(new BaseCallback<UserResponse>(listener));
+        }
+    }
+
     public void getUpdates(String afterDate, String afterTime)
     {
         if (isNetworkConnected())
@@ -159,6 +179,7 @@ public class NetworkService
         else
         {
             ((IResponseReceivable)App.getInstance().getCurrentFragment()).onDisconnected();
+            listener.onDisconnected();
         }
         return isNetworkConnected;
     }
@@ -167,19 +188,33 @@ public class NetworkService
     {
         @GET("getSubjects.php")
         Call<SubjectsResponse> getSubjects(@Query("id") Long id);
+
         @GET("getTopics.php")
         Call<TopicResponse> getTopics(@Query("id") Long id, @Query("subjectId") Long subjectId);
+
         @GET("getExercises.php")
-        Call<ExerciseResponse> getExercises(@Query("id") Long id,
-                                            @Query("topicId") Long topicId,
-                                            @Query("limit") String limit);
+        Call<ExerciseResponse> getExercises(
+                @Query("id") Long id,
+                @Query("topicId") Long topicId,
+                @Query("limit") String limit);
+
         @GET("getDirectoryTopics.php")
-        Call<DirectoryResponse> getDirectories(@Query("id") Long id,
-                                               @Query("subjectId") Long subjectId,
-                                               @Query("limit") String limit);
+        Call<DirectoryResponse> getDirectories(
+                @Query("id") Long id,
+                @Query("subjectId") Long subjectId,
+                @Query("limit") String limit);
 
         @GET("login.php")
         Call<UserResponse> login(@Query("login") String login, @Query("password") String password);
+
+        @GET("logout.php")
+        Call<UserResponse> logout();
+
+        @GET("register.php")
+        Call<UserResponse> register(
+                @Query("login") String login,
+                @Query("password") String password,
+                @Query("email") String email);
 
         @GET("getUpdates.php")
         Call<UpdatesResponse> getUpdates(

@@ -5,7 +5,9 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
+import com.example.use.Networking.NetworkService;
 import com.example.use.database.DateConverter;
+import com.example.use.database.DbService;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -17,15 +19,25 @@ public class User
     @PrimaryKey(autoGenerate = true)
     public long id;
     private Date lastUpdate;
+    private Long sessionId = null;
 
-    @Ignore
-    private long sessionId;
-    @Ignore
     private boolean isAuthorized = false;
 
     public long getId() { return id; }
     public Date getLastUpdate() { return  lastUpdate; }
+    public Long getSessionId()
+    {
+        return sessionId;
+    }
+    public void setSessionId(Long sessionId)
+    {
+        this.sessionId = sessionId;
+    }
     public boolean isAuthorized() { return isAuthorized; }
+    public void setAuthorized(boolean authorized)
+    {
+        isAuthorized = authorized;
+    }
 
     public void setLastUpdate(Date lastUpdate) { this.lastUpdate = lastUpdate; }
 
@@ -34,9 +46,17 @@ public class User
         this.lastUpdate = lastUpdate;
     }
 
-    public void authorize(long id)
+    public void authorize(Long id)
     {
         this.sessionId = id;
         isAuthorized = true;
+        DbService.getInstance().insertOrUpdateUser(this);
+    }
+
+    public void logout()
+    {
+        sessionId = null;
+        isAuthorized = false;
+        DbService.getInstance().insertOrUpdateUser(this);
     }
 }

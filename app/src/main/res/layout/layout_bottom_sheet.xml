@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:id="@+id/bottomSheet"
+<LinearLayout android:id="@+id/bottomSheetSignIn"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
@@ -46,7 +46,7 @@
                 style="@style/bottomSheetSmallText"
                 android:text="Забыли пароль?"/>
 
-            <TextView
+            <TextView android:id="@+id/tvGoToRegistration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"

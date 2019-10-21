@@ -70,6 +70,28 @@ public class DbService
         dbUpdateManager.updateDb(lastUpdate, listener);
     }
 
+    public void insertOrUpdateUser(User user)
+    {
+        new AsyncTask<Void, Void, Void>()
+        {
+            @Override
+            protected Void doInBackground(Void... voids)
+            {
+                UserDao userDao = database.userDao();
+                User currentUser = userDao.getUserById(user.getId());
+                if (currentUser == null)
+                {
+                    userDao.insert(user);
+                }
+                else
+                {
+                    userDao.update(user);
+                }
+                return null;
+            }
+        }.execute();
+    }
+
     public void getUser(DbRequestListener<User> listener)
     {
         new AsyncTask<Void, Void, User>()
