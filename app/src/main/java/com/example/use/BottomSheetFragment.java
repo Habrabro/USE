@@ -25,6 +25,8 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,6 +42,44 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
     SignIn signIn;
     Registration registration;
     Profile profile;
+
+    IResponseReceivable loginResponseHandler = new IResponseReceivable()
+    {
+        @Override
+        public void onResponse(BaseResponse response)
+        {
+            UserResponse user = (UserResponse)response;
+            App.getInstance().getUser().authorize(user.getSessionId());
+            reset();
+        }
+
+        @Override
+        public void onDisconnected()
+        {
+            BottomSheetFragment.this.onDisconnected();
+        }
+
+        @Override
+        public void onFailure(Throwable t)
+        {
+
+        }
+
+        @Override
+        public void onError(String error)
+        {
+            switch (error)
+            {
+                case "401":
+                    Snackbar snackbar = Snackbar.make(
+                            contentView,
+                            "Incorrect login/password",
+                            Snackbar.LENGTH_SHORT);
+                    snackbar.getView().setTranslationZ(30);
+                    snackbar.show();
+            }
+        }
+    };
 
     class SignIn
     {
@@ -77,50 +117,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
         @OnClick(R.id.btnLogin)
         public void onLoginButtonClick()
         {
-            NetworkService networkService = NetworkService.getInstance(new IResponseReceivable()
-            {
-                @Override
-                public void onResponse(BaseResponse response)
-                {
-                    UserResponse user = (UserResponse)response;
-                    App.getInstance().getUser().authorize(user.getSessionId());
-
-                    Snackbar snackbar = Snackbar.make(
-                            contentView,
-                            "Authorized",
-                            Snackbar.LENGTH_SHORT);
-                    snackbar.getView().setTranslationZ(30);
-                    snackbar.show();
-                    reset();
-                }
-
-                @Override
-                public void onDisconnected()
-                {
-                    BottomSheetFragment.this.onDisconnected();
-                }
-
-                @Override
-                public void onFailure(Throwable t)
-                {
-
-                }
-
-                @Override
-                public void onError(String error)
-                {
-                    switch (error)
-                    {
-                        case "401":
-                            Snackbar snackbar = Snackbar.make(
-                                    contentView,
-                                    "Incorrect login/password",
-                                    Snackbar.LENGTH_SHORT);
-                            snackbar.getView().setTranslationZ(30);
-                            snackbar.show();
-                    }
-                }
-            });
+            NetworkService networkService = NetworkService.getInstance(loginResponseHandler);
             networkService.login(etLogin.getText().toString(), etPassword.getText().toString());
         }
     }
@@ -148,6 +145,11 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
 
         View registrationLayout;
 
+        LinearLayout.LayoutParams hiddenLayoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, 0);
+        LinearLayout.LayoutParams shownLayoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
         public Registration()
         {
             registrationLayout = View.inflate(getContext(), R.layout.layout_bottom_sheet_register, null);
@@ -165,15 +167,13 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
         @OnClick(R.id.btnRegister)
         public void onBtnRegisterClick()
         {
+            boolean validated = true;
             login = etLogin.getText().toString();
             password = etPassword.getText().toString();
             repeatPassword = etRepeatPassword.getText().toString();
             email = etEmail.getText().toString();
 
-            LinearLayout.LayoutParams hiddenLayoutParams = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT, 0);
-            LinearLayout.LayoutParams shownLayoutParams = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            tvEmptyFieldsError.setLayoutParams(hiddenLayoutParams);
             tvLoginError.setLayoutParams(hiddenLayoutParams);
             tvPasswordError.setLayoutParams(hiddenLayoutParams);
             tvPasswordComparisonError.setLayoutParams(hiddenLayoutParams);
@@ -188,12 +188,14 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
                     Map<String, String> errorData = userResponse.getData();
                     if (errorData.size() == 0)
                     {
-                        Toast.makeText(getContext(), "wadawd", Toast.LENGTH_SHORT);
+                        NetworkService networkService = NetworkService.getInstance(loginResponseHandler);
+                        networkService.login(login, password);
                     }
                     else
                     {
                         if (errorData.get("login") != null)
                         {
+                            tvLoginError.setText("Login is exists");
                             tvLoginError.setLayoutParams(shownLayoutParams);
                         }
                     }
@@ -211,20 +213,35 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
                 }
             });
 
-            if (!login.isEmpty() && !password.isEmpty() && !email.isEmpty())
-            {
-                if (password.equals(repeatPassword))
-                {
-                    networkService.register(login, password, email);
-                }
-                else
-                {
-                    tvPasswordComparisonError.setLayoutParams(shownLayoutParams);
-                }
-            }
-            else
+            if (login.isEmpty() || password.isEmpty() || email.isEmpty())
             {
                 tvEmptyFieldsError.setLayoutParams(shownLayoutParams);
+                validated = false;
+            }
+            Pattern loginMatchPattern = Pattern.compile("[^a-zA-Z0-9_\\-]");
+            Matcher loginMatcher = loginMatchPattern.matcher(login);
+            if (loginMatcher.find())
+            {
+                tvLoginError.setText("Login is invalid");
+                tvLoginError.setLayoutParams(shownLayoutParams);
+                validated = false;
+            }
+            if (!password.equals(repeatPassword))
+            {
+                tvPasswordComparisonError.setLayoutParams(shownLayoutParams);
+                validated = false;
+            }
+            String regex = "[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$";
+            Pattern emailMatchPattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+            Matcher emailMatcher = emailMatchPattern.matcher(email);
+            if (!emailMatcher.find())
+            {
+                tvEmailError.setLayoutParams(shownLayoutParams);
+                validated = false;
+            }
+            if (validated)
+            {
+                networkService.register(login, password, email);
             }
         }
     }
