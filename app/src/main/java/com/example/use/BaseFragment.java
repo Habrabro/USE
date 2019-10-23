@@ -52,10 +52,7 @@ public class BaseFragment extends Fragment implements IResponseReceivable
     @Override
     public void onResponse(BaseResponse response)
     {
-        if (snackbar != null)
-        {
-            snackbar.dismiss();
-        }
+        onLoaded();
     }
 
     @Override
@@ -83,5 +80,23 @@ public class BaseFragment extends Fragment implements IResponseReceivable
             snackbar.dismiss();
         }
         Log.i("networking", "Error " + error);
+    }
+
+    public void onLoad()
+    {
+        snackbar = Snackbar.make(
+                this.getActivity().findViewById(R.id.fragmentContainer),
+                "Loading",
+                Snackbar.LENGTH_INDEFINITE);
+        snackbar.getView().setTranslationZ(130);
+        snackbar.show();
+    }
+
+    public void onLoaded()
+    {
+        if (snackbar != null)
+        {
+            snackbar.dismiss();
+        }
     }
 }

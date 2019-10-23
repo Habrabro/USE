@@ -25,7 +25,7 @@ public class App extends Application
     {
         super.onCreate();
         instance = this;
-        DbService.getInstance().getUser(result -> user = result);
+        DbService.getInstance().getUser(result -> {user = result;});
     }
 
     public void setCurrentFragment(BaseFragment fragment)

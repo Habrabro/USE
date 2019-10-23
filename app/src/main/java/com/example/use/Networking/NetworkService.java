@@ -2,18 +2,12 @@ package com.example.use.Networking;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
-import android.util.Log;
-import android.widget.FrameLayout;
-
-import androidx.fragment.app.Fragment;
 
 import com.example.use.App;
-import com.example.use.BaseFragment;
 import com.example.use.R;
 import com.google.android.material.snackbar.Snackbar;
 
 import retrofit2.Call;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
@@ -82,7 +76,7 @@ public class NetworkService
         }
     }
 
-    public void getExercises(Long id, Long topicId, String limit, boolean showLoadingSnackbar)
+    public void getExercises(Long id, Long topicId, String limit, boolean showLoader)
     {
         if (isNetworkConnected())
         {
@@ -90,7 +84,7 @@ public class NetworkService
             serverAPI
                     .getExercises(id, topicId, limit)
                     .enqueue(new BaseCallback<ExerciseResponse>(listener));
-            if (showLoadingSnackbar)
+            if (showLoader)
             {
                 App.getInstance().getCurrentFragment().setSnackbar(loadingSnackbar);
                 App.getInstance().getCurrentFragment().getSnackbar().show();
@@ -107,6 +101,51 @@ public class NetworkService
                     .getDirectories(id, subjectId, limit)
                     .enqueue(new BaseCallback<DirectoryResponse>(listener));
             if (showLoadingSnackbar)
+            {
+                App.getInstance().getCurrentFragment().setSnackbar(loadingSnackbar);
+                App.getInstance().getCurrentFragment().getSnackbar().show();
+            }
+        }
+    }
+
+    public void getFavoriteExercises(long userId, String limit, boolean showLoader)
+    {
+        if (isNetworkConnected())
+        {
+            serverAPI
+                    .getFavoriteExercises(userId, limit)
+                    .enqueue(new BaseCallback<ExerciseResponse>(listener));
+            if (showLoader)
+            {
+                App.getInstance().getCurrentFragment().setSnackbar(loadingSnackbar);
+                App.getInstance().getCurrentFragment().getSnackbar().show();
+            }
+        }
+    }
+
+    public void getCompletedExercises(long userId, String limit, boolean showLoader)
+    {
+        if (isNetworkConnected())
+        {
+            serverAPI
+                    .getCompletedExercises(userId, limit)
+                    .enqueue(new BaseCallback<ExerciseResponse>(listener));
+            if (showLoader)
+            {
+                App.getInstance().getCurrentFragment().setSnackbar(loadingSnackbar);
+                App.getInstance().getCurrentFragment().getSnackbar().show();
+            }
+        }
+    }
+
+    public void getRandomExercise(long userId, long topicId, boolean showLoader)
+    {
+        if (isNetworkConnected())
+        {
+            serverAPI
+                    .getRandomExercise(userId, topicId)
+                    .enqueue(new BaseCallback<ExerciseResponse>(listener));
+            if (showLoader)
             {
                 App.getInstance().getCurrentFragment().setSnackbar(loadingSnackbar);
                 App.getInstance().getCurrentFragment().getSnackbar().show();
@@ -203,6 +242,19 @@ public class NetworkService
                 @Query("id") Long id,
                 @Query("subjectId") Long subjectId,
                 @Query("limit") String limit);
+
+        @GET("getFavoriteExercises.php")
+        Call<ExerciseResponse> getFavoriteExercises(
+                @Query("userId") long userId, @Query("limit") String limit);
+
+        @GET("getCompleted.php")
+        Call<ExerciseResponse> getCompletedExercises(
+                @Query("userId") long userId, @Query("limit") String limit);
+
+        @GET("getRandomExercise.php")
+        Call<ExerciseResponse> getRandomExercise(
+                @Query("userId") long userId,
+                @Query("topicId") long topicId);
 
         @GET("login.php")
         Call<UserResponse> login(@Query("login") String login, @Query("password") String password);

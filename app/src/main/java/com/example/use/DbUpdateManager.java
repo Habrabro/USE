@@ -66,7 +66,7 @@ public class DbUpdateManager
                             {
                                 DbService.getInstance().setLastUpdate(new Date());
                                 listener.onRequestCompleted(null);
-                                App.getInstance().getCurrentFragment().getSnackbar().dismiss();
+                                App.getInstance().getCurrentFragment().onLoaded();
                             }
                         }
                     };

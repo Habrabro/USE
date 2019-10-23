@@ -13,6 +13,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.use.Networking.Exercise;
+import com.example.use.Networking.Topic;
+import com.example.use.database.DbRequestListener;
+import com.example.use.database.DbService;
 
 import java.util.List;
 
@@ -24,9 +27,9 @@ public class ExercisesListAdapter extends RecyclerView.Adapter<ExercisesListAdap
     private LayoutInflater inflater;
     private List<Exercise> exercises;
     private Listener listener;
-    private long topicId;
     private boolean dataIsLoading = true;
     private boolean allDataLoaded = false;
+    private long number;
 
     public boolean isDataIsLoading()
     {
@@ -48,10 +51,9 @@ public class ExercisesListAdapter extends RecyclerView.Adapter<ExercisesListAdap
         this.allDataLoaded = allDataLoaded;
     }
 
-    ExercisesListAdapter(Listener listener, List<Exercise> exercises, long topicId)
+    ExercisesListAdapter(Listener listener, List<Exercise> exercises)
     {
         this.exercises = exercises;
-        this.topicId = topicId;
         if (listener instanceof Listener)
         {
             this.listener = listener;
@@ -69,7 +71,7 @@ public class ExercisesListAdapter extends RecyclerView.Adapter<ExercisesListAdap
     public void onBindViewHolder(ExercisesListAdapter.ViewHolder holder, int position)
     {
         Exercise exercise = exercises.get(position);
-        holder.idView.setText(topicId + "." + Long.toString(exercise.getId()));
+        holder.idView.setText(Long.toString(exercise.getId()));
         holder.descriptionView.setText(exercise.getDescription());
         Glide
                 .with(App.getInstance())

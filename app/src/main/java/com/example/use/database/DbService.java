@@ -161,6 +161,27 @@ public class DbService
         }.execute();
     }
 
+    public void getTopic(long topicId, DbRequestListener listener)
+    {
+        new AsyncTask<Void, Void, Topic>()
+        {
+            @Override
+            protected Topic doInBackground(Void... voids)
+            {
+                TopicDao topicDao = DbService.getInstance().getDatabase().topicDao();
+                Topic _topic = topicDao.getTopic(topicId);
+                return _topic;
+            }
+
+            @Override
+            protected void onPostExecute(Topic _topic)
+            {
+                super.onPostExecute(_topic);
+                listener.onRequestCompleted(_topic);
+            }
+        }.execute();
+    }
+
     HashMap<String, IDbOperationable> tableOperationsMapInit()
     {
         HashMap<String, IDbOperationable> tableOperationsMap = new HashMap<>();

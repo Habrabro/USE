@@ -87,6 +87,13 @@ public class SubjectMenuFragment extends BaseFragment
         mListener.onDirectoryFragmentDisplay(subjectId);
     }
 
+    @OnClick(R.id.btnStartTraining)
+    public void onStartTrainingViewClick()
+    {
+        ((MainActivity)getActivity()).replaceFragment(
+                VariantFragment.newInstance(subjectId), "variantFragment");
+    }
+
     @OnClick(R.id.btnTopicsList)
     public void onTopicsListViewClick()
     {

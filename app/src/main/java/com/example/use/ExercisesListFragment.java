@@ -23,17 +23,28 @@ import java.util.List;
 
 public class ExercisesListFragment extends BaseFragment implements ExercisesListAdapter.Listener
 {
-    private final static String PARAM_1 = "param_1";
-    private final static String PARAM_2 = "param_2";
+    public int getItemsPerLoad()
+    {
+        return itemsPerLoad;
+    }
 
     private final int itemsPerLoad = 30;
-    private int page = 0;
 
-    private long topicId, number;
+    public int getPage()
+    {
+        return page;
+    }
 
-    private Listener mListener;
+    private int page;
+
     private ExercisesListAdapter exercisesListAdapter;
 
+    public void setRequest(IRequestSendable request)
+    {
+        this.request = request;
+    }
+
+    private IRequestSendable request;
     private List<Exercise> exercises;
 
     public ExercisesListFragment()
@@ -41,13 +52,10 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
 
     }
 
-    public static ExercisesListFragment newInstance(long topicId, long number)
+    public static ExercisesListFragment newInstance(IRequestSendable request)
     {
-        Bundle bundle = new Bundle();
-        bundle.putLong(PARAM_1, topicId);
-        bundle.putLong(PARAM_2, number);
         ExercisesListFragment fragment = new ExercisesListFragment();
-        fragment.setArguments(bundle);
+        fragment.setRequest(request);
         return fragment;
     }
 
@@ -55,11 +63,6 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null)
-        {
-            topicId = getArguments().getLong(PARAM_1);
-            number = getArguments().getLong(PARAM_2);
-        }
     }
 
     @Override
@@ -76,15 +79,15 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
         super.onViewCreated(view, savedInstanceState);
 
         exercises = new ArrayList<>();
+        page = 0;
 
         RecyclerView recyclerView = view.findViewById(R.id.rvExercisesList);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-        exercisesListAdapter = new ExercisesListAdapter(this, exercises, number);
+        exercisesListAdapter = new ExercisesListAdapter(this, exercises);
         recyclerView.setAdapter(exercisesListAdapter);
 
-        NetworkService networkService = NetworkService.getInstance(this);
-        networkService.getExercises(null, topicId, page + "," + itemsPerLoad, true);
+        request.send(this);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
         {
@@ -97,8 +100,7 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
                         && !exercisesListAdapter.isDataIsLoading()
                         && !exercisesListAdapter.isAllDataLoaded())
                 {
-                    networkService.getExercises(
-                            null, topicId, page * itemsPerLoad + "," + itemsPerLoad, true);
+                    request.send(ExercisesListFragment.this);
                     exercisesListAdapter.setDataIsLoading(true);
                 }
             }
@@ -115,7 +117,6 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
     public void onDetach()
     {
         super.onDetach();
-        mListener = null;
     }
 
     @Override
@@ -144,10 +145,5 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
     public void OnViewHolderClick(int position)
     {
 
-    }
-
-    public interface Listener
-    {
-        void onFragmentInteraction();
     }
 }

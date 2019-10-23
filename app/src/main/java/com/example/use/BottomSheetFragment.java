@@ -250,6 +250,12 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
     {
         @BindView(R.id.btnLogout)
         Button logoutButton;
+        @BindView(R.id.llFavoriteExercises)
+        LinearLayout favoriteExercises;
+        @BindView(R.id.llCompletedExercises)
+        LinearLayout completedExercises;
+        @BindView(R.id.llSavedVariants)
+        LinearLayout savedVariants;
 
         public View getProfileLayout()
         {
@@ -264,6 +270,46 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
             ButterKnife.bind(this, profileLayout);
         }
 
+        @OnClick(R.id.llFavoriteExercises)
+        public void onFavoriteExercisesClick()
+        {
+            ((MainActivity)getActivity()).replaceFragment(
+                    ExercisesListFragment.newInstance(listener ->
+                    {
+                        String limit = ((ExercisesListFragment)listener).getPage() *
+                                ((ExercisesListFragment)listener).getItemsPerLoad() + "," +
+                                ((ExercisesListFragment)listener).getItemsPerLoad();
+                        NetworkService networkService = NetworkService.getInstance(listener);
+                        networkService.getFavoriteExercises(
+                                App.getInstance().getUser().getSessionId(), limit, true);
+                    }),
+                    "favoriteExercises");
+            BottomSheetFragment.this.dismiss();
+        }
+
+        @OnClick(R.id.llCompletedExercises)
+        public void onCompletedExercisesClick()
+        {
+            ((MainActivity)getActivity()).replaceFragment(
+                    ExercisesListFragment.newInstance(listener ->
+                    {
+                        String limit = ((ExercisesListFragment)listener).getPage() *
+                                ((ExercisesListFragment)listener).getItemsPerLoad() + "," +
+                                ((ExercisesListFragment)listener).getItemsPerLoad();
+                        NetworkService networkService = NetworkService.getInstance(listener);
+                        networkService.getCompletedExercises(
+                                App.getInstance().getUser().getSessionId(), limit, true);
+                    }),
+                    "completedExercises");
+            BottomSheetFragment.this.dismiss();
+        }
+
+        @OnClick(R.id.llSavedVariants)
+        public void onSavedVariantsClick()
+        {
+
+        }
+
         @OnClick (R.id.btnLogout)
         public void onLogoutButtonClick()
         {
@@ -273,12 +319,10 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
                 public void onResponse(BaseResponse response)
                 {
                     App.getInstance().getUser().logout();
-                    Snackbar snackbar = Snackbar.make(
-                            contentView,
-                            "Logged out",
-                            Snackbar.LENGTH_SHORT);
-                    snackbar.getView().setTranslationZ(30);
-                    snackbar.show();
+                    FragmentManager fm = getActivity().getSupportFragmentManager();
+                    for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {
+                        fm.popBackStack();
+                    }
                     reset();
                 }
 
@@ -354,6 +398,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
         CoordinatorLayout.LayoutParams layoutParams = ((CoordinatorLayout.LayoutParams) ((View) contentView.getParent()).getLayoutParams());
         CoordinatorLayout.Behavior behavior = layoutParams.getBehavior();
         bottomSheetBehavior = (BottomSheetBehavior) behavior;
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
     @Override

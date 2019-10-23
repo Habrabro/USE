@@ -2,7 +2,9 @@ package com.example.use;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 import android.widget.Button;
@@ -92,17 +94,7 @@ public class MainActivity extends AppCompatActivity implements SubjectMenuFragme
     @Override
     public void onTopicsListFragmentInteraction(long topicId, long number)
     {
-        if (fragmentManager.findFragmentByTag("topicsListFragment") != null &&
-                fragmentManager.findFragmentByTag("exercisesListFragment") == null)
-        {
-            ExercisesListFragment exercisesListFragment = ExercisesListFragment.newInstance(topicId, number);
-            fragmentManager.beginTransaction()
-                    .setCustomAnimations(R.animator.fragment_transition_slide_in,
-                            android.R.animator.fade_out)
-                    .replace(R.id.fragmentContainer, exercisesListFragment, "exercisesListFragment")
-                    .addToBackStack(null)
-                    .commit();
-        }
+
     }
 
     @OnClick(R.id.btnProfile)
@@ -115,6 +107,23 @@ public class MainActivity extends AppCompatActivity implements SubjectMenuFragme
         {
             BottomSheetFragment bottomSheet = BottomSheetFragment.newInstance();
             bottomSheet.show(fragmentManager, "bottomSheet");
+        }
+    }
+
+    public void replaceFragment (Fragment newFragment, String newFragmentTag)
+    {
+        String backStateName =  newFragmentTag;
+        String fragmentTag = backStateName;
+
+        FragmentManager manager = getSupportFragmentManager();
+        boolean fragmentPopped = manager.popBackStackImmediate (backStateName, 0);
+
+        if (!fragmentPopped && manager.findFragmentByTag(fragmentTag) == null){ //fragment not in back stack, create it.
+            FragmentTransaction ft = manager.beginTransaction();
+            ft.replace(R.id.fragmentContainer, newFragment, fragmentTag);
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+            ft.addToBackStack(backStateName);
+            ft.commit();
         }
     }
 }

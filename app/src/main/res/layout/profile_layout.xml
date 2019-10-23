@@ -11,26 +11,107 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingStart="25dp" android:paddingEnd="25dp"
-        android:paddingTop="40dp" android:paddingBottom="40dp">
+        android:paddingTop="40dp" android:paddingBottom="35dp">
 
-        <TextView
+        <TextView android:id="@+id/tvProfileTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="24sp"
             android:textColor="@android:color/black"
             android:text="Профиль"/>
 
-        <TextView android:id="@+id/tvTopicTitle"
+        <LinearLayout android:id="@+id/llFavoriteExercises"
             android:layout_width="match_parent"
-            android:layout_height="57dp"
-            android:textColor="@android:color/black"
-            android:textSize="19sp"
-            android:gravity="center_vertical"
-            android:drawableEnd="@drawable/ic_arrow_point_to_right"
-            android:paddingStart="18dp"
-            android:paddingEnd="18dp"
-            android:text="Some text"/>
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="23dp">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="57dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_star"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textColor="@android:color/black"
+                    android:textSize="19sp"
+                    android:gravity="center_vertical"
+                    android:drawableEnd="@drawable/ic_arrow_point_to_right"
+                    android:paddingStart="15dp"
+                    android:text="Избранные задания"/>
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#E0E0E0"/>
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/llCompletedExercises"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="57dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_check"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textColor="@android:color/black"
+                    android:textSize="19sp"
+                    android:gravity="center_vertical"
+                    android:drawableEnd="@drawable/ic_arrow_point_to_right"
+                    android:paddingStart="15dp"
+                    android:text="Выполненные задания"/>
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#E0E0E0"/>
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/llSavedVariants"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="57dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_saved_variants"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textColor="@android:color/black"
+                    android:textSize="19sp"
+                    android:gravity="center_vertical"
+                    android:drawableEnd="@drawable/ic_arrow_point_to_right"
+                    android:paddingStart="15dp"
+                    android:text="Сохранённые варианты"/>
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 
     <Button android:id="@+id/btnLogout"
