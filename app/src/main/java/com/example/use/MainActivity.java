@@ -9,6 +9,8 @@ import androidx.fragment.app.FragmentTransaction;
 import android.os.Bundle;
 import android.widget.Button;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -19,6 +21,7 @@ public class MainActivity extends AppCompatActivity implements SubjectMenuFragme
     private FragmentManager fragmentManager;
 
     @BindView(R.id.btnProfile) Button profileButton;
+    private Snackbar snackbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -125,5 +128,32 @@ public class MainActivity extends AppCompatActivity implements SubjectMenuFragme
             ft.addToBackStack(backStateName);
             ft.commit();
         }
+    }
+
+    public void onLoad()
+    {
+        snackbar = Snackbar.make(
+                findViewById(R.id.fragmentContainer),
+                "Loading",
+                Snackbar.LENGTH_INDEFINITE);
+        snackbar.getView().setTranslationZ(130);
+        snackbar.show();
+    }
+
+    public void onLoaded()
+    {
+        if (snackbar != null)
+        {
+            snackbar.dismiss();
+        }
+    }
+
+    public void onDisconnected()
+    {
+        snackbar = Snackbar.make(
+                findViewById(R.id.fragmentContainer),
+                "Disconnected",
+                Snackbar.LENGTH_INDEFINITE);
+        snackbar.show();
     }
 }

@@ -12,15 +12,20 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.use.Networking.BaseResponse;
 import com.example.use.Networking.Exercise;
+import com.example.use.Networking.IResponseReceivable;
+import com.example.use.Networking.NetworkService;
 import com.example.use.Networking.Topic;
 import com.example.use.database.DbRequestListener;
 import com.example.use.database.DbService;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class ExercisesListAdapter extends RecyclerView.Adapter<ExercisesListAdapter.ViewHolder>
 {
@@ -71,6 +76,7 @@ public class ExercisesListAdapter extends RecyclerView.Adapter<ExercisesListAdap
     public void onBindViewHolder(ExercisesListAdapter.ViewHolder holder, int position)
     {
         Exercise exercise = exercises.get(position);
+        holder.setExercise(exercise);
         holder.idView.setText(Long.toString(exercise.getId()));
         holder.descriptionView.setText(exercise.getDescription());
         Glide
@@ -103,12 +109,57 @@ public class ExercisesListAdapter extends RecyclerView.Adapter<ExercisesListAdap
         @BindView(R.id.ivImage) ImageView imageView;
         @BindView(R.id.etAnswerField) EditText answerFieldView;
         @BindView(R.id.tvRightAnswer) TextView rightAnswerView;
+        @BindView(R.id.btnAddToFavorite) ImageView btnAddToFavorite;
+        @BindView(R.id.btnAddToCompleted) ImageView btnAddToCompleted;
+
+        public void setExercise(Exercise exercise)
+        {
+            this.exercise = exercise;
+        }
+        private Exercise exercise;
 
         ViewHolder(View view)
         {
             super(view);
             ButterKnife.bind(this, view);
             view.setOnClickListener(this);
+        }
+
+        @OnClick(R.id.btnAddToFavorite)
+        public void onAddToFavoriteClick()
+        {
+            NetworkService.getInstance(new IResponseReceivable()
+            {
+                @Override
+                public void onResponse(BaseResponse response)
+                {
+                    App.getInstance().getCurrentFragment().setSnackbar(
+                            Snackbar.make(
+                                App.getInstance().getCurrentFragment().getView(),
+                                "Added to favorites",
+                                Snackbar.LENGTH_INDEFINITE));
+                }
+
+                @Override
+                public void onFailure(Throwable t)
+                {
+
+                }
+
+                @Override
+                public void onError(String error)
+                {
+
+                }
+
+                @Override
+                public void onDisconnected()
+                {
+
+                }
+            }).addFavoriteExercise(exercise.getId());
+
+            btnAddToFavorite.setImageResource(R.drawable.ic_star);
         }
 
         @Override

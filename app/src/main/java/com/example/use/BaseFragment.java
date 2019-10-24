@@ -52,7 +52,7 @@ public class BaseFragment extends Fragment implements IResponseReceivable
     @Override
     public void onResponse(BaseResponse response)
     {
-        onLoaded();
+        ((MainActivity)getActivity()).onLoaded();
     }
 
     @Override
@@ -64,39 +64,13 @@ public class BaseFragment extends Fragment implements IResponseReceivable
     @Override
     public void onDisconnected()
     {
-        snackbar = Snackbar.make(
-                this.getActivity().findViewById(R.id.fragmentContainer),
-                "Disconnected",
-                Snackbar.LENGTH_INDEFINITE);
-        snackbar.getView().setTranslationZ(130);
-        snackbar.show();
+        ((MainActivity)getActivity()).onDisconnected();
     }
 
     @Override
     public void onError(String error)
     {
-        if (snackbar != null)
-        {
-            snackbar.dismiss();
-        }
+        ((MainActivity)getActivity()).onLoaded();
         Log.i("networking", "Error " + error);
-    }
-
-    public void onLoad()
-    {
-        snackbar = Snackbar.make(
-                this.getActivity().findViewById(R.id.fragmentContainer),
-                "Loading",
-                Snackbar.LENGTH_INDEFINITE);
-        snackbar.getView().setTranslationZ(130);
-        snackbar.show();
-    }
-
-    public void onLoaded()
-    {
-        if (snackbar != null)
-        {
-            snackbar.dismiss();
-        }
     }
 }

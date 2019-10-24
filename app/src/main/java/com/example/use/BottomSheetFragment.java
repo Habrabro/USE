@@ -320,7 +320,8 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
                 {
                     App.getInstance().getUser().logout();
                     FragmentManager fm = getActivity().getSupportFragmentManager();
-                    for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {
+                    for(int i = 0; i < fm.getBackStackEntryCount(); ++i)
+                    {
                         fm.popBackStack();
                     }
                     reset();

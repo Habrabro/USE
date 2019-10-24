@@ -13,7 +13,7 @@ import java.util.List;
 @Dao
 public interface TopicDao
 {
-    @Query("SELECT * FROM Topic WHERE subjectId = :subjectId")
+    @Query("SELECT * FROM Topic WHERE subjectId = :subjectId ORDER BY number")
     List<Topic> getTopics(long subjectId);
 
     @Query("SELECT * FROM Topic WHERE id = :id LIMIT 1")

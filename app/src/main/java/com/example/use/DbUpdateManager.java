@@ -48,6 +48,7 @@ public class DbUpdateManager
             public void onResponse(BaseResponse response)
             {
                 List<Update> updates = ((UpdatesResponse)response).getData();
+                Int i = new Int(0);
                 for (Update update : updates)
                 {
                     DbRequestListener<Long> onOperationCompletedListener = new DbRequestListener<Long>()
@@ -55,18 +56,18 @@ public class DbUpdateManager
                         @Override
                         public void onRequestCompleted(Long result)
                         {
-                            Long result2 = result;
-                            if (result == updates.get(0).getId())
+                            i.inc();
+                            if (i.getValue() == 1)
                             {
                                 App.getInstance().getCurrentFragment().setSnackbar(
                                         NetworkService.getInstance(null).getLoadingSnackbar());
-                                App.getInstance().getCurrentFragment().getSnackbar().show();
+                                ((MainActivity)App.getInstance().getCurrentFragment().getActivity()).onLoad();
                             }
-                            if (result == updates.get(updates.size() - 1).getId() || updates.size() == 0)
+                            if (i.getValue() == updates.size() || updates.size() == 0)
                             {
                                 DbService.getInstance().setLastUpdate(new Date());
                                 listener.onRequestCompleted(null);
-                                App.getInstance().getCurrentFragment().onLoaded();
+                                ((MainActivity)App.getInstance().getCurrentFragment().getActivity()).onLoaded();
                             }
                         }
                     };
@@ -81,6 +82,9 @@ public class DbUpdateManager
                                 break;
                             case "delete":
                                 table.delete(update, onOperationCompletedListener);
+                                break;
+                            default:
+                                i.inc();
                                 break;
                         }
                     }

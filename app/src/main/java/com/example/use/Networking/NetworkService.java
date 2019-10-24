@@ -4,13 +4,17 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 
 import com.example.use.App;
+import com.example.use.MainActivity;
 import com.example.use.R;
 import com.google.android.material.snackbar.Snackbar;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public class NetworkService
@@ -80,14 +84,12 @@ public class NetworkService
     {
         if (isNetworkConnected())
         {
-            savedExerciseResponseResponse = null;
             serverAPI
                     .getExercises(id, topicId, limit)
                     .enqueue(new BaseCallback<ExerciseResponse>(listener));
             if (showLoader)
             {
-                App.getInstance().getCurrentFragment().setSnackbar(loadingSnackbar);
-                App.getInstance().getCurrentFragment().getSnackbar().show();
+                ((MainActivity)App.getInstance().getCurrentFragment().getActivity()).onLoad();
             }
         }
 
@@ -102,8 +104,7 @@ public class NetworkService
                     .enqueue(new BaseCallback<DirectoryResponse>(listener));
             if (showLoadingSnackbar)
             {
-                App.getInstance().getCurrentFragment().setSnackbar(loadingSnackbar);
-                App.getInstance().getCurrentFragment().getSnackbar().show();
+                ((MainActivity)App.getInstance().getCurrentFragment().getActivity()).onLoad();
             }
         }
     }
@@ -117,8 +118,7 @@ public class NetworkService
                     .enqueue(new BaseCallback<ExerciseResponse>(listener));
             if (showLoader)
             {
-                App.getInstance().getCurrentFragment().setSnackbar(loadingSnackbar);
-                App.getInstance().getCurrentFragment().getSnackbar().show();
+                ((MainActivity)App.getInstance().getCurrentFragment().getActivity()).onLoad();
             }
         }
     }
@@ -132,8 +132,7 @@ public class NetworkService
                     .enqueue(new BaseCallback<ExerciseResponse>(listener));
             if (showLoader)
             {
-                App.getInstance().getCurrentFragment().setSnackbar(loadingSnackbar);
-                App.getInstance().getCurrentFragment().getSnackbar().show();
+                ((MainActivity)App.getInstance().getCurrentFragment().getActivity()).onLoad();
             }
         }
     }
@@ -147,8 +146,7 @@ public class NetworkService
                     .enqueue(new BaseCallback<ExerciseResponse>(listener));
             if (showLoader)
             {
-                App.getInstance().getCurrentFragment().setSnackbar(loadingSnackbar);
-                App.getInstance().getCurrentFragment().getSnackbar().show();
+                ((MainActivity)App.getInstance().getCurrentFragment().getActivity()).onLoad();
             }
         }
     }
@@ -193,6 +191,16 @@ public class NetworkService
         }
     }
 
+    public void addFavoriteExercise(long exerciseId)
+    {
+        if (isNetworkConnected())
+        {
+            serverAPI
+                    .addFavoriteExercise(exerciseId)
+                    .enqueue(new BaseCallback<UserResponse>(listener));
+        }
+    }
+
     public void setBaseURL(String url)
     {
         baseURL = url;
@@ -210,14 +218,11 @@ public class NetworkService
         boolean isNetworkConnected = cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
         if (isNetworkConnected)
         {
-            if (App.getInstance().getCurrentFragment().getSnackbar() != null)
-            {
-                App.getInstance().getCurrentFragment().getSnackbar().dismiss();
-            }
+            ((MainActivity)App.getInstance().getCurrentFragment().getActivity()).onLoaded();
         }
         else
         {
-            ((IResponseReceivable)App.getInstance().getCurrentFragment()).onDisconnected();
+            ((MainActivity)App.getInstance().getCurrentFragment().getActivity()).onDisconnected();
             listener.onDisconnected();
         }
         return isNetworkConnected;
@@ -256,17 +261,23 @@ public class NetworkService
                 @Query("userId") long userId,
                 @Query("topicId") long topicId);
 
-        @GET("login.php")
-        Call<UserResponse> login(@Query("login") String login, @Query("password") String password);
+        @FormUrlEncoded
+        @POST("addFavoriteExercise.php")
+        Call<UserResponse> addFavoriteExercise(@Field("exerciseId") long exerciseId);
+
+        @FormUrlEncoded
+        @POST("login.php")
+        Call<UserResponse> login(@Field("login") String login, @Field("password") String password);
 
         @GET("logout.php")
         Call<UserResponse> logout();
 
-        @GET("register.php")
+        @FormUrlEncoded
+        @POST("register.php")
         Call<UserResponse> register(
-                @Query("login") String login,
-                @Query("password") String password,
-                @Query("email") String email);
+                @Field("login") String login,
+                @Field("password") String password,
+                @Field("email") String email);
 
         @GET("getUpdates.php")
         Call<UpdatesResponse> getUpdates(

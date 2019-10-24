@@ -63,6 +63,17 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        exercises = new ArrayList<>();
+        page = 0;
+
+
+        exercisesListAdapter = new ExercisesListAdapter(this, exercises);
+
+
+        request.send(this);
+
+
     }
 
     @Override
@@ -78,16 +89,10 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
     {
         super.onViewCreated(view, savedInstanceState);
 
-        exercises = new ArrayList<>();
-        page = 0;
-
         RecyclerView recyclerView = view.findViewById(R.id.rvExercisesList);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-        exercisesListAdapter = new ExercisesListAdapter(this, exercises);
         recyclerView.setAdapter(exercisesListAdapter);
-
-        request.send(this);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
         {

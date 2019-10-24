@@ -84,6 +84,7 @@ public class VariantFragment extends BaseFragment implements ExercisesListAdapte
 
         DbService.getInstance().getTopics(subjectId, (DbRequestListener<List<Topic>>) topics ->
         {
+            Int i = new Int(0);
             VariantFragment.this.topics.addAll(topics);
             NetworkService networkService = NetworkService.getInstance(new IResponseReceivable()
             {
@@ -96,11 +97,18 @@ public class VariantFragment extends BaseFragment implements ExercisesListAdapte
 
                     if (exercise.getTopicId() == topics.get(0).getId())
                     {
-                        App.getInstance().getCurrentFragment().onLoad();
+                        ((MainActivity)getActivity()).onLoad();
                     }
                     if (exercise.getTopicId() == topics.get(topics.size() - 1).getId())
                     {
-                        App.getInstance().getCurrentFragment().onLoaded();
+                        ((MainActivity)getActivity()).onLoaded();
+                    }
+
+                    if (i.getValue() < topics.size() - 1)
+                    {
+                        i.inc();
+                        NetworkService.getInstance(this).getRandomExercise(
+                                App.getInstance().getUser().getSessionId(), topics.get(i.getValue()).getId(), false);
                     }
                 }
                 @Override
@@ -110,12 +118,8 @@ public class VariantFragment extends BaseFragment implements ExercisesListAdapte
                 @Override
                 public void onDisconnected() { }
             });
-            for (Topic topic : topics)
-            {
-                long topicId = topic.getId();
-                networkService.getRandomExercise(
-                        App.getInstance().getUser().getSessionId(), topicId, false);
-            }
+            networkService.getRandomExercise(
+                    App.getInstance().getUser().getSessionId(), topics.get(i.getValue()).getId(), false);
         });
     }
 
