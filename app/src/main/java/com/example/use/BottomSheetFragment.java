@@ -1,11 +1,14 @@
 package com.example.use;
 
 import android.app.Dialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,12 +21,17 @@ import androidx.fragment.app.FragmentManager;
 import com.example.use.Networking.BaseResponse;
 import com.example.use.Networking.IResponseReceivable;
 import com.example.use.Networking.NetworkService;
+import com.example.use.Networking.RegisterResponse;
 import com.example.use.Networking.UserResponse;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.snackbar.Snackbar;
+import com.vk.api.sdk.VK;
+import com.vk.api.sdk.auth.VKScope;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -48,8 +56,8 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
         @Override
         public void onResponse(BaseResponse response)
         {
-            UserResponse user = (UserResponse)response;
-            App.getInstance().getUser().authorize(user.getSessionId());
+            User user = ((UserResponse)response).getData();
+            App.getInstance().getUser().authorize(user);
             reset();
         }
 
@@ -83,6 +91,8 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
 
     class SignIn
     {
+        private final String PASS_RESET_URL = App.getInstance().getServerBaseUrl() + "password_reset.php";
+
         @BindView(R.id.btnLogin)
         Button loginButton;
         @BindView(R.id.etLogin)
@@ -91,6 +101,10 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
         EditText etPassword;
         @BindView(R.id.tvGoToRegistration)
         TextView tvGoToRegistration;
+        @BindView(R.id.tvPasswordResetButton)
+        TextView tvPasswordResetButton;
+        @BindView(R.id.btnVKAuth)
+        ImageView btnVKAuth;
 
         public View getSignInLayout()
         {
@@ -114,11 +128,26 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         }
 
+        @OnClick(R.id.tvPasswordResetButton)
+        public void onPasswordResetButtonClick()
+        {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(PASS_RESET_URL));
+            startActivity(browserIntent);
+        }
+
         @OnClick(R.id.btnLogin)
         public void onLoginButtonClick()
         {
             NetworkService networkService = NetworkService.getInstance(loginResponseHandler);
             networkService.login(etLogin.getText().toString(), etPassword.getText().toString());
+        }
+
+        @OnClick(R.id.btnVKAuth)
+        public void onBtnVKAuthClick()
+        {
+            List<VKScope> scopes = new ArrayList<>();
+            scopes.add(VKScope.OFFLINE);
+            VK.login(getActivity(), scopes);
         }
     }
 
@@ -128,7 +157,6 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
         @BindView(R.id.etLogin) EditText etLogin;
         @BindView(R.id.etPassword) EditText etPassword;
         @BindView(R.id.etRepeatPassword) EditText etRepeatPassword;
-        @BindView(R.id.etEmail) EditText etEmail;
         @BindView(R.id.tvEmptyFieldsError) TextView tvEmptyFieldsError;
         @BindView(R.id.tvLoginError) TextView tvLoginError;
         @BindView(R.id.tvPasswordError) TextView tvPasswordError;
@@ -171,21 +199,19 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
             login = etLogin.getText().toString();
             password = etPassword.getText().toString();
             repeatPassword = etRepeatPassword.getText().toString();
-            email = etEmail.getText().toString();
 
             tvEmptyFieldsError.setLayoutParams(hiddenLayoutParams);
             tvLoginError.setLayoutParams(hiddenLayoutParams);
             tvPasswordError.setLayoutParams(hiddenLayoutParams);
             tvPasswordComparisonError.setLayoutParams(hiddenLayoutParams);
-            tvEmailError.setLayoutParams(hiddenLayoutParams);
 
             NetworkService networkService = NetworkService.getInstance(new IResponseReceivable()
             {
                 @Override
                 public void onResponse(BaseResponse response)
                 {
-                    UserResponse userResponse = (UserResponse)response;
-                    Map<String, String> errorData = userResponse.getData();
+                    RegisterResponse registerResponse = (RegisterResponse)response;
+                    Map<String, String> errorData = registerResponse.getData();
                     if (errorData.size() == 0)
                     {
                         NetworkService networkService = NetworkService.getInstance(loginResponseHandler);
@@ -195,7 +221,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
                     {
                         if (errorData.get("login") != null)
                         {
-                            tvLoginError.setText("Login is exists");
+                            tvLoginError.setText("Email is exists");
                             tvLoginError.setLayoutParams(shownLayoutParams);
                         }
                     }
@@ -213,16 +239,16 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
                 }
             });
 
-            if (login.isEmpty() || password.isEmpty() || email.isEmpty())
+            if (login.isEmpty() || password.isEmpty())
             {
                 tvEmptyFieldsError.setLayoutParams(shownLayoutParams);
                 validated = false;
             }
-            Pattern loginMatchPattern = Pattern.compile("[^a-zA-Z0-9_\\-]");
-            Matcher loginMatcher = loginMatchPattern.matcher(login);
-            if (loginMatcher.find())
+            String regex = "[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$";
+            Pattern emailMatchPattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+            Matcher emailMatcher = emailMatchPattern.matcher(login);
+            if (!emailMatcher.find())
             {
-                tvLoginError.setText("Login is invalid");
                 tvLoginError.setLayoutParams(shownLayoutParams);
                 validated = false;
             }
@@ -231,17 +257,9 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
                 tvPasswordComparisonError.setLayoutParams(shownLayoutParams);
                 validated = false;
             }
-            String regex = "[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$";
-            Pattern emailMatchPattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-            Matcher emailMatcher = emailMatchPattern.matcher(email);
-            if (!emailMatcher.find())
-            {
-                tvEmailError.setLayoutParams(shownLayoutParams);
-                validated = false;
-            }
             if (validated)
             {
-                networkService.register(login, password, email);
+                networkService.register(login, password);
             }
         }
     }
@@ -256,6 +274,8 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
         LinearLayout completedExercises;
         @BindView(R.id.llSavedVariants)
         LinearLayout savedVariants;
+        @BindView(R.id.tvProfileTitle)
+        TextView tvProfileTitle;
 
         public View getProfileLayout()
         {
@@ -268,6 +288,8 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
         {
             profileLayout = View.inflate(getContext(), R.layout.profile_layout, null);
             ButterKnife.bind(this, profileLayout);
+
+            tvProfileTitle.setText(App.getInstance().getUser().getLogin());
         }
 
         @OnClick(R.id.llFavoriteExercises)

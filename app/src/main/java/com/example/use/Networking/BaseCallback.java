@@ -27,7 +27,10 @@ public class BaseCallback<T extends BaseResponse> implements Callback<T>
         }
         else
         {
-            listener.onResponse(responseBody);
+            if (listener != null)
+            {
+                listener.onResponse(responseBody);
+            }
         }
     }
 

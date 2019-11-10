@@ -1,4 +1,4 @@
-package com.example.use.Networking;
+package com.example.use;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;

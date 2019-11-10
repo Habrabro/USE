@@ -14,9 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.use.Networking.BaseResponse;
 import com.example.use.Networking.NetworkService;
-import com.example.use.Networking.Subject;
-import com.example.use.Networking.TopicResponse;
-import com.example.use.Networking.Topic;
 import com.example.use.database.DbRequestListener;
 import com.example.use.database.DbService;
 

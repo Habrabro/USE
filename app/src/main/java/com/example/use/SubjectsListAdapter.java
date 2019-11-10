@@ -2,9 +2,7 @@ package com.example.use;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.VectorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +10,6 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.example.use.Networking.Subject;
 
 import java.util.List;
 

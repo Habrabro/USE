@@ -13,20 +13,33 @@
         android:paddingStart="25dp" android:paddingEnd="25dp"
         android:paddingTop="40dp" android:paddingBottom="40dp">
 
-        <TextView
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="24sp"
-            android:textColor="@android:color/black"
-            android:text="Вход"/>
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="24sp"
+                android:textColor="@android:color/black"
+                android:layout_centerVertical="true"
+                android:text="Вход"/>
+
+            <ImageView android:id="@+id/btnVKAuth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/ic_vkicon"/>
+        </RelativeLayout>
 
         <EditText android:id="@+id/etLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="23dp"
             style="@style/bottomSheetEditText"
-            android:inputType="text"
-            android:hint="Логин"/>
+            android:inputType="textEmailAddress"
+            android:hint="Email"/>
 
         <EditText android:id="@+id/etPassword"
             android:layout_width="match_parent"
@@ -39,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
+            <TextView android:id="@+id/tvPasswordResetButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"

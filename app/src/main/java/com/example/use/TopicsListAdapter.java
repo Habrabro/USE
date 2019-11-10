@@ -7,8 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.use.Networking.Topic;
-
 import java.util.List;
 
 import butterknife.BindView;

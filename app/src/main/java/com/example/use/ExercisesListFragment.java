@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,9 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.use.Networking.BaseResponse;
 import com.example.use.Networking.ExerciseResponse;
-import com.example.use.Networking.Exercise;
-import com.example.use.Networking.NetworkService;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +41,13 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
     }
 
     private IRequestSendable request;
-    private List<Exercise> exercises;
+
+    public void setExercises(List<Exercise> exercises)
+    {
+        this.exercises = exercises;
+    }
+
+    private List<Exercise> exercises = new ArrayList<>();
 
     public ExercisesListFragment()
     {
@@ -59,21 +61,25 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
         return fragment;
     }
 
+    public static ExercisesListFragment newInstance(List<Exercise> exercises)
+    {
+        ExercisesListFragment fragment = new ExercisesListFragment();
+        fragment.setExercises(exercises);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
-        exercises = new ArrayList<>();
         page = 0;
-
-
         exercisesListAdapter = new ExercisesListAdapter(this, exercises);
 
-
-        request.send(this);
-
-
+        if (request != null)
+        {
+            request.send(this);
+        }
     }
 
     @Override

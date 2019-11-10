@@ -1,12 +1,11 @@
 package com.example.use.database;
 
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.example.use.Networking.Subject;
+import com.example.use.Subject;
 
 import java.util.List;
 

@@ -1,5 +1,7 @@
 package com.example.use.Networking;
 
+import com.example.use.Subject;
+
 import java.util.List;
 
 public class SubjectsResponse extends BaseResponse

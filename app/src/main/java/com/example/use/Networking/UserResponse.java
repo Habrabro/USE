@@ -1,16 +1,15 @@
 package com.example.use.Networking;
 
+import com.example.use.User;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class UserResponse extends BaseResponse
 {
-    private long sessionId;
-    private Map<String, String> data = new HashMap<>();
+    private User data;
 
-    public long getSessionId() { return sessionId; }
-
-    public Map<String, String> getData()
+    public User getData()
     {
         return data;
     }

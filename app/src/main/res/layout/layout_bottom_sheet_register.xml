@@ -44,8 +44,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="23dp"
             style="@style/bottomSheetEditText"
-            android:inputType="text"
-            android:hint="Логин"/>
+            android:inputType="textEmailAddress"
+            android:hint="E-mail"/>
 
         <TextView android:id="@+id/tvLoginError"
             android:layout_width="match_parent"
@@ -78,13 +78,6 @@
             android:layout_height="0dp"
             android:textColor="@android:color/holo_red_light"
             android:text="Passwordd is not equal"/>
-
-        <EditText android:id="@+id/etEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/bottomSheetEditText"
-            android:inputType="textEmailAddress"
-            android:hint="E-mail"/>
 
         <TextView android:id="@+id/tvEmailError"
             android:layout_width="match_parent"

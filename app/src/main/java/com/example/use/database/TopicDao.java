@@ -5,8 +5,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.example.use.Networking.Subject;
-import com.example.use.Networking.Topic;
+import com.example.use.Topic;
 
 import java.util.List;
 

@@ -1,5 +1,7 @@
 package com.example.use.Networking;
 
+import com.example.use.Exercise;
+
 import java.util.List;
 
 public class ExerciseResponse extends BaseResponse

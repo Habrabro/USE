@@ -10,11 +10,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.use.Networking.BaseResponse;
 import com.example.use.Networking.IResponseReceivable;
-import com.example.use.Networking.Subject;
-import com.example.use.database.IDbResponseReceivable;
 import com.google.android.material.snackbar.Snackbar;
-
-import java.util.List;
 
 public class BaseFragment extends Fragment implements IResponseReceivable
 {

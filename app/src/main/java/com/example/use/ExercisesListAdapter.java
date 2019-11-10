@@ -13,12 +13,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.use.Networking.BaseResponse;
-import com.example.use.Networking.Exercise;
 import com.example.use.Networking.IResponseReceivable;
 import com.example.use.Networking.NetworkService;
-import com.example.use.Networking.Topic;
-import com.example.use.database.DbRequestListener;
-import com.example.use.database.DbService;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
@@ -77,18 +73,6 @@ public class ExercisesListAdapter extends RecyclerView.Adapter<ExercisesListAdap
     {
         Exercise exercise = exercises.get(position);
         holder.setExercise(exercise);
-        holder.idView.setText(Long.toString(exercise.getId()));
-        holder.descriptionView.setText(exercise.getDescription());
-        Glide
-                .with(App.getInstance())
-                .load(exercise.getImg())
-                .placeholder(new ColorDrawable(
-                        App.getInstance().getResources().getColor(R.color.glidePlaceholderColor)))
-                .error(R.drawable.ic_broken_image)
-                .fallback(R.drawable.ic_broken_image)
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .into(holder.imageView);
-        holder.rightAnswerView.setText(exercise.getRightAnswer());
     }
 
     @Override
@@ -115,6 +99,35 @@ public class ExercisesListAdapter extends RecyclerView.Adapter<ExercisesListAdap
         public void setExercise(Exercise exercise)
         {
             this.exercise = exercise;
+            idView.setText(exercise.getNumber() + "." + Long.toString(exercise.getId()));
+            descriptionView.setText(exercise.getDescription());
+            Glide
+                    .with(App.getInstance())
+                    .load(exercise.getImg())
+                    .placeholder(new ColorDrawable(
+                            App.getInstance().getResources().getColor(R.color.glidePlaceholderColor)))
+                    .error(R.drawable.ic_broken_image)
+                    .fallback(R.drawable.ic_broken_image)
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .into(imageView);
+            rightAnswerView.setText(exercise.getRightAnswer());
+
+            if (exercise.isCompleted())
+            {
+                btnAddToCompleted.setImageResource(R.drawable.ic_check);
+            }
+            else
+            {
+                btnAddToCompleted.setImageResource(R.drawable.ic_uncompleted);
+            }
+            if (exercise.isFavorite())
+            {
+                btnAddToFavorite.setImageResource(R.drawable.ic_star);
+            }
+            else
+            {
+                btnAddToFavorite.setImageResource(R.drawable.ic_unstar);
+            }
         }
         private Exercise exercise;
 
@@ -128,38 +141,99 @@ public class ExercisesListAdapter extends RecyclerView.Adapter<ExercisesListAdap
         @OnClick(R.id.btnAddToFavorite)
         public void onAddToFavoriteClick()
         {
-            NetworkService.getInstance(new IResponseReceivable()
+            if (App.getInstance().getUser().isAuthorized())
             {
-                @Override
-                public void onResponse(BaseResponse response)
+                if (!exercise.isFavorite())
                 {
-                    App.getInstance().getCurrentFragment().setSnackbar(
+                    btnAddToFavorite.setImageResource(R.drawable.ic_star);
+                    NetworkService.getInstance(new IResponseReceivable()
+                    {
+                        @Override
+                        public void onResponse(BaseResponse response)
+                        {
+                            exercise.switchIsFavorite();
                             Snackbar.make(
-                                App.getInstance().getCurrentFragment().getView(),
-                                "Added to favorites",
-                                Snackbar.LENGTH_INDEFINITE));
+                                    App.getInstance().getCurrentFragment().getView(),
+                                    "Added to favorites",
+                                    Snackbar.LENGTH_SHORT).show();
+                        }
+                        @Override public void onFailure(Throwable t) { } @Override public void onError(String error) { } @Override public void onDisconnected() { }
+                    }).addFavoriteExercise(exercise.getId());
                 }
-
-                @Override
-                public void onFailure(Throwable t)
+                else
                 {
-
+                    btnAddToFavorite.setImageResource(R.drawable.ic_unstar);
+                    NetworkService.getInstance(new IResponseReceivable()
+                    {
+                        @Override
+                        public void onResponse(BaseResponse response)
+                        {
+                            exercise.switchIsFavorite();
+                            Snackbar.make(
+                                    App.getInstance().getCurrentFragment().getView(),
+                                    "Removed from favorites",
+                                    Snackbar.LENGTH_SHORT).show();
+                        }
+                        @Override public void onFailure(Throwable t) { } @Override public void onError(String error) { } @Override public void onDisconnected() { }
+                    }).removeFavoriteExercise(exercise.getId());
                 }
+            }
+            else
+            {
+                Snackbar.make(
+                        App.getInstance().getCurrentFragment().getView(),
+                        "You need to authorize",
+                        Snackbar.LENGTH_SHORT).show();
+            }
+        }
 
-                @Override
-                public void onError(String error)
+        @OnClick(R.id.btnAddToCompleted)
+        public void onAddToCompletedClick()
+        {
+            if (App.getInstance().getUser().isAuthorized())
+            {
+                if (!exercise.isCompleted())
                 {
-
+                    btnAddToCompleted.setImageResource(R.drawable.ic_check);
+                    NetworkService.getInstance(new IResponseReceivable()
+                    {
+                        @Override
+                        public void onResponse(BaseResponse response)
+                        {
+                            exercise.switchIsCompleted();
+                            Snackbar.make(
+                                    App.getInstance().getCurrentFragment().getView(),
+                                    "Added to completed",
+                                    Snackbar.LENGTH_SHORT).show();
+                        }
+                        @Override public void onFailure(Throwable t) { } @Override public void onError(String error) { } @Override public void onDisconnected() { }
+                    }).addCompletedExercise(exercise.getId());
                 }
-
-                @Override
-                public void onDisconnected()
+                else
                 {
-
+                    btnAddToCompleted.setImageResource(R.drawable.ic_uncompleted);
+                    NetworkService.getInstance(new IResponseReceivable()
+                    {
+                        @Override
+                        public void onResponse(BaseResponse response)
+                        {
+                            exercise.switchIsCompleted();
+                            Snackbar.make(
+                                    App.getInstance().getCurrentFragment().getView(),
+                                    "Removed from completed",
+                                    Snackbar.LENGTH_SHORT).show();
+                        }
+                        @Override public void onFailure(Throwable t) { } @Override public void onError(String error) { } @Override public void onDisconnected() { }
+                    }).removeCompletedExercise(exercise.getId());
                 }
-            }).addFavoriteExercise(exercise.getId());
-
-            btnAddToFavorite.setImageResource(R.drawable.ic_star);
+            }
+            else
+            {
+                Snackbar.make(
+                        App.getInstance().getCurrentFragment().getView(),
+                        "You need to authorize",
+                        Snackbar.LENGTH_SHORT).show();
+            }
         }
 
         @Override

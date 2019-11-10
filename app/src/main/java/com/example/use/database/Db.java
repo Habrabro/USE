@@ -2,11 +2,11 @@ package com.example.use.database;
 
 import androidx.room.RoomDatabase;
 
-import com.example.use.Networking.Subject;
-import com.example.use.Networking.Topic;
+import com.example.use.Subject;
+import com.example.use.Topic;
 import com.example.use.User;
 
-@androidx.room.Database(entities = {Subject.class, Topic.class, User.class}, version = 8)
+@androidx.room.Database(entities = {Subject.class, Topic.class, User.class}, version = 9)
 public abstract class Db extends RoomDatabase
 {
     public abstract SubjectDao subjectsDao();

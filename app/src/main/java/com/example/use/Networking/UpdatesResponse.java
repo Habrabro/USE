@@ -1,5 +1,7 @@
 package com.example.use.Networking;
 
+import com.example.use.Update;
+
 import java.util.List;
 
 public class UpdatesResponse extends BaseResponse

@@ -1,7 +1,8 @@
-package com.example.use.Networking;
+package com.example.use;
 
 public class Exercise
 {
+    private int number;
     private long id;
     private long topicId;
     private String description;
@@ -9,6 +10,34 @@ public class Exercise
     private String rightAnswer;
     private int version;
     private boolean status;
+
+    public boolean isCompleted()
+    {
+        return isCompleted;
+    }
+
+    public boolean isFavorite()
+    {
+        return isFavorite;
+    }
+
+    public void switchIsCompleted()
+    {
+        isCompleted = !isCompleted;
+    }
+
+    public void switchIsFavorite()
+    {
+        isFavorite = !isFavorite;
+    }
+
+    private boolean isCompleted;
+    private boolean isFavorite;
+
+    public int getNumber()
+    {
+        return number;
+    }
 
     public long getId() {
         return id;

@@ -5,19 +5,13 @@ import android.util.Log;
 import com.example.use.Networking.BaseResponse;
 import com.example.use.Networking.IResponseReceivable;
 import com.example.use.Networking.NetworkService;
-import com.example.use.Networking.Update;
 import com.example.use.Networking.UpdatesResponse;
 import com.example.use.database.Db;
 import com.example.use.database.DbRequestListener;
 import com.example.use.database.DbService;
-import com.google.android.material.snackbar.Snackbar;
 
-import java.text.DateFormat;
-import java.text.Format;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
@@ -56,7 +50,6 @@ public class DbUpdateManager
                         @Override
                         public void onRequestCompleted(Long result)
                         {
-                            i.inc();
                             if (i.getValue() == 1)
                             {
                                 App.getInstance().getCurrentFragment().setSnackbar(
@@ -71,6 +64,7 @@ public class DbUpdateManager
                             }
                         }
                     };
+                    i.inc();
                     try
                     {
                         IDbOperationable table = tableOperationsMap.get(update.getTableName());
@@ -82,9 +76,6 @@ public class DbUpdateManager
                                 break;
                             case "delete":
                                 table.delete(update, onOperationCompletedListener);
-                                break;
-                            default:
-                                i.inc();
                                 break;
                         }
                     }

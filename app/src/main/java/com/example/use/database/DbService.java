@@ -9,12 +9,12 @@ import com.example.use.IDbOperationable;
 import com.example.use.Networking.BaseResponse;
 import com.example.use.Networking.IResponseReceivable;
 import com.example.use.Networking.NetworkService;
-import com.example.use.Networking.Subject;
+import com.example.use.Subject;
 import com.example.use.Networking.SubjectsResponse;
 import com.example.use.DbUpdateManager;
-import com.example.use.Networking.Topic;
+import com.example.use.Topic;
 import com.example.use.Networking.TopicResponse;
-import com.example.use.Networking.Update;
+import com.example.use.Update;
 import com.example.use.User;
 
 import java.util.Date;

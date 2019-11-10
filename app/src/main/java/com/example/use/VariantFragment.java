@@ -8,18 +8,13 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.use.Networking.BaseResponse;
-import com.example.use.Networking.Exercise;
 import com.example.use.Networking.ExerciseResponse;
 import com.example.use.Networking.IResponseReceivable;
 import com.example.use.Networking.NetworkService;
-import com.example.use.Networking.Subject;
-import com.example.use.Networking.TopicResponse;
-import com.example.use.Networking.Topic;
 import com.example.use.database.DbRequestListener;
 import com.example.use.database.DbService;
 

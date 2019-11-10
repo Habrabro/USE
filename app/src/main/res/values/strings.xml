@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">App</string>
+    <string name="app_name">Я сдал!</string>
+    <integer name="com_vk_sdk_AppId">7202923</integer>
 </resources>

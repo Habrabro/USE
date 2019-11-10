@@ -7,8 +7,15 @@ import com.example.use.App;
 import com.example.use.MainActivity;
 import com.example.use.R;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Field;
@@ -21,12 +28,15 @@ public class NetworkService
 {
     private static NetworkService instance;
     private String baseURL = "https://usetrainingadmin.000webhostapp.com/api/";
+    private String vkApiBaseURL = "https://api.vk.com/method/";
     private static IResponseReceivable listener;
     private SubjectsResponse savedSubjectResponse;
     private TopicResponse savedTopicResponseResponse;
     private ExerciseResponse savedExerciseResponseResponse;
     private Retrofit retrofit;
     private ServerAPI serverAPI;
+    private Retrofit VKRetrofit;
+    private VKApi vkApi;
 
     public Snackbar getLoadingSnackbar()
     {
@@ -37,15 +47,41 @@ public class NetworkService
 
     private NetworkService()
     {
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(Boolean.class, new BooleanTypeAdapter());
+        builder.registerTypeAdapter(boolean.class, new BooleanTypeAdapter());
+        Gson gson = builder.create();
+
         retrofit = new Retrofit.Builder()
                 .baseUrl(baseURL)
-                .addConverterFactory(GsonConverterFactory.create())
+                .client(provideOkHttpClient())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
+
+        VKRetrofit = new Retrofit.Builder()
+                .baseUrl(vkApiBaseURL)
+                .client(provideOkHttpClient())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
         serverAPI = retrofit.create(ServerAPI.class);
+        vkApi = VKRetrofit.create(VKApi.class);
+
         loadingSnackbar = Snackbar.make(
                 App.getInstance().getCurrentFragment().getActivity().findViewById(R.id.fragmentContainer),
                 "Loading",
                 Snackbar.LENGTH_INDEFINITE);
+    }
+
+    private OkHttpClient provideOkHttpClient()
+    {
+        OkHttpClient.Builder okhttpClientBuilder = new OkHttpClient.Builder();
+        okhttpClientBuilder.connectTimeout(30, TimeUnit.SECONDS);
+        okhttpClientBuilder.readTimeout(30, TimeUnit.SECONDS);
+        okhttpClientBuilder.writeTimeout(30, TimeUnit.SECONDS);
+        okhttpClientBuilder.interceptors().add(new AddCookiesInterceptor());
+        okhttpClientBuilder.interceptors().add(new ReceivedCookiesInterceptor());
+        return okhttpClientBuilder.build();
     }
 
     public static NetworkService getInstance(IResponseReceivable _listener)
@@ -137,7 +173,7 @@ public class NetworkService
         }
     }
 
-    public void getRandomExercise(long userId, long topicId, boolean showLoader)
+    public void getRandomExercise(Long userId, long topicId, boolean showLoader)
     {
         if (isNetworkConnected())
         {
@@ -171,13 +207,13 @@ public class NetworkService
         }
     }
 
-    public void register(String login, String password, String email)
+    public void register(String login, String password)
     {
         if (isNetworkConnected())
         {
             serverAPI
-                    .register(login, password, email)
-                    .enqueue(new BaseCallback<UserResponse>(listener));
+                    .register(login, password)
+                    .enqueue(new BaseCallback<RegisterResponse>(listener));
         }
     }
 
@@ -197,6 +233,36 @@ public class NetworkService
         {
             serverAPI
                     .addFavoriteExercise(exerciseId)
+                    .enqueue(new BaseCallback<UserResponse>(listener));
+        }
+    }
+
+    public void removeFavoriteExercise(long exerciseId)
+    {
+        if (isNetworkConnected())
+        {
+            serverAPI
+                    .removeFavoriteExercise(exerciseId)
+                    .enqueue(new BaseCallback<UserResponse>(listener));
+        }
+    }
+
+    public void addCompletedExercise(long exerciseId)
+    {
+        if (isNetworkConnected())
+        {
+            serverAPI
+                    .addCompletedExercise(exerciseId)
+                    .enqueue(new BaseCallback<UserResponse>(listener));
+        }
+    }
+
+    public void removeCompletedExercise(long exerciseId)
+    {
+        if (isNetworkConnected())
+        {
+            serverAPI
+                    .removeCompletedExercise(exerciseId)
                     .enqueue(new BaseCallback<UserResponse>(listener));
         }
     }
@@ -226,6 +292,16 @@ public class NetworkService
             listener.onDisconnected();
         }
         return isNetworkConnected;
+    }
+
+    public void vkAuth(String accessToken)
+    {
+        if (isNetworkConnected())
+        {
+            serverAPI
+                    .vkAuth(accessToken)
+                    .enqueue(new BaseCallback<>(listener));
+        }
     }
 
     public interface ServerAPI
@@ -258,12 +334,24 @@ public class NetworkService
 
         @GET("getRandomExercise.php")
         Call<ExerciseResponse> getRandomExercise(
-                @Query("userId") long userId,
+                @Query("userId") Long userId,
                 @Query("topicId") long topicId);
 
         @FormUrlEncoded
         @POST("addFavoriteExercise.php")
         Call<UserResponse> addFavoriteExercise(@Field("exerciseId") long exerciseId);
+
+        @FormUrlEncoded
+        @POST("removeFavoriteExercise.php")
+        Call<UserResponse> removeFavoriteExercise(@Field("exerciseId") long exerciseId);
+
+        @FormUrlEncoded
+        @POST("addCompleted.php")
+        Call<UserResponse> addCompletedExercise(@Field("exerciseId") long exerciseId);
+
+        @FormUrlEncoded
+        @POST("removeCompleted.php")
+        Call<UserResponse> removeCompletedExercise(@Field("exerciseId") long exerciseId);
 
         @FormUrlEncoded
         @POST("login.php")
@@ -274,14 +362,26 @@ public class NetworkService
 
         @FormUrlEncoded
         @POST("register.php")
-        Call<UserResponse> register(
+        Call<RegisterResponse> register(
                 @Field("login") String login,
-                @Field("password") String password,
-                @Field("email") String email);
+                @Field("password") String password);
 
         @GET("getUpdates.php")
         Call<UpdatesResponse> getUpdates(
                 @Query("afterDate") String afterDate,
                 @Query("afterTime") String afterTime);
+
+        @FormUrlEncoded
+        @POST("vk_auth.php")
+        Call<UserResponse> vkAuth(
+                @Field("accessToken") String accessToken);
+    }
+
+    public interface VKApi
+    {
+        @GET("account.getProfileInfo")
+        Call<VKApiResponse> getProfileInfo(
+                @Query("access_token") String accessToken,
+                @Query("v") float version);
     }
 }
