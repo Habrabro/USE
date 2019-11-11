@@ -29,6 +29,12 @@
         <item name="android:textSize">23sp</item>
     </style>
 
+    <style name="exerciseAnswerSectionButton" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textColorHint">@android:color/black</item>
+        <item name="android:background">@drawable/exercise_answer_section_button</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
     <style name="bottomSheetEditText">
         <item name="android:textSize">24sp</item>
         <item name="android:lines">1</item>

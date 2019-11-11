@@ -153,7 +153,7 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
     }
 
     @Override
-    public void OnViewHolderClick(int position)
+    public void OnViewHolderClick(RecyclerView.ViewHolder viewHolder)
     {
 
     }

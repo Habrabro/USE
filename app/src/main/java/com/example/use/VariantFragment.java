@@ -97,6 +97,8 @@ public class VariantFragment extends BaseFragment implements ExercisesListAdapte
                     if (exercise.getTopicId() == topics.get(topics.size() - 1).getId())
                     {
                         ((MainActivity)getActivity()).onLoaded();
+                        exercisesListAdapter.addLastItem();
+                        exercisesListAdapter.notifyDataSetChanged();
                     }
 
                     if (i.getValue() < topics.size() - 1)
@@ -118,9 +120,17 @@ public class VariantFragment extends BaseFragment implements ExercisesListAdapte
         });
     }
 
-    public void OnViewHolderClick(int position)
+    public void OnViewHolderClick(RecyclerView.ViewHolder viewHolder)
     {
-
+        switch (viewHolder.getItemViewType())
+        {
+            case 0:
+                break;
+            case 1:
+                VariantResultsFragment fragment = VariantResultsFragment.newInstance(exercises);
+                ((MainActivity)getActivity()).replaceFragment(fragment, "variantResultsFragment");
+                break;
+        }
     }
 
     @Override

@@ -8,8 +8,12 @@ public class Exercise
     private String description;
     private String img;
     private String rightAnswer;
+    private int points;
+    private String answerType;
     private int version;
     private boolean status;
+
+    private boolean answered = false;
 
     public boolean isCompleted()
     {
@@ -65,5 +69,20 @@ public class Exercise
 
     public boolean getStatus() {
         return status;
+    }
+
+    public int getPoints()
+    {
+        return points;
+    }
+
+    public String getAnswerType()
+    {
+        return answerType;
+    }
+
+    public boolean isAnswered()
+    {
+        return answered;
     }
 }

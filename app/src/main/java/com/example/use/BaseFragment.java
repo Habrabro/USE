@@ -48,7 +48,10 @@ public class BaseFragment extends Fragment implements IResponseReceivable
     @Override
     public void onResponse(BaseResponse response)
     {
-        ((MainActivity)getActivity()).onLoaded();
+        if (getActivity() != null)
+        {
+            ((MainActivity)getActivity()).onLoaded();
+        }
     }
 
     @Override
