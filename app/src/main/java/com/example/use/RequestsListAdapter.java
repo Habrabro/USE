@@ -3,10 +3,14 @@ package com.example.use;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class RequestsListAdapter extends RecyclerView.Adapter<RequestsListAdapter.ViewHolder>
 {
@@ -48,15 +52,33 @@ public class RequestsListAdapter extends RecyclerView.Adapter<RequestsListAdapte
         private View view;
         private Request request;
 
+        @BindView(R.id.tvRequestId)
+        TextView tvRequestId;
+        @BindView(R.id.tvRequestTitle)
+        TextView tvRequestTitle;
+        @BindView(R.id.tvAttachmentsDesc)
+        TextView tvAttachmentsDesc;
+        @BindView(R.id.tvSentDesc)
+        TextView tvSentDesc;
+        @BindView(R.id.tvStatusDesc)
+        TextView tvStatusDesc;
+
         public ViewHolder(View view)
         {
             super(view);
             this.view = view;
+            ButterKnife.bind(this, view);
         }
 
         public void bindRequest(Request request)
         {
             this.request = request;
+
+            tvRequestId.setText("Запрос № " + request.getId());
+            tvRequestId.setText(request.getSubjectName() + " – Задание" + request.getTopicNumber());
+            tvRequestId.setText("Запрос № " + request.getId());
+            tvRequestId.setText("Запрос № " + request.getId());
+            tvRequestId.setText("Запрос № " + request.getId());
         }
     }
 

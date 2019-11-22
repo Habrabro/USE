@@ -34,10 +34,16 @@ public class Request
     private String tStamp;
     @SerializedName("tStampOfCheck")
     @Expose
-    private Object tStampOfCheck;
+    private String tStampOfCheck;
     @SerializedName("message")
     @Expose
-    private boolean message;
+    private String message;
+    @SerializedName("subjectName")
+    @Expose
+    private String subjectName;
+    @SerializedName("topicNumber")
+    @Expose
+    private String topicNumber;
 
     public String getId() {
         return id;
@@ -115,15 +121,35 @@ public class Request
         return tStampOfCheck;
     }
 
-    public void setTStampOfCheck(Object tStampOfCheck) {
+    public void setTStampOfCheck(String tStampOfCheck) {
         this.tStampOfCheck = tStampOfCheck;
     }
 
-    public boolean isMessage() {
+    public String getMessage() {
         return message;
     }
 
-    public void setMessage(boolean message) {
+    public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getSubjectName()
+    {
+        return subjectName;
+    }
+
+    public void setSubjectName(String subjectName)
+    {
+        this.subjectName = subjectName;
+    }
+
+    public String getTopicNumber()
+    {
+        return subjectName;
+    }
+
+    public void setTopicNumber(String subjectName)
+    {
+        this.subjectName = subjectName;
     }
 }

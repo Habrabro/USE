@@ -2,12 +2,14 @@ package com.example.use.Networking;
 
 import com.example.use.Request;
 
+import java.util.List;
+
 public class RequestResponse extends BaseResponse
 {
-    public Request getData()
+    public List<Request> getData()
     {
         return data;
     }
 
-    private Request data;
+    private List<Request> data;
 }

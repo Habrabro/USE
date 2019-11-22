@@ -8,11 +8,28 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.use.Networking.BaseResponse;
+import com.example.use.Networking.IResponseReceivable;
+import com.example.use.Networking.NetworkService;
+import com.example.use.Networking.RequestResponse;
 
-public class RequestsListFragment extends BaseFragment
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class RequestsListFragment extends BaseFragment implements RequestsListAdapter.Listener
 {
+    private List<Request> requests = new ArrayList<>();
+    RequestsListAdapter requestsListAdapter;
+
+    @BindView(R.id.rvRequestsList)
+    RecyclerView rvRequestsList;
+
     public RequestsListFragment() {}
 
     public static RequestsListFragment newInstance()
@@ -39,6 +56,33 @@ public class RequestsListFragment extends BaseFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+        ButterKnife.bind(this, view);
+
+        DividerItemDecoration horizontalSeparator = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+        horizontalSeparator.setDrawable(getResources().getDrawable(R.drawable.horizontal_separator));
+
+        requestsListAdapter = new RequestsListAdapter(this, requests);
+
+        rvRequestsList.addItemDecoration(horizontalSeparator);
+        rvRequestsList.setAdapter(requestsListAdapter);
+
+        NetworkService.getInstance(this).getUserRequests();
+    }
+
+    @Override
+    public void onResponse(BaseResponse response)
+    {
+        super.onResponse(response);
+
+        List<Request> requests = ((RequestResponse)response).getData();
+        this.requests.addAll(requests);
+        requestsListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void OnViewHolderClick(int position, long topicId, long number)
+    {
+
     }
 
     @Override
@@ -53,9 +97,18 @@ public class RequestsListFragment extends BaseFragment
         super.onDetach();
     }
 
-    @Override
-    public void onResponse(BaseResponse response)
+    public enum RequestStatusesAndColors
     {
-        super.onResponse(response);
+        AWAITING("#949494"),
+        CHECKING("#7462CE"),
+        CHECKED("#2DE17C"),
+        REJECTED("#FAB03C");
+
+        private String colorCode;
+
+        RequestStatusesAndColors(String colorCode)
+        {
+            this.colorCode = colorCode;
+        }
     }
 }

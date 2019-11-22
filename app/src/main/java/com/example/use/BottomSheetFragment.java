@@ -330,10 +330,13 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
             BottomSheetFragment.this.dismiss();
         }
 
-        @OnClick(R.id.llSavedVariants)
-        public void onSavedVariantsClick()
+        @OnClick(R.id.llRequests)
+        public void onRequestsClick()
         {
-
+            ((MainActivity)getActivity()).replaceFragment(
+                    RequestsListFragment.newInstance(),
+                    "RequestsListFragment");
+            BottomSheetFragment.this.dismiss();
         }
 
         @OnClick (R.id.btnLogout)
