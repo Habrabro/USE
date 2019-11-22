@@ -20,6 +20,13 @@
             android:textColor="@android:color/black"
             android:text="Профиль"/>
 
+        <TextView android:id="@+id/tvAvailableChecks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:text="Доступных проверок: 7"/>
+
         <LinearLayout android:id="@+id/llFavoriteExercises"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -85,7 +92,7 @@
                 android:background="#E0E0E0"/>
         </LinearLayout>
 
-        <LinearLayout android:id="@+id/llSavedVariants"
+        <LinearLayout android:id="@+id/llRequests"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -99,7 +106,7 @@
                     android:layout_width="32dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/ic_saved_variants"/>
+                    android:src="@drawable/ic_checkrequests"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -109,7 +116,7 @@
                     android:gravity="center_vertical"
                     android:drawableEnd="@drawable/ic_arrow_point_to_right"
                     android:paddingStart="15dp"
-                    android:text="Сохранённые варианты"/>
+                    android:text="Ваши запросы на проверку"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

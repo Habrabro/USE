@@ -2,6 +2,7 @@ package com.example.use.Networking;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
+import android.util.Log;
 
 import com.example.use.App;
 import com.example.use.MainActivity;
@@ -10,9 +11,15 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -21,13 +28,17 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public class NetworkService
 {
     private static NetworkService instance;
-    private String baseURL = "https://usetrainingadmin.000webhostapp.com/api/";
+    private String baseURL = "https://usetrainingadmin.000webhostapp.com/";
     private String vkApiBaseURL = "https://api.vk.com/method/";
     private static IResponseReceivable listener;
     private SubjectsResponse savedSubjectResponse;
@@ -76,9 +87,9 @@ public class NetworkService
     private OkHttpClient provideOkHttpClient()
     {
         OkHttpClient.Builder okhttpClientBuilder = new OkHttpClient.Builder();
-        okhttpClientBuilder.connectTimeout(30, TimeUnit.SECONDS);
-        okhttpClientBuilder.readTimeout(30, TimeUnit.SECONDS);
-        okhttpClientBuilder.writeTimeout(30, TimeUnit.SECONDS);
+        okhttpClientBuilder.connectTimeout(60, TimeUnit.SECONDS);
+        okhttpClientBuilder.readTimeout(60, TimeUnit.SECONDS);
+        okhttpClientBuilder.writeTimeout(60, TimeUnit.SECONDS);
         okhttpClientBuilder.interceptors().add(new AddCookiesInterceptor());
         okhttpClientBuilder.interceptors().add(new ReceivedCookiesInterceptor());
         return okhttpClientBuilder.build();
@@ -175,16 +186,9 @@ public class NetworkService
 
     public void getRandomExercise(Long userId, long topicId, boolean showLoader)
     {
-        if (isNetworkConnected())
-        {
-            serverAPI
-                    .getRandomExercise(userId, topicId)
-                    .enqueue(new BaseCallback<ExerciseResponse>(listener));
-            if (showLoader)
-            {
-                ((MainActivity)App.getInstance().getCurrentFragment().getActivity()).onLoad();
-            }
-        }
+        serverAPI
+                .getRandomExercise(userId, topicId)
+                .enqueue(new BaseCallback<ExerciseResponse>(listener));
     }
 
     public void login(String login, String password)
@@ -203,6 +207,16 @@ public class NetworkService
         {
             serverAPI
                     .logout()
+                    .enqueue(new BaseCallback<UserResponse>(listener));
+        }
+    }
+
+    public void getProfile()
+    {
+        if (isNetworkConnected())
+        {
+            serverAPI
+                    .getProfile()
                     .enqueue(new BaseCallback<UserResponse>(listener));
         }
     }
@@ -277,7 +291,7 @@ public class NetworkService
         serverAPI = retrofit.create(ServerAPI.class);
     }
 
-    private boolean isNetworkConnected()
+    public boolean isNetworkConnected()
     {
         ConnectivityManager cm = (ConnectivityManager) App.getInstance()
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -294,6 +308,17 @@ public class NetworkService
         return isNetworkConnected;
     }
 
+    public void createRequest(RequestBody exerciseId, List<MultipartBody.Part> attachment, RequestBody text)
+    {
+        if (isNetworkConnected())
+        {
+            //setBaseURL("http://f906161m.bget.ru/use_training_admin/");
+            serverAPI
+                    .createRequest(exerciseId, attachment, text)
+                    .enqueue(new BaseCallback<>(listener));
+        }
+    }
+
     public void vkAuth(String accessToken)
     {
         if (isNetworkConnected())
@@ -304,77 +329,100 @@ public class NetworkService
         }
     }
 
+    public void getUserRequests()
+    {
+        if (isNetworkConnected())
+        {
+            serverAPI
+                    .getUserRequests()
+                    .enqueue(new BaseCallback<>(listener));
+        }
+    }
+
     public interface ServerAPI
     {
-        @GET("getSubjects.php")
+        @GET("api/getSubjects.php")
         Call<SubjectsResponse> getSubjects(@Query("id") Long id);
 
-        @GET("getTopics.php")
+        @GET("api/getTopics.php")
         Call<TopicResponse> getTopics(@Query("id") Long id, @Query("subjectId") Long subjectId);
 
-        @GET("getExercises.php")
+        @GET("api/getExercises.php")
         Call<ExerciseResponse> getExercises(
                 @Query("id") Long id,
                 @Query("topicId") Long topicId,
                 @Query("limit") String limit);
 
-        @GET("getDirectoryTopics.php")
+        @GET("api/getDirectoryTopics.php")
         Call<DirectoryResponse> getDirectories(
                 @Query("id") Long id,
                 @Query("subjectId") Long subjectId,
                 @Query("limit") String limit);
 
-        @GET("getFavoriteExercises.php")
+        @GET("api/getFavoriteExercises.php")
         Call<ExerciseResponse> getFavoriteExercises(
                 @Query("userId") long userId, @Query("limit") String limit);
 
-        @GET("getCompleted.php")
+        @GET("api/getCompleted.php")
         Call<ExerciseResponse> getCompletedExercises(
                 @Query("userId") long userId, @Query("limit") String limit);
 
-        @GET("getRandomExercise.php")
+        @GET("api/getRandomExercise.php")
         Call<ExerciseResponse> getRandomExercise(
                 @Query("userId") Long userId,
                 @Query("topicId") long topicId);
 
         @FormUrlEncoded
-        @POST("addFavoriteExercise.php")
+        @POST("api/addFavoriteExercise.php")
         Call<UserResponse> addFavoriteExercise(@Field("exerciseId") long exerciseId);
 
         @FormUrlEncoded
-        @POST("removeFavoriteExercise.php")
+        @POST("api/removeFavoriteExercise.php")
         Call<UserResponse> removeFavoriteExercise(@Field("exerciseId") long exerciseId);
 
         @FormUrlEncoded
-        @POST("addCompleted.php")
+        @POST("api/addCompleted.php")
         Call<UserResponse> addCompletedExercise(@Field("exerciseId") long exerciseId);
 
         @FormUrlEncoded
-        @POST("removeCompleted.php")
+        @POST("api/removeCompleted.php")
         Call<UserResponse> removeCompletedExercise(@Field("exerciseId") long exerciseId);
 
         @FormUrlEncoded
-        @POST("login.php")
+        @POST("api/login.php")
         Call<UserResponse> login(@Field("login") String login, @Field("password") String password);
 
-        @GET("logout.php")
+        @GET("api/logout.php")
         Call<UserResponse> logout();
 
+        @GET("api/get_profile.php")
+        Call<UserResponse> getProfile();
+
         @FormUrlEncoded
-        @POST("register.php")
+        @POST("api/register.php")
         Call<RegisterResponse> register(
                 @Field("login") String login,
                 @Field("password") String password);
 
-        @GET("getUpdates.php")
+        @GET("api/getUpdates.php")
         Call<UpdatesResponse> getUpdates(
                 @Query("afterDate") String afterDate,
                 @Query("afterTime") String afterTime);
 
         @FormUrlEncoded
-        @POST("vk_auth.php")
+        @POST("api/vk_auth.php")
         Call<UserResponse> vkAuth(
                 @Field("accessToken") String accessToken);
+
+        @Multipart
+        @POST("create_request.php")
+        Call<BaseResponse> createRequest(
+                @Part("exerciseId") RequestBody exerciseId,
+                @Part List<MultipartBody.Part> attachment,
+                @Part("text") RequestBody text);
+
+        @GET("/api/getUserRequests.php")
+        Call<RequestResponse> getUserRequests();
     }
 
     public interface VKApi

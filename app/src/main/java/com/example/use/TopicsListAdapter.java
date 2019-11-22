@@ -18,7 +18,7 @@ public class TopicsListAdapter extends RecyclerView.Adapter<TopicsListAdapter.Vi
     private List<Topic> topics;
     private Listener listener;
 
-    TopicsListAdapter(Listener listener, List<Topic> topics)
+    public TopicsListAdapter(Listener listener, List<Topic> topics)
     {
         this.topics = topics;
         if (listener instanceof Listener)

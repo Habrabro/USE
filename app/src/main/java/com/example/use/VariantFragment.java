@@ -26,7 +26,9 @@ public class VariantFragment extends BaseFragment implements ExercisesListAdapte
     private final static String PARAM_1 = "param_1";
     private long subjectId;
 
-    private ExercisesListAdapter exercisesListAdapter;
+    private boolean created = false;
+
+    public ExercisesListAdapter exercisesListAdapter;
 
     private List<Topic> topics;
     private List<Exercise> exercises;
@@ -49,6 +51,8 @@ public class VariantFragment extends BaseFragment implements ExercisesListAdapte
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        exercises = new ArrayList<>();
+        topics = new ArrayList<>();
         if (getArguments() != null)
         {
             subjectId = getArguments().getLong(PARAM_1);
@@ -67,57 +71,73 @@ public class VariantFragment extends BaseFragment implements ExercisesListAdapte
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        exercises = new ArrayList<>();
-        topics = new ArrayList<>();
 
         RecyclerView recyclerView = view.findViewById(R.id.rvExercisesList);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
 
         exercisesListAdapter = new ExercisesListAdapter(this, exercises);
+
         recyclerView.setAdapter(exercisesListAdapter);
 
-        DbService.getInstance().getTopics(subjectId, (DbRequestListener<List<Topic>>) topics ->
+        if (!created)
         {
-            Int i = new Int(0);
-            VariantFragment.this.topics.addAll(topics);
-            NetworkService networkService = NetworkService.getInstance(new IResponseReceivable()
+            DbService.getInstance().getTopics(subjectId, (DbRequestListener<List<Topic>>) topics ->
             {
-                @Override
-                public void onResponse(BaseResponse response)
+                Int i = new Int(0);
+                VariantFragment.this.topics.addAll(topics);
+                NetworkService networkService = NetworkService.getInstance(new IResponseReceivable()
                 {
-                    Exercise exercise = ((ExerciseResponse)response).getData().get(0);
-                    exercises.add(exercise);
-                    exercisesListAdapter.notifyDataSetChanged();
+                    @Override
+                    public void onResponse(BaseResponse response)
+                    {
+                        Exercise exercise = ((ExerciseResponse)response).getData().get(0);
+                        if (exercise != null)
+                        {
+                            exercises.add(exercise);
+                            exercisesListAdapter.notifyDataSetChanged();
 
-                    if (exercise.getTopicId() == topics.get(0).getId())
-                    {
-                        ((MainActivity)getActivity()).onLoad();
-                    }
-                    if (exercise.getTopicId() == topics.get(topics.size() - 1).getId())
-                    {
-                        ((MainActivity)getActivity()).onLoaded();
-                        exercisesListAdapter.addLastItem();
-                        exercisesListAdapter.notifyDataSetChanged();
-                    }
+                            if (exercise.getTopicId() == topics.get(0).getId())
+                            {
+                                if (getActivity() != null)
+                                {
+                                    ((MainActivity)VariantFragment.this.getActivity()).onLoad();
+                                }
+                            }
+                            if (exercise.getTopicId() == topics.get(topics.size() - 1).getId())
+                            {
+                                if (getActivity() != null)
+                                {
+                                    ((MainActivity)VariantFragment.this.getActivity()).onLoaded();
+                                }
+                                Exercise completeButton = new Exercise();
+                                completeButton.setId(-1);
+                                exercises.add(completeButton);
+                            }
+                        }
 
-                    if (i.getValue() < topics.size() - 1)
-                    {
-                        i.inc();
-                        NetworkService.getInstance(this).getRandomExercise(
-                                App.getInstance().getUser().getSessionId(), topics.get(i.getValue()).getId(), false);
+                        if (i.getValue() < topics.size() - 1)
+                        {
+                            i.inc();
+                            NetworkService.getInstance(this).getRandomExercise(
+                                    App.getInstance().getUser().getSessionId(), topics.get(i.getValue()).getId(), false);
+                        }
                     }
+                    @Override
+                    public void onFailure(Throwable t) { }
+                    @Override
+                    public void onError(String error) { }
+                    @Override
+                    public void onDisconnected() { }
+                });
+                if (networkService.isNetworkConnected())
+                {
+                    networkService.getRandomExercise(
+                            App.getInstance().getUser().getSessionId(), topics.get(i.getValue()).getId(), false);
                 }
-                @Override
-                public void onFailure(Throwable t) { }
-                @Override
-                public void onError(String error) { }
-                @Override
-                public void onDisconnected() { }
             });
-            networkService.getRandomExercise(
-                    App.getInstance().getUser().getSessionId(), topics.get(i.getValue()).getId(), false);
-        });
+            created = true;
+        }
     }
 
     public void OnViewHolderClick(RecyclerView.ViewHolder viewHolder)

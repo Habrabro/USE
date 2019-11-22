@@ -3,11 +3,8 @@ package com.example.use;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.ShapeDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +20,6 @@ import com.example.use.Networking.IResponseReceivable;
 import com.example.use.Networking.NetworkService;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -103,7 +99,7 @@ public class ExercisesListAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public int getItemViewType(int position)
     {
-        if (position == fixedSize - 1)
+        if (exercises.get(position).getId() == -1)
         {
             return 1;
         }
@@ -117,12 +113,6 @@ public class ExercisesListAdapter extends RecyclerView.Adapter<RecyclerView.View
     public int getItemCount()
     {
         return exercises.size();
-    }
-
-    public void addLastItem()
-    {
-        exercises.add(new Exercise());
-        fixedSize = exercises.size();
     }
 
     public interface Listener
@@ -145,40 +135,48 @@ public class ExercisesListAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder
+    class ViewHolder extends RecyclerView.ViewHolder implements AnswerSection.ViewHolder
     {
-        private final int messageRightStrokeColor = Color.parseColor("#D5FF2F");
-        private final int messageWrongStrokeColor = Color.parseColor("#F17357");
-        private final int messageRightAnswerStrokeColor = Color.parseColor("#f2f2f2");
-        private final int messageStrokeWidth = 4;
-
         AnswerSection answerSection;
+        RequestForm requestForm;
+        View view;
+        private boolean instantiated = false;
 
         @BindView(R.id.tvId) TextView idView;
         @BindView(R.id.tvDescription) TextView descriptionView;
         @BindView(R.id.ivImage) ImageView imageView;
-        @BindView(R.id.etAnswerField) EditText answerFieldView;
         @BindView(R.id.btnAddToFavorite) ImageView btnAddToFavorite;
         @BindView(R.id.btnAddToCompleted) ImageView btnAddToCompleted;
-        @BindView(R.id.btnShowAnswer) Button btnShowAnswer;
-        @BindView(R.id.btnAnswer) Button btnAnswer;
-        @BindView(R.id.tvAnswerMessage) TextView tvAnswerMessage;
 
         public void setExercise(Exercise exercise)
         {
             this.exercise = exercise;
             idView.setText(exercise.getNumber() + "." + Long.toString(exercise.getId()));
             descriptionView.setText(exercise.getDescription());
-            Glide
-                    .with(App.getInstance())
-                    .load(exercise.getImg())
-                    .placeholder(new ColorDrawable(
-                            App.getInstance().getResources().getColor(R.color.glidePlaceholderColor)))
-                    .error(R.drawable.ic_broken_image)
-                    .fallback(R.drawable.ic_broken_image)
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .into(imageView);
-            answerSection = new AnswerSection(exercise, btnShowAnswer, btnAnswer, tvAnswerMessage);
+            String nullImgUrl = App.getInstance().getServerBaseUrl() + "img/uploads/exercises_images/";
+            if (!exercise.getImg().equals(nullImgUrl))
+            {
+                Glide
+                        .with(App.getInstance())
+                        .load(exercise.getImg())
+                        .placeholder(new ColorDrawable(
+                                App.getInstance().getResources().getColor(R.color.glidePlaceholderColor)))
+                        .error(R.drawable.ic_broken_image)
+                        .fallback(R.drawable.ic_broken_image)
+                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                        .into(imageView);
+            }
+            if (!exercise.getRightAnswer().equals("c"))
+            {
+
+                answerSection = new AnswerSection(
+                        exercise, this, view, instantiated);
+            }
+            else
+            {
+                requestForm = new RequestForm((BaseFragment) listener, view, exercise, instantiated);
+            }
+            instantiated = true;
 
             if (exercise.isCompleted())
             {
@@ -202,18 +200,8 @@ public class ExercisesListAdapter extends RecyclerView.Adapter<RecyclerView.View
         ViewHolder(View view)
         {
             super(view);
+            this.view = view;
             ButterKnife.bind(this, view);
-        }
-
-        @OnClick(R.id.btnShowAnswer)
-        public void onShowAnswerClick()
-        {
-            answerSection.showOrHideRightAnswer();
-        }
-        @OnClick(R.id.btnAnswer)
-        public void onAnswerClick()
-        {
-            answerSection.answer(answerFieldView.getText().toString());
         }
 
         @OnClick(R.id.btnAddToFavorite)
@@ -232,7 +220,7 @@ public class ExercisesListAdapter extends RecyclerView.Adapter<RecyclerView.View
                             exercise.switchIsFavorite();
                             Snackbar.make(
                                     App.getInstance().getCurrentFragment().getView(),
-                                    "Added to favorites",
+                                    "Добавлено в \"Избранное\"",
                                     Snackbar.LENGTH_SHORT).show();
                         }
                         @Override public void onFailure(Throwable t) { } @Override public void onError(String error) { } @Override public void onDisconnected() { }
@@ -249,7 +237,7 @@ public class ExercisesListAdapter extends RecyclerView.Adapter<RecyclerView.View
                             exercise.switchIsFavorite();
                             Snackbar.make(
                                     App.getInstance().getCurrentFragment().getView(),
-                                    "Removed from favorites",
+                                    "Удалено из \"Избранного\"",
                                     Snackbar.LENGTH_SHORT).show();
                         }
                         @Override public void onFailure(Throwable t) { } @Override public void onError(String error) { } @Override public void onDisconnected() { }
@@ -260,7 +248,7 @@ public class ExercisesListAdapter extends RecyclerView.Adapter<RecyclerView.View
             {
                 Snackbar.make(
                         App.getInstance().getCurrentFragment().getView(),
-                        "You need to authorize",
+                        "Войдите для этого действия",
                         Snackbar.LENGTH_SHORT).show();
             }
         }
@@ -281,7 +269,7 @@ public class ExercisesListAdapter extends RecyclerView.Adapter<RecyclerView.View
                             exercise.switchIsCompleted();
                             Snackbar.make(
                                     App.getInstance().getCurrentFragment().getView(),
-                                    "Added to completed",
+                                    "Добавлено в \"Выполненные\"",
                                     Snackbar.LENGTH_SHORT).show();
                         }
                         @Override public void onFailure(Throwable t) { } @Override public void onError(String error) { } @Override public void onDisconnected() { }
@@ -298,7 +286,7 @@ public class ExercisesListAdapter extends RecyclerView.Adapter<RecyclerView.View
                             exercise.switchIsCompleted();
                             Snackbar.make(
                                     App.getInstance().getCurrentFragment().getView(),
-                                    "Removed from completed",
+                                    "Удалено из \"Выполненных\"",
                                     Snackbar.LENGTH_SHORT).show();
                         }
                         @Override public void onFailure(Throwable t) { } @Override public void onError(String error) { } @Override public void onDisconnected() { }
@@ -309,105 +297,8 @@ public class ExercisesListAdapter extends RecyclerView.Adapter<RecyclerView.View
             {
                 Snackbar.make(
                         App.getInstance().getCurrentFragment().getView(),
-                        "You need to authorize",
+                        "Войдите для этого действия",
                         Snackbar.LENGTH_SHORT).show();
-            }
-        }
-
-        private class AnswerSection
-        {
-            private Exercise exercise;
-            private Button showAnswer, answer;
-            private TextView answerMessage;
-
-            private boolean isAnswerRight = false;
-            private boolean isRightAnswerShown = false;
-
-            private GradientDrawable tvAnswerMessageBackground;
-
-            public AnswerSection(Exercise exercise, Button showAnswer, Button answer, TextView answerMessage)
-            {
-                this.exercise = exercise;
-                this.showAnswer = showAnswer;
-                this.answer = answer;
-                this.answerMessage = answerMessage;
-                tvAnswerMessageBackground =  ((GradientDrawable)tvAnswerMessage.getBackground().mutate());
-            }
-
-            public boolean isAnswerRight()
-            {
-                return isAnswerRight;
-            }
-            public boolean isRightAnswerShown()
-            {
-                return isRightAnswerShown;
-            }
-
-            private void setIsRightAnswerShown(boolean isRightAnswerShown)
-            {
-                if (!isRightAnswerShown)
-                {
-                    showAnswer.setHint("Показать ответ");
-                }
-                else
-                {
-                    showAnswer.setHint("Скрыть ответ");
-                }
-                this.isRightAnswerShown = isRightAnswerShown;
-            }
-
-            public void showOrHideRightAnswer()
-            {
-                if (!isRightAnswerShown())
-                {
-                    tvAnswerMessage.setVisibility(View.VISIBLE);
-                    tvAnswerMessage.setHint("Правильный ответ: " + exercise.getRightAnswer());
-                    tvAnswerMessageBackground.setStroke(messageStrokeWidth, messageRightAnswerStrokeColor);
-                    setIsRightAnswerShown(true);
-                }
-                else
-                {
-                    tvAnswerMessage.setVisibility(View.INVISIBLE);
-                    setIsRightAnswerShown(false);
-                }
-            }
-
-            public void answer(String answer)
-            {
-                if (checkAnswer(answer, exercise.getRightAnswer(), exercise.getAnswerType()))
-                {
-                    tvAnswerMessage.setVisibility(View.VISIBLE);
-                    tvAnswerMessage.setHint("Верно!");
-                    tvAnswerMessageBackground.setStroke(messageStrokeWidth, messageRightStrokeColor);
-                    isAnswerRight = true;
-                    if (!exercise.isCompleted())
-                    {
-                        onAddToCompletedClick();
-                    }
-                }
-                else
-                {
-                    tvAnswerMessage.setVisibility(View.VISIBLE);
-                    tvAnswerMessage.setHint("Не верно!");
-                    tvAnswerMessageBackground.setStroke(messageStrokeWidth, messageWrongStrokeColor);
-                    isAnswerRight = false;
-                }
-                setIsRightAnswerShown(false);
-            }
-
-            private boolean checkAnswer(String answer, String rightAnswer, String answerType)
-            {
-                switch (answerType)
-                {
-                    case "ordered":
-                        return answer.equals(rightAnswer);
-                    case "unordered":
-                        Set<Character> answerSet = StringUtils.stringToCharacterSet(answer);
-                        Set<Character> rightAnswerSet = StringUtils.stringToCharacterSet(rightAnswer);
-                        return StringUtils.containsAllChars(answer, rightAnswer) && answer.length() == rightAnswer.length();
-                    default:
-                        return false;
-                }
             }
         }
     }

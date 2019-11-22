@@ -6,7 +6,7 @@ import com.example.use.Subject;
 import com.example.use.Topic;
 import com.example.use.User;
 
-@androidx.room.Database(entities = {Subject.class, Topic.class, User.class}, version = 9)
+@androidx.room.Database(entities = {Subject.class, Topic.class, User.class}, version = 11)
 public abstract class Db extends RoomDatabase
 {
     public abstract SubjectDao subjectsDao();

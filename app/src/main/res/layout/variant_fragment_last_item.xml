@@ -8,6 +8,6 @@
         android:layout_width="match_parent"
         android:layout_height="45dp"
         style="@style/exerciseAnswerSectionButton"
-        android:background="@drawable/complete_variant_button"
-        android:hint="Завершить выполнение"/>
+        android:background="@drawable/subject_menu_button"
+        android:hint="Подвести итоги"/>
 </LinearLayout>

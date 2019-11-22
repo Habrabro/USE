@@ -8,12 +8,18 @@ public class Exercise
     private String description;
     private String img;
     private String rightAnswer;
+    private String answer;
     private int points;
     private String answerType;
     private int version;
     private boolean status;
 
-    private boolean answered = false;
+    private boolean answeredRight = false;
+
+    public void setId(long id)
+    {
+        this.id = id;
+    }
 
     public boolean isCompleted()
     {
@@ -59,6 +65,16 @@ public class Exercise
         return img;
     }
 
+    public void setAnswer(String answer)
+    {
+        this.answer = answer;
+    }
+
+    public String getAnswer()
+    {
+        return answer;
+    }
+
     public String getRightAnswer() {
         return rightAnswer;
     }
@@ -81,8 +97,13 @@ public class Exercise
         return answerType;
     }
 
-    public boolean isAnswered()
+    public boolean isAnsweredRight()
     {
-        return answered;
+        return answeredRight;
+    }
+
+    public void setAnsweredRight(boolean answeredRight)
+    {
+        this.answeredRight = answeredRight;
     }
 }

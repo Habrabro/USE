@@ -1,21 +1,37 @@
 package com.example.use;
 
+import android.content.ClipData;
 import android.content.Context;
+import android.content.Intent;
+import android.icu.text.Transliterator;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.text.ICUCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.use.Networking.BaseResponse;
 import com.example.use.Networking.ExerciseResponse;
+import com.example.use.Networking.IResponseReceivable;
+import com.example.use.Networking.NetworkService;
 
+import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
 
 public class ExercisesListFragment extends BaseFragment implements ExercisesListAdapter.Listener
 {
@@ -33,7 +49,7 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
 
     private int page;
 
-    private ExercisesListAdapter exercisesListAdapter;
+    public ExercisesListAdapter exercisesListAdapter;
 
     public void setRequest(IRequestSendable request)
     {

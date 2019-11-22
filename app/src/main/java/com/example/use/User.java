@@ -28,6 +28,24 @@ public class User
     private Date lastUpdate;
     private Long sessionId = null;
 
+    public int getAvailableChecks()
+    {
+        return availableChecks;
+    }
+
+    public void setAvailableChecks(int availableChecks)
+    {
+        this.availableChecks = availableChecks;
+    }
+
+    public void decAvailableChecks()
+    {
+        this.availableChecks--;
+        DbService.getInstance().insertOrUpdateUser(this);
+    }
+
+    private int availableChecks;
+
     private boolean isAuthorized = false;
 
     public void setLogin(String login)
@@ -65,6 +83,7 @@ public class User
     {
         this.sessionId = user.getSessionId();
         this.login = user.getLogin();
+        this.availableChecks = user.getAvailableChecks();
         isAuthorized = true;
         DbService.getInstance().insertOrUpdateUser(this);
     }

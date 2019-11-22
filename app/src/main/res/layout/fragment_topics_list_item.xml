@@ -5,12 +5,14 @@
 
     <TextView android:id="@+id/tvTopicTitle"
         android:layout_width="match_parent"
-        android:layout_height="57dp"
+        android:layout_height="wrap_content"
         android:textColor="@android:color/black"
         android:textSize="19sp"
         android:gravity="center_vertical"
         android:drawableEnd="@drawable/ic_arrow_point_to_right"
         android:paddingStart="18dp"
         android:paddingEnd="18dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="14dp"
         android:text="Some text"/>
 </LinearLayout>

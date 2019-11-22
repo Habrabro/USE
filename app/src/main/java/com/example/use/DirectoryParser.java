@@ -36,8 +36,7 @@ public class DirectoryParser
         Pattern imgMatchPattern = Pattern.compile(regex);
         Matcher imgMatcher = imgMatchPattern.matcher(content);
         LinearLayout linearLayout = view.findViewById(R.id.llDirectoryItem);
-        while (imgMatcher.find())
-        {
+        while (imgMatcher.find()) {
             stringEnd = imgMatcher.start() - 1;
             String string = content.substring(stringStart, stringEnd);
             String imgSrc = imgMatcher.group().substring(5, imgMatcher.group().length() - 6).trim();

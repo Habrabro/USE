@@ -2,6 +2,10 @@ package com.example.use;
 
 import android.app.Application;
 
+import com.example.use.Networking.BaseResponse;
+import com.example.use.Networking.IResponseReceivable;
+import com.example.use.Networking.NetworkService;
+import com.example.use.Networking.UserResponse;
 import com.example.use.database.DbService;
 
 import java.util.List;
@@ -38,7 +42,38 @@ public class App extends Application
     {
         super.onCreate();
         instance = this;
-        DbService.getInstance().getUser(result -> {user = result;});
+        DbService.getInstance().getUser(result ->
+        {
+            user = result;
+//            NetworkService.getInstance(new IResponseReceivable()
+//            {
+//                @Override
+//                public void onResponse(BaseResponse response)
+//                {
+//                    User user = ((UserResponse)response).getData();
+//                    user.setLastUpdate(App.getInstance().user.getLastUpdate());
+//                    App.getInstance().user.authorize(user);
+//                }
+//
+//                @Override
+//                public void onFailure(Throwable t)
+//                {
+//
+//                }
+//
+//                @Override
+//                public void onError(String error)
+//                {
+//
+//                }
+//
+//                @Override
+//                public void onDisconnected()
+//                {
+//
+//                }
+//            }).getProfile();
+        });
 
         VK.initialize(this);
     }

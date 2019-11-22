@@ -201,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements SubjectMenuFragme
     {
         snackbar = Snackbar.make(
                 findViewById(R.id.fragmentContainer),
-                "Loading",
+                "Загрузка",
                 Snackbar.LENGTH_INDEFINITE);
         snackbar.getView().setTranslationZ(130);
         snackbar.show();
@@ -219,8 +219,8 @@ public class MainActivity extends AppCompatActivity implements SubjectMenuFragme
     {
         snackbar = Snackbar.make(
                 findViewById(R.id.fragmentContainer),
-                "Disconnected",
-                Snackbar.LENGTH_INDEFINITE);
+                "Нет подключения к сети",
+                Snackbar.LENGTH_LONG);
         snackbar.show();
     }
 }

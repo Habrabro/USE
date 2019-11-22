@@ -5,24 +5,30 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.use.Networking.BaseResponse;
-import com.example.use.Networking.NetworkService;
-import com.example.use.database.DbRequestListener;
-import com.example.use.database.DbService;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class VariantResultsFragment extends BaseFragment
 {
-    private List<Exercise> exercises;
+    private List<Exercise> exercises = new ArrayList<>();
+
+    @BindView(R.id.btnCloseResults)
+    Button btnCloseResults;
 
     public VariantResultsFragment()
     {
@@ -32,8 +38,29 @@ public class VariantResultsFragment extends BaseFragment
     public static VariantResultsFragment newInstance(List<Exercise> exercises)
     {
         VariantResultsFragment fragment = new VariantResultsFragment();
-        fragment.exercises = exercises;
+        fragment.exercises.addAll(exercises);
+        fragment.exercises.remove(exercises.size() - 1);
         return fragment;
+    }
+
+    @OnClick(R.id.btnCloseResults)
+    public void onBtnCloseResultsClick()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Вы действительно хотите закрыть вариант?");
+        builder.setPositiveButton("OK", (dialog, id) ->
+        {
+            FragmentManager fm = getActivity().getSupportFragmentManager();
+            for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {
+                fm.popBackStack();
+            }
+        });
+        builder.setNegativeButton("Отмена", (dialog, id) ->
+        {
+            // User cancelled the dialog
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     @Override
@@ -46,7 +73,7 @@ public class VariantResultsFragment extends BaseFragment
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_topics_list, container, false);
+        View view = inflater.inflate(R.layout.variant_results_fragment_layout, container, false);
         return view;
     }
 
@@ -55,7 +82,39 @@ public class VariantResultsFragment extends BaseFragment
     {
         super.onViewCreated(view, savedInstanceState);
 
+        ButterKnife.bind(this, view);
 
+        int pointsSummary = 0;
+
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        LinearLayout tableView = view.findViewById(R.id.llResultsTable);
+        TextView pointsSummaryCell = view.findViewById(R.id.tvPointsSummaryValueCell);
+
+        for (Exercise exercise : exercises)
+        {
+            View rowView = inflater.inflate(R.layout.results_table_row, null);
+            tableView.addView(rowView);
+
+            TextView numberCol = rowView.findViewById(R.id.tvNumberCol);
+            TextView rightAnswerCol = rowView.findViewById(R.id.tvRightAnswerCol);
+            TextView answerCol = rowView.findViewById(R.id.tvAnswerCol);
+            TextView pointsCol = rowView.findViewById(R.id.tvPointsCol);
+
+            numberCol.setText(Integer.toString(exercise.getNumber()));
+            rightAnswerCol.setText(exercise.getRightAnswer());
+            answerCol.setText(exercise.getAnswer());
+            if (exercise.isAnsweredRight())
+            {
+                pointsSummary += exercise.getPoints();
+                pointsCol.setText(Integer.toString(exercise.getPoints()));
+            }
+            else
+            {
+                pointsCol.setText("0");
+            }
+        }
+
+        pointsSummaryCell.setText(Integer.toString(pointsSummary));
     }
 
     @Override

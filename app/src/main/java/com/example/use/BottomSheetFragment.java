@@ -81,7 +81,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
                 case "401":
                     Snackbar snackbar = Snackbar.make(
                             contentView,
-                            "Incorrect login/password",
+                            "Неверный логин/пароль",
                             Snackbar.LENGTH_SHORT);
                     snackbar.getView().setTranslationZ(30);
                     snackbar.show();
@@ -221,7 +221,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
                     {
                         if (errorData.get("login") != null)
                         {
-                            tvLoginError.setText("Email is exists");
+                            tvLoginError.setText("Такой e-mail уже существует");
                             tvLoginError.setLayoutParams(shownLayoutParams);
                         }
                     }
@@ -272,10 +272,12 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
         LinearLayout favoriteExercises;
         @BindView(R.id.llCompletedExercises)
         LinearLayout completedExercises;
-        @BindView(R.id.llSavedVariants)
+        @BindView(R.id.llRequests)
         LinearLayout savedVariants;
         @BindView(R.id.tvProfileTitle)
         TextView tvProfileTitle;
+        @BindView(R.id.tvAvailableChecks)
+        TextView tvAvailableChecks;
 
         public View getProfileLayout()
         {
@@ -289,7 +291,9 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
             profileLayout = View.inflate(getContext(), R.layout.profile_layout, null);
             ButterKnife.bind(this, profileLayout);
 
-            tvProfileTitle.setText(App.getInstance().getUser().getLogin());
+            User user = App.getInstance().getUser();
+            tvProfileTitle.setText(user.getLogin());
+            tvAvailableChecks.setText("Доступных проверок: " + user.getAvailableChecks());
         }
 
         @OnClick(R.id.llFavoriteExercises)

@@ -37,7 +37,7 @@
             android:layout_height="0dp"
             android:paddingTop="23dp"
             android:textColor="@android:color/holo_red_light"
-            android:text="Fill all fields"/>
+            android:text="Заполните все поля"/>
 
         <EditText android:id="@+id/etLogin"
             android:layout_width="match_parent"
@@ -51,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:textColor="@android:color/holo_red_light"
-            android:text="Login is invalid"/>
+            android:text="Введите корректный e-mail"/>
 
         <EditText android:id="@+id/etPassword"
             android:layout_width="match_parent"
@@ -77,7 +77,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:textColor="@android:color/holo_red_light"
-            android:text="Passwordd is not equal"/>
+            android:text="Пароли не совпадают"/>
 
         <TextView android:id="@+id/tvEmailError"
             android:layout_width="match_parent"
