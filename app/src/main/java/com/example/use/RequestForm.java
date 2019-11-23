@@ -141,11 +141,12 @@ public class RequestForm extends ViewHolder
 
         if (data != null || !_text.isEmpty())
         {
+            int clipDataCount = 0;
             if (data != null)
             {
                 if (data.getClipData() != null)
                 {
-                    int clipDataCount = data.getClipData().getItemCount();
+                    clipDataCount = data.getClipData().getItemCount();
                     for (int i = 0; i < clipDataCount; i++)
                     {
                         Uri uri = data.getClipData().getItemAt(i).getUri();
@@ -157,62 +158,71 @@ public class RequestForm extends ViewHolder
                     parts.add(createMultipartBodyPart(data.getData()));
                 }
             }
-
-            RequestBody exerciseId = RequestBody.create(MediaType.parse("text/html"), Long.toString(exercise.getId()));
-            RequestBody text = RequestBody.create(MediaType.parse("text/html"), _text);
-            ProgressDialog dialog = ProgressDialog.show(fragment.getContext(), "",
-                    "Отправка...", true);
-            dialog.setCancelable(true);
-            NetworkService.getInstance(new IResponseReceivable()
+            if (clipDataCount <= 5)
             {
-                @Override
-                public void onResponse(BaseResponse response)
+                RequestBody exerciseId = RequestBody.create(MediaType.parse("text/html"), Long.toString(exercise.getId()));
+                RequestBody text = RequestBody.create(MediaType.parse("text/html"), _text);
+                ProgressDialog dialog = ProgressDialog.show(fragment.getContext(), "",
+                        "Отправка...", true);
+                dialog.setCancelable(true);
+                NetworkService networkService = NetworkService.getInstance(new IResponseReceivable()
                 {
-                    dialog.dismiss();
-                    Snackbar snackbar = Snackbar.make(
-                            fragment.getView(),
-                            "Вы успешно оставили запрос на проверку задания. " +
-                                    "Посмотреть его статус вы можете в" +
-                                    "профиле в разделе \"Ваши запросы на проверку\"",
-                            Snackbar.LENGTH_INDEFINITE);
-                    snackbar.setAction("OK", view -> snackbar.dismiss());
-                    View snackbarView = snackbar.getView();
-                    TextView textView = (TextView) snackbarView.findViewById(R.id.snackbar_text);
-                    textView.setMaxLines(5);
-                    snackbar.show();
-
-                    App.getInstance().getUser().decAvailableChecks();
-                    if (fragment instanceof ExercisesListFragment)
+                    @Override
+                    public void onResponse(BaseResponse response)
                     {
-                        ((ExercisesListFragment)fragment).exercisesListAdapter.notifyDataSetChanged();
+                        dialog.dismiss();
+                        Snackbar snackbar = Snackbar.make(
+                                fragment.getView(),
+                                "Вы успешно оставили запрос на проверку задания. " +
+                                        "Посмотреть его статус вы можете в" +
+                                        "профиле в разделе \"Ваши запросы на проверку\"",
+                                Snackbar.LENGTH_INDEFINITE);
+                        snackbar.setAction("OK", view -> snackbar.dismiss());
+                        View snackbarView = snackbar.getView();
+                        TextView textView = (TextView) snackbarView.findViewById(R.id.snackbar_text);
+                        textView.setMaxLines(5);
+                        snackbar.show();
+
+                        App.getInstance().getUser().decAvailableChecks();
+                        if (fragment instanceof ExercisesListFragment)
+                        {
+                            ((ExercisesListFragment)fragment).exercisesListAdapter.notifyDataSetChanged();
+                        }
+                        if (fragment instanceof VariantFragment)
+                        {
+                            ((VariantFragment)fragment).exercisesListAdapter.notifyDataSetChanged();
+                        }
                     }
-                    if (fragment instanceof VariantFragment)
+
+                    @Override
+                    public void onFailure(Throwable t)
                     {
-                        ((VariantFragment)fragment).exercisesListAdapter.notifyDataSetChanged();
+                        dialog.dismiss();
                     }
-                }
 
-                @Override
-                public void onFailure(Throwable t)
-                {
-                    dialog.dismiss();
-                }
+                    @Override
+                    public void onError(String error)
+                    {
+                        dialog.dismiss();
+                    }
 
-                @Override
-                public void onError(String error)
-                {
-                    dialog.dismiss();
-                }
-
-                @Override
-                public void onDisconnected()
-                {
-                    dialog.dismiss();
-                }
-            }).createRequest(exerciseId, parts, text);
+                    @Override
+                    public void onDisconnected()
+                    {
+                        dialog.dismiss();
+                    }
+                });
+                networkService.createRequest(exerciseId, parts, text);
+            }
+            else
+            {
+                tvRequestFormError.setText("Вы не можете отправить больше пяти файлов");
+                tvRequestFormError.setLayoutParams(shownLayoutParams);
+            }
         }
         else
         {
+            tvRequestFormError.setText("Вы не можете отправить пустой запрос");
             tvRequestFormError.setLayoutParams(shownLayoutParams);
         }
     }

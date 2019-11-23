@@ -10,6 +10,9 @@ import com.example.use.database.DbService;
 
 import java.util.List;
 
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.vk.api.sdk.*;
 import com.vk.api.sdk.utils.VKUtils;
 
@@ -76,6 +79,11 @@ public class App extends Application
         });
 
         VK.initialize(this);
+
+        MobileAds.initialize(this, initializationStatus ->
+        {
+
+        });
     }
 
     public void setCurrentFragment(BaseFragment fragment)

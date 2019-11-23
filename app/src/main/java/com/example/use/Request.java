@@ -145,11 +145,11 @@ public class Request
 
     public String getTopicNumber()
     {
-        return subjectName;
+        return topicNumber;
     }
 
-    public void setTopicNumber(String subjectName)
+    public void setTopicNumber(String topicNumber)
     {
-        this.subjectName = subjectName;
+        this.topicNumber = topicNumber;
     }
 }

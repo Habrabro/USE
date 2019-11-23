@@ -1,6 +1,7 @@
 package com.example.use;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.example.use.Networking.NetworkService;
 import com.example.use.Networking.RequestResponse;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -27,7 +29,7 @@ public class RequestsListFragment extends BaseFragment implements RequestsListAd
     private List<Request> requests = new ArrayList<>();
     RequestsListAdapter requestsListAdapter;
 
-    @BindView(R.id.rvRequestsList)
+
     RecyclerView rvRequestsList;
 
     public RequestsListFragment() {}
@@ -56,7 +58,7 @@ public class RequestsListFragment extends BaseFragment implements RequestsListAd
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        rvRequestsList = view.findViewById(R.id.rvRequestsList);
 
         DividerItemDecoration horizontalSeparator = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
         horizontalSeparator.setDrawable(getResources().getDrawable(R.drawable.horizontal_separator));
@@ -95,20 +97,5 @@ public class RequestsListFragment extends BaseFragment implements RequestsListAd
     public void onDetach()
     {
         super.onDetach();
-    }
-
-    public enum RequestStatusesAndColors
-    {
-        AWAITING("#949494"),
-        CHECKING("#7462CE"),
-        CHECKED("#2DE17C"),
-        REJECTED("#FAB03C");
-
-        private String colorCode;
-
-        RequestStatusesAndColors(String colorCode)
-        {
-            this.colorCode = colorCode;
-        }
     }
 }

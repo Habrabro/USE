@@ -292,7 +292,14 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
             ButterKnife.bind(this, profileLayout);
 
             User user = App.getInstance().getUser();
-            tvProfileTitle.setText(user.getLogin());
+            if (user.getName() == null)
+            {
+                tvProfileTitle.setText(user.getLogin());
+            }
+            else
+            {
+                tvProfileTitle.setText(user.getName());
+            }
             tvAvailableChecks.setText("Доступных проверок: " + user.getAvailableChecks());
         }
 

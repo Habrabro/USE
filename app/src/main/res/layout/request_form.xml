@@ -63,7 +63,7 @@
             android:paddingBottom="20dp"
             android:gravity="center_horizontal"
             android:textColor="@android:color/holo_red_light"
-            android:text="Вы не можете отослать пустой запрос"/>
+            android:text="Вы не можете отправить пустой запрос"/>
 
         <Button android:id="@+id/btnSendRequest"
             android:layout_width="match_parent"

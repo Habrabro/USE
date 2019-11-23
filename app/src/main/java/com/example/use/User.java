@@ -25,6 +25,7 @@ public class User
     @PrimaryKey(autoGenerate = true)
     public long id;
     private String login;
+    private String name;
     private Date lastUpdate;
     private Long sessionId = null;
 
@@ -72,6 +73,16 @@ public class User
         isAuthorized = authorized;
     }
 
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
     public void setLastUpdate(Date lastUpdate) { this.lastUpdate = lastUpdate; }
 
     public User(Date lastUpdate)
@@ -83,6 +94,7 @@ public class User
     {
         this.sessionId = user.getSessionId();
         this.login = user.getLogin();
+        this.name = user.getName();
         this.availableChecks = user.getAvailableChecks();
         isAuthorized = true;
         DbService.getInstance().insertOrUpdateUser(this);
