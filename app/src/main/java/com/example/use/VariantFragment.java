@@ -142,11 +142,11 @@ public class VariantFragment extends BaseFragment implements ExercisesListAdapte
 
     public void OnViewHolderClick(RecyclerView.ViewHolder viewHolder)
     {
-        switch (viewHolder.getItemViewType())
+        int vhIntType = viewHolder.getItemViewType();
+        ExercisesListAdapter.ViewHolderTypes type = ExercisesListAdapter.ViewHolderTypes.values()[vhIntType];
+        switch (type)
         {
-            case 0:
-                break;
-            case 1:
+            case COMPLETE_BUTTON:
                 VariantResultsFragment fragment = VariantResultsFragment.newInstance(exercises);
                 ((MainActivity)getActivity()).replaceFragment(fragment, "variantResultsFragment");
                 break;

@@ -2,30 +2,11 @@ package com.example.use;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.example.use.Networking.BaseResponse;
-import com.example.use.Networking.IResponseReceivable;
-import com.example.use.Networking.NetworkService;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
-import java.util.Set;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class ExercisesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 {
@@ -70,12 +51,16 @@ public class ExercisesListAdapter extends RecyclerView.Adapter<RecyclerView.View
     {
         View view;
         inflater = LayoutInflater.from(parent.getContext());
-        switch (viewType)
+        ViewHolderTypes type = ViewHolderTypes.values()[viewType];
+        switch (type)
         {
-            case 0:
-                view = inflater.inflate(R.layout.fragment_exercises_list_item, parent, false);
-                return new ViewHolder(view);
-            case 1:
+            case TEST_SECTION_EXERCISE:
+                view = inflater.inflate(R.layout.answer_section_layout, parent, false);
+                return new AnswerSection(view, listener);
+            case EXERCISE_WITH_REQUEST_SECTION:
+                view = inflater.inflate(R.layout.request_form, parent, false);
+                return new RequestForm((BaseFragment)listener, view, listener);
+            case COMPLETE_BUTTON:
                 view = inflater.inflate(R.layout.variant_fragment_last_item, parent, false);
                 return new CompleteVariantViewHolder(view);
             default:
@@ -86,12 +71,17 @@ public class ExercisesListAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position)
     {
-        switch (holder.getItemViewType())
+        Exercise exercise = exercises.get(position);
+        ViewHolderTypes type = ViewHolderTypes.values()[holder.getItemViewType()];
+        switch (type)
         {
-            case 0:
-                Exercise exercise = exercises.get(position);
-                ((ViewHolder)holder).setExercise(exercise);
-            case 1:
+            case TEST_SECTION_EXERCISE:
+                ((AnswerSection)holder).bindExercise(exercise);
+                break;
+            case EXERCISE_WITH_REQUEST_SECTION:
+                ((RequestForm)holder).bindExercise(exercise);
+                break;
+            case COMPLETE_BUTTON:
                 break;
         }
     }
@@ -101,11 +91,15 @@ public class ExercisesListAdapter extends RecyclerView.Adapter<RecyclerView.View
     {
         if (exercises.get(position).getId() == -1)
         {
-            return 1;
+            return ViewHolderTypes.COMPLETE_BUTTON.getType();
+        }
+        else if (exercises.get(position).getRightAnswer().equals("c"))
+        {
+            return ViewHolderTypes.EXERCISE_WITH_REQUEST_SECTION.getType();
         }
         else
         {
-            return 0;
+            return ViewHolderTypes.TEST_SECTION_EXERCISE.getType();
         }
     }
 
@@ -135,171 +129,23 @@ public class ExercisesListAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder implements AnswerSection.ViewHolder
+    public enum ViewHolderTypes
     {
-        AnswerSection answerSection;
-        RequestForm requestForm;
-        View view;
-        private boolean instantiated = false;
+        COMPLETE_BUTTON(0),
+        TEST_SECTION_EXERCISE(1),
+        EXERCISE_WITH_REQUEST_SECTION(2),
+        ADS_BLOCK(3);
 
-        @BindView(R.id.tvId) TextView idView;
-        @BindView(R.id.tvDescription) TextView descriptionView;
-        @BindView(R.id.ivImage) ImageView imageView;
-        @BindView(R.id.btnAddToFavorite) ImageView btnAddToFavorite;
-        @BindView(R.id.btnAddToCompleted) ImageView btnAddToCompleted;
-
-        public void setExercise(Exercise exercise)
+        public int getType()
         {
-            this.exercise = exercise;
-            idView.setText(exercise.getNumber() + "." + Long.toString(exercise.getId()));
-            descriptionView.setText(exercise.getDescription());
-            String nullImgUrl = App.getInstance().getServerBaseUrl() + "img/uploads/exercises_images/";
-            if (!exercise.getImg().equals(nullImgUrl))
-            {
-                Glide
-                        .with(App.getInstance())
-                        .load(exercise.getImg())
-                        .placeholder(new ColorDrawable(
-                                App.getInstance().getResources().getColor(R.color.glidePlaceholderColor)))
-                        .error(R.drawable.ic_broken_image)
-                        .fallback(R.drawable.ic_broken_image)
-                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                        .into(imageView);
-            }
-            if (!exercise.getRightAnswer().equals("c"))
-            {
-
-                answerSection = new AnswerSection(
-                        exercise, this, view, instantiated);
-            }
-            else
-            {
-                requestForm = new RequestForm((BaseFragment) listener, view, exercise, instantiated);
-            }
-            instantiated = true;
-
-            if (exercise.isCompleted())
-            {
-                btnAddToCompleted.setImageResource(R.drawable.ic_check);
-            }
-            else
-            {
-                btnAddToCompleted.setImageResource(R.drawable.ic_uncompleted);
-            }
-            if (exercise.isFavorite())
-            {
-                btnAddToFavorite.setImageResource(R.drawable.ic_star);
-            }
-            else
-            {
-                btnAddToFavorite.setImageResource(R.drawable.ic_unstar);
-            }
-        }
-        private Exercise exercise;
-
-        ViewHolder(View view)
-        {
-            super(view);
-            this.view = view;
-            ButterKnife.bind(this, view);
+            return type;
         }
 
-        @OnClick(R.id.btnAddToFavorite)
-        public void onAddToFavoriteClick()
-        {
-            if (App.getInstance().getUser().isAuthorized())
-            {
-                if (!exercise.isFavorite())
-                {
-                    btnAddToFavorite.setImageResource(R.drawable.ic_star);
-                    NetworkService.getInstance(new IResponseReceivable()
-                    {
-                        @Override
-                        public void onResponse(BaseResponse response)
-                        {
-                            exercise.switchIsFavorite();
-                            Snackbar.make(
-                                    App.getInstance().getCurrentFragment().getView(),
-                                    "Добавлено в \"Избранное\"",
-                                    Snackbar.LENGTH_SHORT).show();
-                        }
-                        @Override public void onFailure(Throwable t) { } @Override public void onError(String error) { } @Override public void onDisconnected() { }
-                    }).addFavoriteExercise(exercise.getId());
-                }
-                else
-                {
-                    btnAddToFavorite.setImageResource(R.drawable.ic_unstar);
-                    NetworkService.getInstance(new IResponseReceivable()
-                    {
-                        @Override
-                        public void onResponse(BaseResponse response)
-                        {
-                            exercise.switchIsFavorite();
-                            Snackbar.make(
-                                    App.getInstance().getCurrentFragment().getView(),
-                                    "Удалено из \"Избранного\"",
-                                    Snackbar.LENGTH_SHORT).show();
-                        }
-                        @Override public void onFailure(Throwable t) { } @Override public void onError(String error) { } @Override public void onDisconnected() { }
-                    }).removeFavoriteExercise(exercise.getId());
-                }
-            }
-            else
-            {
-                Snackbar.make(
-                        App.getInstance().getCurrentFragment().getView(),
-                        "Войдите для этого действия",
-                        Snackbar.LENGTH_SHORT).show();
-            }
-        }
+        private int type;
 
-        @OnClick(R.id.btnAddToCompleted)
-        public void onAddToCompletedClick()
+        ViewHolderTypes(int type)
         {
-            if (App.getInstance().getUser().isAuthorized())
-            {
-                if (!exercise.isCompleted())
-                {
-                    btnAddToCompleted.setImageResource(R.drawable.ic_check);
-                    NetworkService.getInstance(new IResponseReceivable()
-                    {
-                        @Override
-                        public void onResponse(BaseResponse response)
-                        {
-                            exercise.switchIsCompleted();
-                            Snackbar.make(
-                                    App.getInstance().getCurrentFragment().getView(),
-                                    "Добавлено в \"Выполненные\"",
-                                    Snackbar.LENGTH_SHORT).show();
-                        }
-                        @Override public void onFailure(Throwable t) { } @Override public void onError(String error) { } @Override public void onDisconnected() { }
-                    }).addCompletedExercise(exercise.getId());
-                }
-                else
-                {
-                    btnAddToCompleted.setImageResource(R.drawable.ic_uncompleted);
-                    NetworkService.getInstance(new IResponseReceivable()
-                    {
-                        @Override
-                        public void onResponse(BaseResponse response)
-                        {
-                            exercise.switchIsCompleted();
-                            Snackbar.make(
-                                    App.getInstance().getCurrentFragment().getView(),
-                                    "Удалено из \"Выполненных\"",
-                                    Snackbar.LENGTH_SHORT).show();
-                        }
-                        @Override public void onFailure(Throwable t) { } @Override public void onError(String error) { } @Override public void onDisconnected() { }
-                    }).removeCompletedExercise(exercise.getId());
-                }
-            }
-            else
-            {
-                Snackbar.make(
-                        App.getInstance().getCurrentFragment().getView(),
-                        "Войдите для этого действия",
-                        Snackbar.LENGTH_SHORT).show();
-            }
+            this.type = type;
         }
     }
 }

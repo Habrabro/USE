@@ -2,7 +2,10 @@
 <LinearLayout android:id="@+id/llRequestForm"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:padding="15dp">
+
+    <include layout="@layout/fragment_exercises_list_item"></include>
 
     <TextView android:id="@+id/tvAvailableChecks"
         android:layout_width="match_parent"

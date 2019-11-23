@@ -2,49 +2,36 @@ package com.example.use;
 
 import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Inflater;
 
-import id.zelory.compressor.Compressor;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Response;
 
 import com.example.use.Networking.BaseResponse;
 import com.example.use.Networking.IResponseReceivable;
 import com.example.use.Networking.NetworkService;
 import com.google.android.material.snackbar.Snackbar;
 
-public class RequestForm
+public class RequestForm extends ViewHolder
 {
     private BaseFragment fragment;
-    private View view;
-    private Exercise exercise;
     private EditText etText;
     private Button btnSendRequest;
     private TextView tvRequestFormError;
@@ -60,19 +47,10 @@ public class RequestForm
     LinearLayout.LayoutParams shownLayoutParams = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
-    public RequestForm(BaseFragment fragment, View view, Exercise exercise, boolean isReusing)
+    public RequestForm(BaseFragment fragment, View view, ExercisesListAdapter.Listener listener)
     {
+        super(view, listener);
         this.fragment = fragment;
-        this.view = view;
-        this.exercise = exercise;
-
-        LayoutInflater inflater = LayoutInflater.from(view.getContext());
-        LinearLayout llExercise = view.findViewById(R.id.llExercise);
-        View requestForm = inflater.inflate(R.layout.request_form, null);
-        if (!isReusing)
-        {
-            llExercise.addView(requestForm);
-        }
 
         etText = view.findViewById(R.id.etText);
         tvRequestFormError = view.findViewById(R.id.tvRequestFormError);
@@ -83,20 +61,7 @@ public class RequestForm
         llCanCreateRequest = view.findViewById(R.id.llCanCreateRequest);
         llCantCreateRequest = view.findViewById(R.id.llCantCreateRequest);
 
-        int availChecks = App.getInstance().getUser().getAvailableChecks();
-        tvAvailableChecks.setText("Доступных проверок: " + availChecks);
-        if (availChecks > 0)
-        {
-            llCanCreateRequest.setLayoutParams(shownLayoutParams);
-            llCantCreateRequest.setLayoutParams(hiddenLayoutParams);
-        }
-        else
-        {
-            llCantCreateRequest.setLayoutParams(shownLayoutParams);
-            llCanCreateRequest.setLayoutParams(hiddenLayoutParams);
-        }
-
-        requestForm.findViewById(R.id.btnSelectFiles).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.btnSelectFiles).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(ContextCompat.checkSelfPermission(fragment.getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -116,11 +81,30 @@ public class RequestForm
         });
     }
 
+    @Override
+    public void bindExercise(Exercise exercise)
+    {
+        super.bindExercise(exercise);
+
+        int availChecks = App.getInstance().getUser().getAvailableChecks();
+        tvAvailableChecks.setText("Доступных проверок: " + availChecks);
+        if (availChecks > 0)
+        {
+            llCanCreateRequest.setLayoutParams(shownLayoutParams);
+            llCantCreateRequest.setLayoutParams(hiddenLayoutParams);
+        }
+        else
+        {
+            llCantCreateRequest.setLayoutParams(shownLayoutParams);
+            llCanCreateRequest.setLayoutParams(hiddenLayoutParams);
+        }
+    }
+
     public void selectFiles(@Nullable Intent data)
     {
-        this.data = data;
         if (data != null)
         {
+            this.data = new Intent(data);
             if (data.getClipData() != null)
             {
                 tvFilesPicked.setText("Выбрано файлов: " + data.getClipData().getItemCount());

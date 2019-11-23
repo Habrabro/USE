@@ -16,7 +16,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class AnswerSection
+public class AnswerSection extends ViewHolder
 {
     private final int messageRightStrokeColor = Color.parseColor("#D5FF2F");
     private final int messageWrongStrokeColor = Color.parseColor("#F17357");
@@ -28,32 +28,23 @@ public class AnswerSection
     @BindView(R.id.btnAnswer) Button btnAnswer;
     @BindView(R.id.tvAnswerMessage) TextView tvAnswerMessage;
 
-    private Exercise exercise;
-    private ViewHolder viewHolder;
-    private View view;
-
     private boolean isAnswerRight = false;
     private boolean isRightAnswerShown = false;
 
     private GradientDrawable tvAnswerMessageBackground;
 
-    public AnswerSection(Exercise exercise, ViewHolder viewHolder, View view, boolean isReusing)
+    public AnswerSection(View view, ExercisesListAdapter.Listener listener)
     {
-        LayoutInflater inflater = LayoutInflater.from(view.getContext());
-        LinearLayout llExercise = view.findViewById(R.id.llExercise);
-        View answerSectionView = inflater.inflate(R.layout.answer_section_layout, null);
-        if (!isReusing)
-        {
-            llExercise.addView(answerSectionView);
-        }
-
-
-        this.viewHolder = viewHolder;
-        this.view = view;
+        super(view, listener);
         ButterKnife.bind(this, view);
+    }
 
-        this.exercise = exercise;
-        tvAnswerMessageBackground =  ((GradientDrawable)tvAnswerMessage.getBackground().mutate());
+    @Override
+    public void bindExercise(Exercise exercise)
+    {
+        super.bindExercise(exercise);
+
+        tvAnswerMessageBackground = ((GradientDrawable)tvAnswerMessage.getBackground().mutate());
 
         if (tvAnswerMessage.getVisibility() == View.VISIBLE)
         {
@@ -129,7 +120,7 @@ public class AnswerSection
             isAnswerRight = true;
             if (!exercise.isCompleted() && App.getInstance().getUser().isAuthorized())
             {
-                viewHolder.onAddToCompletedClick();
+                onAddToCompletedClick();
             }
         }
         else
@@ -159,10 +150,5 @@ public class AnswerSection
             default:
                 return false;
         }
-    }
-
-    public interface ViewHolder
-    {
-        void onAddToCompletedClick();
     }
 }
