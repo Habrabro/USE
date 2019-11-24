@@ -29,6 +29,18 @@ public class User
     private Date lastUpdate;
     private Long sessionId = null;
 
+    public boolean isAdsEnabled()
+    {
+        return isAdsEnabled;
+    }
+
+    public void setAdsEnabled(boolean adsEnabled)
+    {
+        isAdsEnabled = adsEnabled;
+    }
+
+    private boolean isAdsEnabled = true;
+
     public int getAvailableChecks()
     {
         return availableChecks;

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,6 +45,9 @@ public class RequestsListFragment extends BaseFragment implements RequestsListAd
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        requestsListAdapter = new RequestsListAdapter(this, requests);
+        NetworkService.getInstance(this).getUserRequests();
     }
 
     @Override
@@ -63,12 +67,8 @@ public class RequestsListFragment extends BaseFragment implements RequestsListAd
         DividerItemDecoration horizontalSeparator = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
         horizontalSeparator.setDrawable(getResources().getDrawable(R.drawable.horizontal_separator));
 
-        requestsListAdapter = new RequestsListAdapter(this, requests);
-
         rvRequestsList.addItemDecoration(horizontalSeparator);
         rvRequestsList.setAdapter(requestsListAdapter);
-
-        NetworkService.getInstance(this).getUserRequests();
     }
 
     @Override
@@ -82,9 +82,10 @@ public class RequestsListFragment extends BaseFragment implements RequestsListAd
     }
 
     @Override
-    public void OnViewHolderClick(int position, long topicId, long number)
+    public void OnViewHolderClick(Bundle bundle)
     {
-
+        RequestFragment fragment = RequestFragment.newInstance(bundle);
+        ((MainActivity)getActivity()).replaceFragment(fragment, "RequestFragment");
     }
 
     @Override

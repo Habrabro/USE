@@ -64,4 +64,9 @@
     <style name="requestListItemDescTextViewStyle" parent="@style/requestListItemTextViewStyle">
         <item name="android:textColor">@android:color/black</item>
     </style>
+
+    <style name="descAttachmentViewStyle" parent="@style/requestListItemTextViewStyle">
+        <item name="android:textColor">#1a0dab</item>
+        <item name="android:drawableEnd">@drawable/ic_arrow_point_to_right</item>
+    </style>
 </resources>

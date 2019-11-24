@@ -38,7 +38,7 @@ public class ViewHolder extends RecyclerView.ViewHolder
         this.exercise = exercise;
         idView.setText(exercise.getNumber() + "." + Long.toString(exercise.getId()));
         descriptionView.setText(exercise.getDescription());
-        String nullImgUrl = App.getInstance().getServerBaseUrl() + "img/uploads/exercises_images/";
+        String nullImgUrl = App.getInstance().SERVER_BASE_URL + "img/uploads/exercises_images/";
         if (!exercise.getImg().equals(nullImgUrl))
         {
             Glide

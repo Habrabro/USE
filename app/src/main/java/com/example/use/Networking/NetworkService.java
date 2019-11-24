@@ -38,7 +38,7 @@ import retrofit2.http.Query;
 public class NetworkService
 {
     private static NetworkService instance;
-    private String baseURL = "https://usetrainingadmin.000webhostapp.com/";
+    private String baseURL = App.getInstance().SERVER_BASE_URL;
     private String vkApiBaseURL = "https://api.vk.com/method/";
     private static IResponseReceivable listener;
     private SubjectsResponse savedSubjectResponse;

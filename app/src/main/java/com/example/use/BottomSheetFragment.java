@@ -91,7 +91,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
 
     class SignIn
     {
-        private final String PASS_RESET_URL = App.getInstance().getServerBaseUrl() + "password_reset.php";
+        private final String PASS_RESET_URL = App.getInstance().SERVER_BASE_URL + "password_reset.php";
 
         @BindView(R.id.btnLogin)
         Button loginButton;
