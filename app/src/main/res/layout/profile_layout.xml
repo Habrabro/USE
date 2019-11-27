@@ -121,6 +121,15 @@
         </LinearLayout>
     </LinearLayout>
 
+    <ImageButton android:id="@+id/btnWeAreInVk"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginStart="7dp" android:layout_marginEnd="7dp"
+        android:background="@drawable/we_in_vk_button"
+        android:src="@drawable/ic_we_in_vk"
+        android:padding="8dp"/>
+
     <Button android:id="@+id/btnLogout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

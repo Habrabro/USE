@@ -336,6 +336,7 @@ public class NetworkService
             serverAPI
                     .getUserRequests()
                     .enqueue(new BaseCallback<>(listener));
+            ((MainActivity)App.getInstance().getCurrentFragment().getActivity()).onLoad();
         }
     }
 

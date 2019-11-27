@@ -18,6 +18,8 @@ import com.example.use.Networking.NetworkService;
 import com.example.use.Networking.RegisterResponse;
 import com.example.use.Networking.UserResponse;
 import com.example.use.Networking.VKApiResponse;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.material.snackbar.Snackbar;
 
 import butterknife.BindView;
@@ -46,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements SubjectMenuFragme
 
     @BindView(R.id.btnProfile) Button profileButton;
     private Snackbar snackbar;
+    private AdView adView;
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -95,10 +98,15 @@ public class MainActivity extends AppCompatActivity implements SubjectMenuFragme
         if (fragmentManager.findFragmentByTag("subjectsListFragment") == null)
         {
             SubjectsListFragment subjectsListFragment = SubjectsListFragment.newInstance();
+            AdsFragment adsFragment = AdsFragment.newInstance();
             fragmentManager.beginTransaction()
                     .add(R.id.fragmentContainer, subjectsListFragment, "subjectsListFragment")
                     .commit();
         }
+
+        adView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
     }
 
     @Override

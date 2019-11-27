@@ -45,6 +45,11 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
     private Dialog dialog;
     private BottomSheetBehavior bottomSheetBehavior;
 
+    public View getContentView()
+    {
+        return contentView;
+    }
+
     private View contentView;
 
     SignIn signIn;
@@ -138,7 +143,23 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
         @OnClick(R.id.btnLogin)
         public void onLoginButtonClick()
         {
-            NetworkService networkService = NetworkService.getInstance(loginResponseHandler);
+            loginButton.setEnabled(false);
+            NetworkService networkService = NetworkService.getInstance(new AuthResponseReceiver(BottomSheetFragment.this)
+            {
+                @Override
+                public void onResponse(BaseResponse response)
+                {
+                    super.onResponse(response);
+                    loginButton.setEnabled(true);
+                }
+
+                @Override
+                public void onError(String error)
+                {
+                    super.onError(error);
+                    loginButton.setEnabled(true);
+                }
+            });
             networkService.login(etLogin.getText().toString(), etPassword.getText().toString());
         }
 
@@ -219,6 +240,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
                     }
                     else
                     {
+                        btnRegister.setEnabled(true);
                         if (errorData.get("login") != null)
                         {
                             tvLoginError.setText("Такой e-mail уже существует");
@@ -259,6 +281,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
             }
             if (validated)
             {
+                btnRegister.setEnabled(false);
                 networkService.register(login, password);
             }
         }
@@ -266,6 +289,8 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
 
     class Profile
     {
+        private final String VK_GROUP_URL = "https://vk.com/";
+
         @BindView(R.id.btnLogout)
         Button logoutButton;
         @BindView(R.id.llFavoriteExercises)
@@ -278,6 +303,8 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
         TextView tvProfileTitle;
         @BindView(R.id.tvAvailableChecks)
         TextView tvAvailableChecks;
+        @BindView(R.id.btnWeAreInVk)
+        ImageButton btnWeAreInVk;
 
         public View getProfileLayout()
         {
@@ -344,6 +371,14 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
                     RequestsListFragment.newInstance(),
                     "RequestsListFragment");
             BottomSheetFragment.this.dismiss();
+        }
+
+        @OnClick(R.id.btnWeAreInVk)
+        public void onBtnWeAreInVkClick()
+        {
+            final Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(VK_GROUP_URL));
+            startActivity(intent);
         }
 
         @OnClick (R.id.btnLogout)
