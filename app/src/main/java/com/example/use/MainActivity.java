@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements SubjectMenuFragme
     public void onLoad()
     {
         snackbar = Snackbar.make(
-                findViewById(R.id.fragmentContainer),
+                App.getInstance().getCurrentFragment().getView(),
                 "Загрузка",
                 Snackbar.LENGTH_INDEFINITE);
         snackbar.getView().setTranslationZ(130);

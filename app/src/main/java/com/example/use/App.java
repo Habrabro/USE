@@ -18,7 +18,7 @@ import com.vk.api.sdk.utils.VKUtils;
 
 public class App extends Application
 {
-    public final String SERVER_BASE_URL = "https://usetrainingadmin.000webhostapp.com/";
+    public final String SERVER_BASE_URL = "http://host1803169.hostland.pro/";
 
     private static App instance;
     private BaseFragment currentFragment;

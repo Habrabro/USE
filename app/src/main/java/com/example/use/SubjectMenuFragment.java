@@ -19,7 +19,7 @@ public class SubjectMenuFragment extends BaseFragment
     private static final String PARAM_1 = "param_1";
     private long subjectId;
 
-//    @BindView(R.id.btnDirectory) Button directoryView;
+    @BindView(R.id.btnDirectory) Button directoryView;
     @BindView(R.id.btnStartTraining) Button startTrainingView;
     @BindView(R.id.btnTopicsList) Button topicsListView;
 
@@ -62,7 +62,7 @@ public class SubjectMenuFragment extends BaseFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-//        directoryView.setOutlineProvider(new SubjectMenuButtonOutlineProvider());
+        directoryView.setOutlineProvider(new SubjectMenuButtonOutlineProvider());
         startTrainingView.setOutlineProvider(new SubjectMenuButtonOutlineProvider());
         topicsListView.setOutlineProvider(new SubjectMenuButtonOutlineProvider());
     }
@@ -81,11 +81,11 @@ public class SubjectMenuFragment extends BaseFragment
         mListener = null;
     }
 
-//    @OnClick(R.id.btnDirectory)
-//    public void onDirectoryViewClick()
-//    {
-//        mListener.onDirectoryFragmentDisplay(subjectId);
-//    }
+    @OnClick(R.id.btnDirectory)
+    public void onDirectoryViewClick()
+    {
+        mListener.onDirectoryFragmentDisplay(subjectId);
+    }
 
     @OnClick(R.id.btnStartTraining)
     public void onStartTrainingViewClick()

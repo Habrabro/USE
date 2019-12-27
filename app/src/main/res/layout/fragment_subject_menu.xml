@@ -9,15 +9,15 @@
         android:orientation="vertical"
         android:gravity="center_vertical">
 
-        <!--<Button android:id="@+id/btnDirectory"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="75dp"-->
-            <!--android:maxWidth="500dp"-->
-            <!--style="@style/subjectMenuButton"-->
-            <!--android:drawableStart="@drawable/ic_directory_icon"-->
-            <!--android:drawablePadding="12dp"-->
-            <!--android:paddingStart="38dp"-->
-            <!--android:hint="Справочник" />-->
+        <Button android:id="@+id/btnDirectory"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:maxWidth="500dp"
+            style="@style/subjectMenuButton"
+            android:drawableStart="@drawable/ic_directory_icon"
+            android:drawablePadding="12dp"
+            android:paddingStart="38dp"
+            android:hint="Справочник" />
 
         <Button android:id="@+id/btnStartTraining"
             android:layout_width="match_parent"

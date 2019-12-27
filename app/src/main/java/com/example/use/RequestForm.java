@@ -87,8 +87,9 @@ public class RequestForm extends ViewHolder
         super.bindExercise(exercise);
 
         int availChecks = App.getInstance().getUser().getAvailableChecks();
+        boolean authorized = App.getInstance().getUser().isAuthorized();
         tvAvailableChecks.setText("Доступных проверок: " + availChecks);
-        if (availChecks > 0)
+        if (availChecks > 0 && authorized)
         {
             llCanCreateRequest.setLayoutParams(shownLayoutParams);
             llCantCreateRequest.setLayoutParams(hiddenLayoutParams);
