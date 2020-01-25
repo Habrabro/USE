@@ -18,6 +18,11 @@ public class SubjectMenuFragment extends BaseFragment
 {
     private static final String PARAM_1 = "param_1";
     private long subjectId;
+    private Subject subject;
+    public void setSubject(Subject subject)
+    {
+        this.subject = subject;
+    }
 
     @BindView(R.id.btnDirectory) Button directoryView;
     @BindView(R.id.btnStartTraining) Button startTrainingView;
@@ -30,12 +35,10 @@ public class SubjectMenuFragment extends BaseFragment
 
     }
 
-    public static SubjectMenuFragment newInstance(long subjectId)
+    public static SubjectMenuFragment newInstance(Subject subject)
     {
-        Bundle bundle = new Bundle();
-        bundle.putLong(PARAM_1, subjectId);
         SubjectMenuFragment fragment = new SubjectMenuFragment();
-        fragment.setArguments(bundle);
+        fragment.setSubject(subject);
         return fragment;
     }
 
@@ -43,10 +46,7 @@ public class SubjectMenuFragment extends BaseFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null)
-        {
-            subjectId = getArguments().getLong(PARAM_1);
-        }
+        subjectId = subject.getId();
     }
 
     @Override
@@ -84,7 +84,7 @@ public class SubjectMenuFragment extends BaseFragment
     @OnClick(R.id.btnDirectory)
     public void onDirectoryViewClick()
     {
-        mListener.onDirectoryFragmentDisplay(subjectId);
+        mListener.onDirectoryFragmentDisplay(subject);
     }
 
     @OnClick(R.id.btnStartTraining)
@@ -102,7 +102,7 @@ public class SubjectMenuFragment extends BaseFragment
 
     interface Listener
     {
-        void onDirectoryFragmentDisplay(long subjectId);
+        void onDirectoryFragmentDisplay(Subject subject);
         void onTopicsListFragmentDisplay(long subjectId);
     }
 }

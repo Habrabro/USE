@@ -1,9 +1,7 @@
 package com.example.use;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,17 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.use.Networking.BaseResponse;
 import com.example.use.database.DbService;
 import com.example.use.database.DbRequestListener;
-import com.vk.api.sdk.VK;
-import com.vk.api.sdk.VKApiCallback;
-import com.vk.api.sdk.auth.VKAccessToken;
-import com.vk.api.sdk.auth.VKAuthCallback;
-import com.vk.api.sdk.auth.VKScope;
-import com.vk.api.sdk.exceptions.VKApiExecutionException;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -111,13 +100,13 @@ public class SubjectsListFragment extends BaseFragment implements SubjectsListAd
     }
 
     @Override
-    public void OnViewHolderClick(int position, long subjectId)
+    public void OnViewHolderClick(int position, Subject subject)
     {
-        mListener.onSubjectsListFragmentInteraction(subjectId);
+        mListener.onSubjectsListFragmentInteraction(subject);
     }
 
     interface Listener
     {
-        void onSubjectsListFragmentInteraction(long subjectId);
+        void onSubjectsListFragmentInteraction(Subject subject);
     }
 }

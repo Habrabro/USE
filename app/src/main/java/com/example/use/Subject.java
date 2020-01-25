@@ -10,12 +10,16 @@ public class Subject
     private long id;
     private String name;
     private String img;
+    private boolean isActive;
+    private boolean hasDirectoryTopics;
 
-    public Subject(long id, String name, String img)
+    public Subject(long id, String name, String img, boolean isActive, boolean hasDirectoryTopics)
     {
         this.id = id;
         this.name = name;
         this.img = img;
+        this.isActive = isActive;
+        this.hasDirectoryTopics = hasDirectoryTopics;
     }
 
     public long getId() {
@@ -26,5 +30,13 @@ public class Subject
     }
     public String getImg() {
         return img;
+    }
+    public boolean isActive()
+    {
+        return isActive;
+    }
+    public boolean hasDirectoryTopics()
+    {
+        return hasDirectoryTopics;
     }
 }

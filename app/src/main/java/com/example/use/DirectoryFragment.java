@@ -26,19 +26,44 @@ public class DirectoryFragment extends BaseFragment implements DirectoryAdapter.
     private Listener mListener;
     private DirectoryAdapter directoryAdapter;
 
+    public void setDirectories(List<Directory> directories)
+    {
+        this.directories = directories;
+    }
     private List<Directory> directories = new ArrayList<>();
+    private Subject subject;
+    public void setSubject(Subject subject)
+    {
+        this.subject = subject;
+    }
 
     public DirectoryFragment()
     {
 
     }
 
-    public static DirectoryFragment newInstance(long topicId)
+    public static DirectoryFragment newInstance(Subject subject)
     {
-        Bundle bundle = new Bundle();
-        bundle.putLong(PARAM_1, topicId);
+        DirectoryFragment fragment = getDirectoryFragmentInstance(subject);
+        return fragment;
+    }
+
+    public static DirectoryFragment newInstance(Directory directory)
+    {
+        DirectoryFragment fragment = getDirectoryFragmentInstance(null);
+        List<Directory> directories = new ArrayList<>();
+        directories.add(directory);
+        fragment.setDirectories(directories);
+        return fragment;
+    }
+
+    private static DirectoryFragment getDirectoryFragmentInstance(Subject subject)
+    {
         DirectoryFragment fragment = new DirectoryFragment();
-        fragment.setArguments(bundle);
+        if (subject != null)
+        {
+            fragment.setSubject(subject);
+        }
         return fragment;
     }
 
@@ -46,9 +71,9 @@ public class DirectoryFragment extends BaseFragment implements DirectoryAdapter.
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null)
+        if (subject != null)
         {
-            subjectId = getArguments().getLong(PARAM_1);
+            subjectId = subject.getId();
         }
     }
 
@@ -68,11 +93,14 @@ public class DirectoryFragment extends BaseFragment implements DirectoryAdapter.
         RecyclerView recyclerView = view.findViewById(R.id.rvDirectory);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-        directoryAdapter = new DirectoryAdapter(this, directories, subjectId);
+        directoryAdapter = new DirectoryAdapter(this, directories, subject);
         recyclerView.setAdapter(directoryAdapter);
 
-        NetworkService networkService = NetworkService.getInstance(this);
-        networkService.getDirectories(null, subjectId, null, true);
+        if (directories.isEmpty())
+        {
+            NetworkService networkService = NetworkService.getInstance(this);
+            networkService.getDirectories(null, subjectId, null, true);
+        }
     }
 
     @Override
@@ -99,7 +127,13 @@ public class DirectoryFragment extends BaseFragment implements DirectoryAdapter.
     }
 
     @Override
-    public void OnViewHolderClick(int position)
+    public void OnListItemClick(int position)
+    {
+        ((MainActivity)getActivity()).replaceFragment(newInstance(directories.get(position)), "directoryTopicFragment");
+    }
+
+    @Override
+    public void OnDirectoryTopicClick(int position)
     {
 
     }

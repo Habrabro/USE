@@ -13,11 +13,8 @@ import android.widget.Button;
 
 import com.example.use.Networking.BaseResponse;
 import com.example.use.Networking.IResponseReceivable;
-import com.example.use.Networking.IVKApiResponseReceivable;
 import com.example.use.Networking.NetworkService;
-import com.example.use.Networking.RegisterResponse;
 import com.example.use.Networking.UserResponse;
-import com.example.use.Networking.VKApiResponse;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.material.snackbar.Snackbar;
@@ -29,15 +26,8 @@ import butterknife.OnClick;
 import com.vk.api.sdk.*;
 import com.vk.api.sdk.auth.VKAccessToken;
 import com.vk.api.sdk.auth.VKAuthCallback;
-import com.vk.api.sdk.exceptions.VKApiExecutionException;
-import com.vk.api.sdk.okhttp.OkHttpMethodCall;
-import com.vk.api.sdk.requests.VKRequest;
-import com.vk.api.sdk.utils.VKUtils;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.lang.reflect.Array;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements SubjectMenuFragment.Listener,
         SubjectsListFragment.Listener, TopicsListFragment.Listener, VKAuthCallback
@@ -122,12 +112,12 @@ public class MainActivity extends AppCompatActivity implements SubjectMenuFragme
     }
 
     @Override
-    public void onSubjectsListFragmentInteraction(long subjectId)
+    public void onSubjectsListFragmentInteraction(Subject subject)
     {
         if (fragmentManager.findFragmentByTag("subjectsListFragment") != null &&
         fragmentManager.findFragmentByTag("subjectMenuFragment") == null)
         {
-            SubjectMenuFragment subjectMenuFragment = SubjectMenuFragment.newInstance(subjectId);
+            SubjectMenuFragment subjectMenuFragment = SubjectMenuFragment.newInstance(subject);
             fragmentManager.beginTransaction()
                     .setCustomAnimations(R.animator.fragment_transition_slide_in,
                             android.R.animator.fade_out)
@@ -138,12 +128,12 @@ public class MainActivity extends AppCompatActivity implements SubjectMenuFragme
     }
 
     @Override
-    public void onDirectoryFragmentDisplay(long subjectId)
+    public void onDirectoryFragmentDisplay(Subject subject)
     {
         if (fragmentManager.findFragmentByTag("subjectMenuFragment") != null &&
                 fragmentManager.findFragmentByTag("directoryFragment") == null)
         {
-            DirectoryFragment directoryFragment = DirectoryFragment.newInstance(subjectId);
+            DirectoryFragment directoryFragment = DirectoryFragment.newInstance(subject);
             fragmentManager.beginTransaction()
                     .setCustomAnimations(R.animator.fragment_transition_slide_in,
                             android.R.animator.fade_out)

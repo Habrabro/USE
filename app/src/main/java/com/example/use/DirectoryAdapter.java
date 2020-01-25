@@ -14,13 +14,14 @@ import butterknife.ButterKnife;
 
 import static java.util.regex.Pattern.compile;
 
-public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.ViewHolder>
+public class DirectoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 {
     private LayoutInflater inflater;
     private List<Directory> directories;
     private DirectoryAdapter.Listener listener;
     private View view;
     private long subjectId;
+    private Subject subject;
     private boolean dataIsLoading = true;
     private boolean allDataLoaded = false;
 
@@ -44,30 +45,52 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
         this.allDataLoaded = allDataLoaded;
     }
 
-    DirectoryAdapter(DirectoryAdapter.Listener listener, List<Directory> directories, long subjectId)
+    DirectoryAdapter(DirectoryAdapter.Listener listener, List<Directory> directories, Subject subject)
     {
         this.directories = directories;
-        this.subjectId = subjectId;
+        if (subject != null)
+        {
+            this.subject = subject;
+        }
         if (listener instanceof DirectoryAdapter.Listener)
         {
             this.listener = listener;
         }
     }
     @Override
-    public DirectoryAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
+        View view;
         inflater = LayoutInflater.from(parent.getContext());
-        view = inflater.inflate(R.layout.fragment_directory_item, parent, false);
-        return new DirectoryAdapter.ViewHolder(view);
+        ViewHolderTypes type = ViewHolderTypes.values()[viewType];
+        switch (type) {
+            case LIST_ITEM:
+                view = inflater.inflate(R.layout.directory_fragment_list_item, parent, false);
+                return new ListItem(view);
+            case DIRECTORY_TOPIC:
+                view = inflater.inflate(R.layout.fragment_directory_item, parent, false);
+                return new DirectoryTopic(view);
+            default:
+                return null;
+        }
     }
 
     @Override
-    public void onBindViewHolder(DirectoryAdapter.ViewHolder holder, int position)
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position)
     {
         Directory directory = directories.get(position);
-        holder.fragmentDirectoryTitle.setText(directory.getTitle());
-        DirectoryParser directoryParser = new DirectoryParser(view);
-        directoryParser.parseContent(directory.getContent());
+        ViewHolderTypes type = ViewHolderTypes.values()[holder.getItemViewType()];
+        switch (type)
+        {
+            case LIST_ITEM:
+                ((ListItem)holder).bind(directory);
+                break;
+            case DIRECTORY_TOPIC:
+                ((DirectoryTopic)holder).fragmentDirectoryTitle.setText(directory.getTitle());
+//                DirectoryParser directoryParser = new DirectoryParser(view);
+//                directoryParser.parseContent(directory.getContent());
+                break;
+        }
     }
 
     @Override
@@ -78,15 +101,29 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
 
     public interface Listener
     {
-        void OnViewHolderClick(int position);
+        void OnListItemClick(int position);
+        void OnDirectoryTopicClick(int position);
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
+    @Override
+    public int getItemViewType(int position)
+    {
+        if (subject == null || !subject.hasDirectoryTopics())
+        {
+            return ViewHolderTypes.DIRECTORY_TOPIC.getType();
+        }
+        else
+        {
+            return ViewHolderTypes.LIST_ITEM.getType();
+        }
+    }
+
+    class DirectoryTopic extends RecyclerView.ViewHolder implements View.OnClickListener
     {
         @BindView(R.id.tvFragmentDirectoryTitle)
         TextView fragmentDirectoryTitle;
 
-        ViewHolder(View view)
+        DirectoryTopic(View view)
         {
             super(view);
             ButterKnife.bind(this, view);
@@ -96,7 +133,49 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
         @Override
         public void onClick(View view)
         {
-            listener.OnViewHolderClick(getAdapterPosition());
+            listener.OnDirectoryTopicClick(getAdapterPosition());
+        }
+    }
+
+    class ListItem extends RecyclerView.ViewHolder implements View.OnClickListener
+    {
+        @BindView(R.id.tvDirectoryTitle)
+        TextView directoryTitle;
+
+        public ListItem(View view)
+        {
+            super(view);
+            ButterKnife.bind(this, view);
+            view.setOnClickListener(this);
+        }
+
+        public void bind(Directory directory)
+        {
+            this.directoryTitle.setText(directory.getTitle());
+        }
+
+        @Override
+        public void onClick(View view)
+        {
+            listener.OnListItemClick(getAdapterPosition());
+        }
+    }
+
+    public enum ViewHolderTypes
+    {
+        LIST_ITEM(0),
+        DIRECTORY_TOPIC(1);
+
+        public int getType()
+        {
+            return type;
+        }
+
+        private int type;
+
+        ViewHolderTypes(int type)
+        {
+            this.type = type;
         }
     }
 }

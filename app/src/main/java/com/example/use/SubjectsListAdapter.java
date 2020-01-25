@@ -68,7 +68,7 @@ public class SubjectsListAdapter extends RecyclerView.Adapter<SubjectsListAdapte
 
     public interface Listener
     {
-        void OnViewHolderClick(int position, long subjectId);
+        void OnViewHolderClick(int position, Subject subject);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
@@ -88,7 +88,7 @@ public class SubjectsListAdapter extends RecyclerView.Adapter<SubjectsListAdapte
         public void onClick(View view)
         {
             Subject subject = subjects.get(getAdapterPosition());
-            listener.OnViewHolderClick(getAdapterPosition(), subject.getId());
+            listener.OnViewHolderClick(getAdapterPosition(), subject);
         }
     }
 }

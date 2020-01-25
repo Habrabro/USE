@@ -206,7 +206,9 @@ public class DbService
                                 Subject subject = new Subject(
                                         serverSubject.getId(),
                                         serverSubject.getName(),
-                                        serverSubject.getImg());
+                                        serverSubject.getImg(),
+                                        serverSubject.isActive(),
+                                        serverSubject.hasDirectoryTopics());
                                 SubjectDao subjectDao = database.subjectsDao();
                                 Subject localSubject = subjectDao.getSubject(serverSubject.getId());
                                 if (localSubject == null)
