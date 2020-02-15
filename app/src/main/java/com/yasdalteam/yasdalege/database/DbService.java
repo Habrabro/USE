@@ -31,7 +31,7 @@ public class DbService
     DbService()
     {
         database = Room
-                .databaseBuilder(App.getInstance(), Db.class, "database")
+                .databaseBuilder(App.shared(), Db.class, "database")
                 .fallbackToDestructiveMigration()
                 .build();
         dbUpdateManager = new DbUpdateManager(database, tableOperationsMapInit());
@@ -48,14 +48,14 @@ public class DbService
     public void setLastUpdate(Date lastUpdate)
     {
         this.lastUpdate = lastUpdate;
-        App.getInstance().getUser().setLastUpdate(lastUpdate);
+        App.shared().getUser().setLastUpdate(lastUpdate);
         new AsyncTask<Void, Void, Void>()
         {
             @Override
             protected Void doInBackground(Void... voids)
             {
                 UserDao userDao = getDatabase().userDao();
-                userDao.update(App.getInstance().getUser());
+                userDao.update(App.shared().getUser());
                 return null;
             }
         }.execute();

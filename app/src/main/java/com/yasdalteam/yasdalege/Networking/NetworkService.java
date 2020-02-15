@@ -6,7 +6,6 @@ import android.net.ConnectivityManager;
 import com.yasdalteam.yasdalege.App;
 import com.yasdalteam.yasdalege.MainActivity;
 import com.yasdalteam.yasdalege.Payments.PaymentResponse;
-import com.yasdalteam.yasdalege.R;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -31,7 +30,7 @@ import retrofit2.http.Query;
 public class NetworkService
 {
     private static NetworkService instance;
-    private String baseURL = App.getInstance().SERVER_BASE_URL;
+    private String baseURL = App.shared().SERVER_BASE_URL;
     private String vkApiBaseURL = "https://api.vk.com/method/";
     private static IResponseReceivable listener;
     private SubjectsResponse savedSubjectResponse;
@@ -124,7 +123,7 @@ public class NetworkService
                     .enqueue(new BaseCallback<ExerciseResponse>(listener));
             if (showLoader)
             {
-                ((MainActivity)App.getInstance().getCurrentFragment().getActivity()).onLoad();
+                ((MainActivity)App.shared().getCurrentFragment().getActivity()).onLoad();
             }
         }
 
@@ -139,7 +138,7 @@ public class NetworkService
                     .enqueue(new BaseCallback<DirectoryResponse>(listener));
             if (showLoadingSnackbar)
             {
-                ((MainActivity)App.getInstance().getCurrentFragment().getActivity()).onLoad();
+                ((MainActivity)App.shared().getCurrentFragment().getActivity()).onLoad();
             }
         }
     }
@@ -153,7 +152,7 @@ public class NetworkService
                     .enqueue(new BaseCallback<ExerciseResponse>(listener));
             if (showLoader)
             {
-                ((MainActivity)App.getInstance().getCurrentFragment().getActivity()).onLoad();
+                ((MainActivity)App.shared().getCurrentFragment().getActivity()).onLoad();
             }
         }
     }
@@ -167,7 +166,7 @@ public class NetworkService
                     .enqueue(new BaseCallback<ExerciseResponse>(listener));
             if (showLoader)
             {
-                ((MainActivity)App.getInstance().getCurrentFragment().getActivity()).onLoad();
+                ((MainActivity)App.shared().getCurrentFragment().getActivity()).onLoad();
             }
         }
     }
@@ -281,20 +280,20 @@ public class NetworkService
 
     public boolean isNetworkConnected()
     {
-        ConnectivityManager cm = (ConnectivityManager) App.getInstance()
+        ConnectivityManager cm = (ConnectivityManager) App.shared()
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         boolean isNetworkConnected = cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
         if (isNetworkConnected)
         {
-            if (App.getInstance().getCurrentFragment() != null) {
-                ((MainActivity)App.getInstance().getCurrentFragment().getActivity()).onLoaded();
+            if (App.shared().getCurrentFragment() != null) {
+                ((MainActivity)App.shared().getCurrentFragment().getActivity()).onLoaded();
             }
         }
         else
         {
-            if (App.getInstance().getCurrentFragment() != null)
+            if (App.shared().getCurrentFragment() != null)
             {
-                ((MainActivity)App.getInstance().getCurrentFragment().getActivity()).onDisconnected();
+                ((MainActivity)App.shared().getCurrentFragment().getActivity()).onDisconnected();
             }
             listener.onDisconnected();
         }
@@ -329,7 +328,7 @@ public class NetworkService
             serverAPI
                     .getUserRequests()
                     .enqueue(new BaseCallback<>(listener));
-            ((MainActivity)App.getInstance().getCurrentFragment().getActivity()).onLoad();
+            ((MainActivity)App.shared().getCurrentFragment().getActivity()).onLoad();
         }
     }
 
@@ -340,7 +339,7 @@ public class NetworkService
             serverAPI
                     .getPriceList()
                     .enqueue(new BaseCallback<>(listener));
-            ((MainActivity)App.getInstance().getCurrentFragment().getActivity()).onLoad();
+            ((MainActivity)App.shared().getCurrentFragment().getActivity()).onLoad();
         }
     }
 
@@ -351,7 +350,7 @@ public class NetworkService
             serverAPI
                     .createPayment(paymentToken, description)
                     .enqueue(new BaseCallback<>(listener));
-            ((MainActivity)App.getInstance().getCurrentFragment().getActivity()).onLoad();
+            ((MainActivity)App.shared().getCurrentFragment().getActivity()).onLoad();
         }
     }
 

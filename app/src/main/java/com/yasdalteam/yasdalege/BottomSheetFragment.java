@@ -60,7 +60,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
         public void onResponse(BaseResponse response)
         {
             User user = ((UserResponse)response).getData();
-            App.getInstance().getUser().authorize(user);
+            App.shared().getUser().authorize(user);
             reset();
         }
 
@@ -94,7 +94,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
 
     class SignIn
     {
-        private final String PASS_RESET_URL = App.getInstance().SERVER_BASE_URL + "password_reset.php";
+        private final String PASS_RESET_URL = App.shared().SERVER_BASE_URL + "password_reset.php";
 
         @BindView(R.id.btnLogin)
         Button loginButton;
@@ -316,7 +316,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
             profileLayout = View.inflate(getContext(), R.layout.profile_layout, null);
             ButterKnife.bind(this, profileLayout);
 
-            User user = App.getInstance().getUser();
+            User user = App.shared().getUser();
             if (user.getName() == null)
             {
                 tvProfileTitle.setText(user.getLogin());
@@ -339,7 +339,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
                                 ((ExercisesListFragment)listener).getItemsPerLoad();
                         NetworkService networkService = NetworkService.getInstance(listener);
                         networkService.getFavoriteExercises(
-                                App.getInstance().getUser().getSessionId(), limit, true);
+                                App.shared().getUser().getSessionId(), limit, true);
                     }),
                     "favoriteExercises");
             BottomSheetFragment.this.dismiss();
@@ -356,7 +356,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
                                 ((ExercisesListFragment)listener).getItemsPerLoad();
                         NetworkService networkService = NetworkService.getInstance(listener);
                         networkService.getCompletedExercises(
-                                App.getInstance().getUser().getSessionId(), limit, true);
+                                App.shared().getUser().getSessionId(), limit, true);
                     }),
                     "completedExercises");
             BottomSheetFragment.this.dismiss();
@@ -387,7 +387,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
                 @Override
                 public void onResponse(BaseResponse response)
                 {
-                    App.getInstance().getUser().logout();
+                    App.shared().getUser().logout();
                     FragmentManager fm = getActivity().getSupportFragmentManager();
                     for(int i = 0; i < fm.getBackStackEntryCount(); ++i)
                     {
@@ -455,7 +455,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
         signIn = new SignIn();
         registration = new Registration();
         profile = new Profile();
-        if (App.getInstance().getUser().isAuthorized())
+        if (App.shared().getUser().isAuthorized())
         {
             contentView = profile.getProfileLayout();
         }

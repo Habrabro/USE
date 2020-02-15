@@ -52,15 +52,15 @@ public class DbUpdateManager
                         {
                             if (i.getValue() == 1)
                             {
-                                App.getInstance().getCurrentFragment().setSnackbar(
+                                App.shared().getCurrentFragment().setSnackbar(
                                         NetworkService.getInstance(null).getLoadingSnackbar());
-                                ((MainActivity)App.getInstance().getCurrentFragment().getActivity()).onLoad();
+                                ((MainActivity)App.shared().getCurrentFragment().getActivity()).onLoad();
                             }
                             if (i.getValue() == updates.size() || updates.size() == 0)
                             {
                                 DbService.getInstance().setLastUpdate(new Date());
                                 listener.onRequestCompleted(null);
-                                ((MainActivity)App.getInstance().getCurrentFragment().getActivity()).onLoaded();
+                                ((MainActivity)App.shared().getCurrentFragment().getActivity()).onLoaded();
                             }
                         }
                     };

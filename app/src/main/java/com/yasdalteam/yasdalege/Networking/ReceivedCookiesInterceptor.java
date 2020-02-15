@@ -2,7 +2,6 @@ package com.yasdalteam.yasdalege.Networking;
 
 import com.yasdalteam.yasdalege.App;
 import com.yasdalteam.yasdalege.PreferencesHelper;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
 import java.util.Date;
@@ -39,9 +38,9 @@ public class ReceivedCookiesInterceptor implements Interceptor
                 }
                 PreferencesHelper.getInstance().putStringSet(PREF_COOKIES, cookies);
 
-                if (App.getInstance().getUser() != null)
+                if (App.shared().getUser() != null)
                 {
-                    App.getInstance().getUser().setAuthorizeDateTime(new Date());
+                    App.shared().getUser().setAuthorizeDateTime(new Date());
                 }
             }
         }

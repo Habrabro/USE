@@ -120,7 +120,7 @@ public class VariantFragment extends BaseFragment implements ExercisesListAdapte
                         {
                             i.inc();
                             NetworkService.getInstance(this).getRandomExercise(
-                                    App.getInstance().getUser().getSessionId(), topics.get(i.getValue()).getId(), false);
+                                    App.shared().getUser().getSessionId(), topics.get(i.getValue()).getId(), false);
                         }
                     }
                     @Override
@@ -133,7 +133,7 @@ public class VariantFragment extends BaseFragment implements ExercisesListAdapte
                 if (networkService.isNetworkConnected())
                 {
                     networkService.getRandomExercise(
-                            App.getInstance().getUser().getSessionId(), topics.get(i.getValue()).getId(), false);
+                            App.shared().getUser().getSessionId(), topics.get(i.getValue()).getId(), false);
                 }
             });
             created = true;

@@ -41,8 +41,8 @@ public class SubjectsListAdapter extends RecyclerView.Adapter<SubjectsListAdapte
     @Override
     public void onBindViewHolder(SubjectsListAdapter.ViewHolder holder, int position)
     {
-        int outerPadding = (int)App.getInstance().getResources().getDimension(R.dimen.subjectIconOuterPadding);
-        int innerPadding = (int)App.getInstance().getResources().getDimension(R.dimen.subjectIconInnerPadding);
+        int outerPadding = (int)App.shared().getResources().getDimension(R.dimen.subjectIconOuterPadding);
+        int innerPadding = (int)App.shared().getResources().getDimension(R.dimen.subjectIconInnerPadding);
         int leftPadding = position % 2 == 0 ?outerPadding :innerPadding;
         int rightPadding = position % 2 == 0 ?innerPadding :outerPadding;
         int bottomPadding = position == subjects.size() - 1 ?outerPadding :0;
@@ -50,10 +50,10 @@ public class SubjectsListAdapter extends RecyclerView.Adapter<SubjectsListAdapte
 
         Subject subject = subjects.get(position);
         Glide
-                .with(App.getInstance())
+                .with(App.shared())
                 .load(subject.getImg())
                 .placeholder(new ColorDrawable(
-                        App.getInstance().getResources().getColor(R.color.glidePlaceholderColor)))
+                        App.shared().getResources().getColor(R.color.glidePlaceholderColor)))
                 .error(R.drawable.ic_broken_image)
                 .fallback(R.drawable.ic_broken_image)
                 .diskCacheStrategy(DiskCacheStrategy.DATA)

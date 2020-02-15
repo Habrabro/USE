@@ -38,15 +38,15 @@ public class ViewHolder extends RecyclerView.ViewHolder
         this.exercise = exercise;
         idView.setText(exercise.getNumber() + "." + Long.toString(exercise.getId()));
         descriptionView.setText(exercise.getDescription());
-        String nullImgUrl = App.getInstance().SERVER_BASE_URL + "img/uploads/exercises_images/";
-        String oldServerNullImgUrl = App.getInstance().OLD_SERVER_BASE_URL + "img/uploads/exercises_images/";
+        String nullImgUrl = App.shared().SERVER_BASE_URL + "img/uploads/exercises_images/";
+        String oldServerNullImgUrl = App.shared().OLD_SERVER_BASE_URL + "img/uploads/exercises_images/";
         if (!exercise.getImg().equals(nullImgUrl) && !exercise.getImg().equals(oldServerNullImgUrl))
         {
             Glide
-                    .with(App.getInstance())
+                    .with(App.shared())
                     .load(exercise.getImg())
                     .placeholder(new ColorDrawable(
-                            App.getInstance().getResources().getColor(R.color.glidePlaceholderColor)))
+                            App.shared().getResources().getColor(R.color.glidePlaceholderColor)))
                     .error(R.drawable.ic_broken_image)
                     .fallback(R.drawable.ic_broken_image)
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
@@ -84,7 +84,7 @@ public class ViewHolder extends RecyclerView.ViewHolder
     @OnClick(R.id.btnAddToFavorite)
     public void onAddToFavoriteClick()
     {
-        if (App.getInstance().getUser().isAuthorized())
+        if (App.shared().getUser().isAuthorized())
         {
             if (!exercise.isFavorite())
             {
@@ -96,7 +96,7 @@ public class ViewHolder extends RecyclerView.ViewHolder
                     {
                         exercise.switchIsFavorite();
                         Snackbar.make(
-                                App.getInstance().getCurrentFragment().getView(),
+                                App.shared().getCurrentFragment().getView(),
                                 "Добавлено в \"Избранное\"",
                                 Snackbar.LENGTH_SHORT).show();
                     }
@@ -113,7 +113,7 @@ public class ViewHolder extends RecyclerView.ViewHolder
                     {
                         exercise.switchIsFavorite();
                         Snackbar.make(
-                                App.getInstance().getCurrentFragment().getView(),
+                                App.shared().getCurrentFragment().getView(),
                                 "Удалено из \"Избранного\"",
                                 Snackbar.LENGTH_SHORT).show();
                     }
@@ -124,7 +124,7 @@ public class ViewHolder extends RecyclerView.ViewHolder
         else
         {
             Snackbar.make(
-                    App.getInstance().getCurrentFragment().getView(),
+                    App.shared().getCurrentFragment().getView(),
                     "Войдите для этого действия",
                     Snackbar.LENGTH_SHORT).show();
         }
@@ -133,7 +133,7 @@ public class ViewHolder extends RecyclerView.ViewHolder
     @OnClick(R.id.btnAddToCompleted)
     public void onAddToCompletedClick()
     {
-        if (App.getInstance().getUser().isAuthorized())
+        if (App.shared().getUser().isAuthorized())
         {
             if (!exercise.isCompleted())
             {
@@ -145,7 +145,7 @@ public class ViewHolder extends RecyclerView.ViewHolder
                     {
                         exercise.switchIsCompleted();
                         Snackbar.make(
-                                App.getInstance().getCurrentFragment().getView(),
+                                App.shared().getCurrentFragment().getView(),
                                 "Добавлено в \"Выполненные\"",
                                 Snackbar.LENGTH_SHORT).show();
                     }
@@ -162,7 +162,7 @@ public class ViewHolder extends RecyclerView.ViewHolder
                     {
                         exercise.switchIsCompleted();
                         Snackbar.make(
-                                App.getInstance().getCurrentFragment().getView(),
+                                App.shared().getCurrentFragment().getView(),
                                 "Удалено из \"Выполненных\"",
                                 Snackbar.LENGTH_SHORT).show();
                     }
@@ -173,7 +173,7 @@ public class ViewHolder extends RecyclerView.ViewHolder
         else
         {
             Snackbar.make(
-                    App.getInstance().getCurrentFragment().getView(),
+                    App.shared().getCurrentFragment().getView(),
                     "Войдите для этого действия",
                     Snackbar.LENGTH_SHORT).show();
         }

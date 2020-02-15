@@ -8,9 +8,9 @@ public class ResponseHandler implements IResponseReceivable
     @Override
     public void onResponse(BaseResponse response)
     {
-        if (App.getInstance().getCurrentFragment().getActivity() != null)
+        if (App.shared().getCurrentFragment().getActivity() != null)
         {
-            ((MainActivity)App.getInstance().getCurrentFragment().getActivity()).onLoaded();
+            ((MainActivity)App.shared().getCurrentFragment().getActivity()).onLoaded();
         }
     }
 

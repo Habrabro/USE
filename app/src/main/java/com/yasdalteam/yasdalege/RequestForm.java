@@ -86,8 +86,8 @@ public class RequestForm extends ViewHolder
     {
         super.bindExercise(exercise);
 
-        int availChecks = App.getInstance().getUser().getAvailableChecks();
-        boolean authorized = App.getInstance().getUser().isAuthorized();
+        int availChecks = App.shared().getUser().getAvailableChecks();
+        boolean authorized = App.shared().getUser().isAuthorized();
         tvAvailableChecks.setText("Доступных проверок: " + availChecks);
         if (availChecks > 0 && authorized)
         {
@@ -184,7 +184,7 @@ public class RequestForm extends ViewHolder
                         textView.setMaxLines(5);
                         snackbar.show();
 
-                        App.getInstance().getUser().decAvailableChecks();
+                        App.shared().getUser().decAvailableChecks();
                         if (fragment instanceof ExercisesListFragment)
                         {
                             ((ExercisesListFragment)fragment).exercisesListAdapter.notifyDataSetChanged();

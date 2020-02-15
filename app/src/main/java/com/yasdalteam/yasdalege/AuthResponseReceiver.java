@@ -18,7 +18,7 @@ public abstract class AuthResponseReceiver implements IResponseReceivable
     public void onResponse(BaseResponse response)
     {
         User user = ((UserResponse)response).getData();
-        App.getInstance().getUser().authorize(user);
+        App.shared().getUser().authorize(user);
         bottomSheetFragment.reset();
     }
 

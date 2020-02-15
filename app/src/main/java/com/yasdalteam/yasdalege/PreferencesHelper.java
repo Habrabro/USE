@@ -19,8 +19,8 @@ public class PreferencesHelper
 
     public PreferencesHelper()
     {
-        if (App.getInstance().getCurrentFragment() != null) {
-            activity = App.getInstance().getCurrentFragment().getActivity();
+        if (App.shared().getCurrentFragment() != null) {
+            activity = App.shared().getCurrentFragment().getActivity();
             mSettings = activity.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
         }
     }

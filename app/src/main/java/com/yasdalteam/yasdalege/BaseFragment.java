@@ -51,7 +51,7 @@ public class BaseFragment extends Fragment implements IResponseReceivable, Reque
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        App.getInstance().setCurrentFragment(this);
+        App.shared().setCurrentFragment(this);
         Log.i("frag", getTag());
     }
 

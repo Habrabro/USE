@@ -6,8 +6,8 @@ import android.view.ViewOutlineProvider;
 
 public class SubjectMenuButtonOutlineProvider extends ViewOutlineProvider
 {
-    private int padding = (int)App.getInstance().getResources().getDimension(R.dimen.subjectIconOuterPadding);
-    private int borderRadius = (int)App.getInstance().getResources().getDimension(R.dimen.subjectMenuButtonBorderRadius);
+    private int padding = (int)App.shared().getResources().getDimension(R.dimen.subjectIconOuterPadding);
+    private int borderRadius = (int)App.shared().getResources().getDimension(R.dimen.subjectMenuButtonBorderRadius);
 
     @Override
     public void getOutline(View view, Outline outline)

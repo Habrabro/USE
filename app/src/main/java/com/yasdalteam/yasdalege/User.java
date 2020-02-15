@@ -1,14 +1,11 @@
 package com.yasdalteam.yasdalege;
 
-import android.widget.LinearLayout;
-
 import androidx.fragment.app.FragmentManager;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
-import com.google.android.gms.ads.AdView;
 import com.yasdalteam.yasdalege.database.DateConverter;
 import com.yasdalteam.yasdalege.database.DbService;
 
@@ -123,12 +120,10 @@ public class User
         this.authorizeDateTime = new Date();
         DbService.getInstance().insertOrUpdateUser(this);
 
-        if (!isAdsEnabled)
-        {
-            AdView view = App.getInstance().getCurrentFragment().getActivity().findViewById(R.id.adView);
-            view.destroy();
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, 0);
-            view.setLayoutParams(params);
+        if (isAdsEnabled) {
+            App.shared().getAdsService().enableAds();
+        } else {
+            App.shared().getAdsService().disableAds();
         }
     }
 
@@ -139,7 +134,7 @@ public class User
         DbService.getInstance().insertOrUpdateUser(this);
         PreferencesHelper.getInstance().putStringSet(PREF_COOKIES, null);
 
-        FragmentManager fm = App.getInstance().getCurrentFragment().getActivity().getSupportFragmentManager();
+        FragmentManager fm = App.shared().getCurrentFragment().getActivity().getSupportFragmentManager();
         for(int i = 0; i < fm.getBackStackEntryCount(); ++i)
         {
             fm.popBackStack();

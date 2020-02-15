@@ -115,7 +115,7 @@ public class AnswerSection extends ViewHolder
             tvAnswerMessage.setHint("Верно!");
             tvAnswerMessageBackground.setStroke(messageStrokeWidth, messageRightStrokeColor);
             isAnswerRight = true;
-            if (!exercise.isCompleted() && App.getInstance().getUser().isAuthorized())
+            if (!exercise.isCompleted() && App.shared().getUser().isAuthorized())
             {
                 onAddToCompletedClick();
             }

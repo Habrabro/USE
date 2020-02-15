@@ -68,10 +68,10 @@ public class DirectoryParser
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         imageView.setAdjustViewBounds(true);
         Glide
-                .with(App.getInstance())
+                .with(App.shared())
                 .load(imgSrc)
                 .placeholder(new ColorDrawable(
-                        App.getInstance().getResources().getColor(R.color.glidePlaceholderColor)))
+                        App.shared().getResources().getColor(R.color.glidePlaceholderColor)))
                 .error(R.drawable.ic_broken_image)
                 .fallback(R.drawable.ic_broken_image)
                 .diskCacheStrategy(DiskCacheStrategy.DATA)

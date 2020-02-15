@@ -17,20 +17,13 @@ import com.yasdalteam.yasdalege.Networking.IResponseReceivable;
 import com.yasdalteam.yasdalege.Networking.NetworkService;
 import com.yasdalteam.yasdalege.Networking.ResponseHandler;
 import com.yasdalteam.yasdalege.Networking.UserResponse;
-import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.material.snackbar.Snackbar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import ru.yandex.money.android.sdk.Amount;
 import ru.yandex.money.android.sdk.Checkout;
-import ru.yandex.money.android.sdk.MockConfiguration;
-import ru.yandex.money.android.sdk.PaymentMethodType;
-import ru.yandex.money.android.sdk.PaymentParameters;
-import ru.yandex.money.android.sdk.SavePaymentMethod;
-import ru.yandex.money.android.sdk.TestParameters;
 import ru.yandex.money.android.sdk.TokenizationResult;
 
 import com.vk.api.sdk.*;
@@ -38,21 +31,8 @@ import com.vk.api.sdk.auth.VKAccessToken;
 import com.vk.api.sdk.auth.VKAuthCallback;
 import com.yasdalteam.yasdalege.Payments.Payment;
 import com.yasdalteam.yasdalege.Payments.PaymentResponse;
-import com.yasdalteam.yasdalege.database.DbService;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Currency;
-import java.util.Date;
-import java.util.Locale;
-import java.util.NavigableSet;
-import java.util.TreeSet;
-import java.util.concurrent.TimeUnit;
-
-import static com.yasdalteam.yasdalege.ShopFragment.REQUEST_CODE_TOKENIZE;
 
 public class MainActivity extends AppCompatActivity implements SubjectMenuFragment.Listener,
         SubjectsListFragment.Listener, TopicsListFragment.Listener, VKAuthCallback
@@ -83,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements SubjectMenuFragme
                             public void onResponse(BaseResponse response)
                             {
                                 User user = ((UserResponse)response).getData();
-                                App.getInstance().getUser().authorize(user);
+                                App.shared().getUser().authorize(user);
                                 bottomSheet.reset();
                             }
                             @Override public void onFailure(Throwable t){}@Override public void onError(String error){}@Override public void onDisconnected(){}
@@ -136,39 +116,10 @@ public class MainActivity extends AppCompatActivity implements SubjectMenuFragme
     {
         super.onCreate(savedInstanceState);
 
-        DbService.getInstance().getUser(result ->
-        {
-            App.getInstance().setUser(result);
-            if (result.isAdsEnabled())
-            {
-                adView = findViewById(R.id.adView);
-                AdRequest adRequest = new AdRequest.Builder().build();
-                adView.loadAd(adRequest);
-            }
-
-            Date currentDateTime = new Date();
-            Date authorizeDateTime = result.getAuthorizeDateTime();
-            long diffInMillies = Math.abs(currentDateTime.getTime() - authorizeDateTime.getTime());
-            long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-
-            if (diff < 14)
-            {
-                NetworkService.getInstance(new IResponseReceivable()
-                {
-                    @Override
-                    public void onResponse(BaseResponse response)
-                    {
-                        User user = ((UserResponse)response).getData();
-                        user.setLastUpdate(App.getInstance().getUser().getLastUpdate());
-                        App.getInstance().getUser().authorize(user);
-                    }
-                    @Override public void onFailure(Throwable t){}@Override public void onError(String error){}@Override public void onDisconnected()        {          }
-                }).getProfile();
-            }
-            else
-            {
-                App.getInstance().getUser().logout();
-            }
+        App.shared().configureUser(user -> {
+            adView = findViewById(R.id.adView);
+            App.shared().getAdsService().setAdView(adView);
+            App.shared().getUser().authorize(user);
         });
 
         setContentView(R.layout.activity_main);
@@ -276,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements SubjectMenuFragme
     @OnClick(R.id.btnProfile)
     public void onProfileButtonClick()
     {
-//        View bottomSheet = App.getInstance().getCurrentFragment().getView().findViewById(R.id.bottomSheet);
+//        View bottomSheet = App.shared().getCurrentFragment().getView().findViewById(R.id.bottomSheet);
 //        BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(bottomSheet);
 //        behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         if (fragmentManager.findFragmentByTag("bottomSheet") == null)
