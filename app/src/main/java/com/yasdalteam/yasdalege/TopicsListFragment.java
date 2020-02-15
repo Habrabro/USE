@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.yasdalteam.yasdalege.Networking.BaseResponse;
 import com.yasdalteam.yasdalege.Networking.NetworkService;
-import com.yasdalteam.yasdalege.database.DbRequestListener;
-import com.yasdalteam.yasdalege.database.DbService;
+import com.yasdalteam.yasdalege.Networking.ResponseHandler;
+import com.yasdalteam.yasdalege.Networking.TopicResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,18 +79,27 @@ public class TopicsListFragment extends BaseFragment implements TopicsListAdapte
         topicsListAdapter = new TopicsListAdapter(this, topics);
         recyclerView.setAdapter(topicsListAdapter);
 
-        DbService.getInstance().getTopics(subjectId, (DbRequestListener<List<Topic>>) topics ->
+        if (App.shared().getTopics().isEmpty())
         {
-            TopicsListFragment.this.topics.addAll(topics);
+            Loader.show();
+            NetworkService.getInstance(new ResponseHandler() {
+                @Override
+                public void onResponse(BaseResponse response)
+                {
+                    super.onResponse(response);
+                    List<Topic> topics = ((TopicResponse)response).getData();
+                    TopicsListFragment.this.topics.addAll(topics);
+                    App.shared().getTopics().addAll(topics);
+                    topicsListAdapter.notifyDataSetChanged();
+                    Loader.hide();
+                }
+            }).getTopics(null, subjectId);
+        }
+        else
+        {
+            TopicsListFragment.this.topics.addAll(App.shared().getTopics());
             topicsListAdapter.notifyDataSetChanged();
-            DbService.getInstance().updateDb(result ->
-                    DbService.getInstance().getTopics(subjectId, (DbRequestListener<List<Topic>>) topics1 ->
-            {
-                TopicsListFragment.this.topics.clear();
-                TopicsListFragment.this.topics.addAll(topics1);
-                topicsListAdapter.notifyDataSetChanged();
-            }));
-        });
+        }
     }
 
     @Override

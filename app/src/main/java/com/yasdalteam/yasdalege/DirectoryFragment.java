@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -131,6 +133,22 @@ public class DirectoryFragment extends BaseFragment implements DirectoryAdapter.
         directories.clear();
         directories.addAll(directoryResponse.getData());
         directoryAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onError(String error)
+    {
+        super.onError(error);
+
+        if (error.equals("404"))
+        {
+            View rlNoContentStub = getView().findViewById(R.id.llNoContentStub);
+            LinearLayout.LayoutParams showParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT
+            );
+            rlNoContentStub.setLayoutParams(showParams);
+        }
     }
 
     @Override

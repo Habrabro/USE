@@ -99,7 +99,7 @@ public class NetworkService
             savedSubjectResponse = null;
             serverAPI
                     .getSubjects(id)
-                    .enqueue(new BaseCallback<SubjectsResponse>(listener));
+                    .enqueue(new BaseCallback<>(listener));
         }
     }
 
@@ -110,7 +110,7 @@ public class NetworkService
             savedTopicResponseResponse = null;
             serverAPI
                     .getTopics(id, subjectId)
-                    .enqueue(new BaseCallback<TopicResponse>(listener));
+                    .enqueue(new BaseCallback<>(listener));
         }
     }
 

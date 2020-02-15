@@ -49,8 +49,12 @@ public class ViewHolder extends RecyclerView.ViewHolder
                             App.shared().getResources().getColor(R.color.glidePlaceholderColor)))
                     .error(R.drawable.ic_broken_image)
                     .fallback(R.drawable.ic_broken_image)
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                     .into(imageView);
+        }
+        else
+        {
+            imageView.setImageResource(0);
         }
 
         instantiated = true;

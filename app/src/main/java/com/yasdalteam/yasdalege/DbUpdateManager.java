@@ -45,23 +45,16 @@ public class DbUpdateManager
                 Int i = new Int(0);
                 for (Update update : updates)
                 {
-                    DbRequestListener<Long> onOperationCompletedListener = new DbRequestListener<Long>()
-                    {
-                        @Override
-                        public void onRequestCompleted(Long result)
+                    DbRequestListener<Long> onOperationCompletedListener = result -> {
+                        if (i.getValue() == 1)
                         {
-                            if (i.getValue() == 1)
-                            {
-                                App.shared().getCurrentFragment().setSnackbar(
-                                        NetworkService.getInstance(null).getLoadingSnackbar());
-                                ((MainActivity)App.shared().getCurrentFragment().getActivity()).onLoad();
-                            }
-                            if (i.getValue() == updates.size() || updates.size() == 0)
-                            {
-                                DbService.getInstance().setLastUpdate(new Date());
-                                listener.onRequestCompleted(null);
-                                ((MainActivity)App.shared().getCurrentFragment().getActivity()).onLoaded();
-                            }
+                            ((MainActivity)App.shared().getCurrentFragment().getActivity()).onLoad();
+                        }
+                        if (i.getValue() == updates.size() || updates.size() == 0)
+                        {
+                            DbService.getInstance().setLastUpdate(new Date());
+                            listener.onRequestCompleted(null);
+                            ((MainActivity)App.shared().getCurrentFragment().getActivity()).onLoaded();
                         }
                     };
                     i.inc();

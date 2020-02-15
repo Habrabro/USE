@@ -119,7 +119,11 @@ public class MainActivity extends AppCompatActivity implements SubjectMenuFragme
         App.shared().configureUser(user -> {
             adView = findViewById(R.id.adView);
             App.shared().getAdsService().setAdView(adView);
-            App.shared().getUser().authorize(user);
+            if (user == null) {
+                App.shared().getAdsService().enableAds();
+            } else {
+                App.shared().getUser().authorize(user);
+            }
         });
 
         setContentView(R.layout.activity_main);

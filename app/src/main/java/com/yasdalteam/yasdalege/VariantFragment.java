@@ -15,6 +15,8 @@ import com.yasdalteam.yasdalege.Networking.BaseResponse;
 import com.yasdalteam.yasdalege.Networking.ExerciseResponse;
 import com.yasdalteam.yasdalege.Networking.IResponseReceivable;
 import com.yasdalteam.yasdalege.Networking.NetworkService;
+import com.yasdalteam.yasdalege.Networking.ResponseHandler;
+import com.yasdalteam.yasdalege.Networking.TopicResponse;
 import com.yasdalteam.yasdalege.database.DbRequestListener;
 import com.yasdalteam.yasdalege.database.DbService;
 
@@ -82,61 +84,65 @@ public class VariantFragment extends BaseFragment implements ExercisesListAdapte
 
         if (!created)
         {
-            DbService.getInstance().getTopics(subjectId, (DbRequestListener<List<Topic>>) topics ->
+            NetworkService.getInstance(new ResponseHandler() {
+                @Override
+                public void onResponse(BaseResponse response)
+                {
+                    super.onResponse(response);
+                    List<Topic> topics = ((TopicResponse)response).getData();
+                    VariantFragment.this.topics.addAll(topics);
+                    generate();
+                }
+            }).getTopics(null, subjectId);
+            created = true;
+        }
+    }
+
+    private void generate()
+    {
+        Int i = new Int(0);
+        NetworkService networkService = NetworkService.getInstance(new IResponseReceivable()
+        {
+            @Override
+            public void onResponse(BaseResponse response)
             {
-                Int i = new Int(0);
-                VariantFragment.this.topics.addAll(topics);
-                NetworkService networkService = NetworkService.getInstance(new IResponseReceivable()
+                Exercise exercise = ((ExerciseResponse)response).getData().get(0);
+                if (exercise != null)
                 {
-                    @Override
-                    public void onResponse(BaseResponse response)
+                    exercises.add(exercise);
+                    exercisesListAdapter.notifyDataSetChanged();
+
+                    if (exercise.getTopicId() == topics.get(0).getId())
                     {
-                        Exercise exercise = ((ExerciseResponse)response).getData().get(0);
-                        if (exercise != null)
-                        {
-                            exercises.add(exercise);
-                            exercisesListAdapter.notifyDataSetChanged();
-
-                            if (exercise.getTopicId() == topics.get(0).getId())
-                            {
-                                if (getActivity() != null)
-                                {
-                                    ((MainActivity)VariantFragment.this.getActivity()).onLoad();
-                                }
-                            }
-                            if (exercise.getTopicId() == topics.get(topics.size() - 1).getId())
-                            {
-                                if (getActivity() != null)
-                                {
-                                    ((MainActivity)VariantFragment.this.getActivity()).onLoaded();
-                                }
-                                Exercise completeButton = new Exercise();
-                                completeButton.setId(-1);
-                                exercises.add(completeButton);
-                            }
-                        }
-
-                        if (i.getValue() < topics.size() - 1)
-                        {
-                            i.inc();
-                            NetworkService.getInstance(this).getRandomExercise(
-                                    App.shared().getUser().getSessionId(), topics.get(i.getValue()).getId(), false);
-                        }
+                        Loader.show();
                     }
-                    @Override
-                    public void onFailure(Throwable t) { }
-                    @Override
-                    public void onError(String error) { }
-                    @Override
-                    public void onDisconnected() { }
-                });
-                if (networkService.isNetworkConnected())
+                    if (exercise.getTopicId() == topics.get(topics.size() - 1).getId())
+                    {
+                        Loader.hide();
+                        Exercise completeButton = new Exercise();
+                        completeButton.setId(-1);
+                        exercises.add(completeButton);
+                    }
+                }
+
+                if (i.getValue() < topics.size() - 1)
                 {
-                    networkService.getRandomExercise(
+                    i.inc();
+                    NetworkService.getInstance(this).getRandomExercise(
                             App.shared().getUser().getSessionId(), topics.get(i.getValue()).getId(), false);
                 }
-            });
-            created = true;
+            }
+            @Override
+            public void onFailure(Throwable t) { }
+            @Override
+            public void onError(String error) { }
+            @Override
+            public void onDisconnected() { }
+        });
+        if (networkService.isNetworkConnected())
+        {
+            networkService.getRandomExercise(
+                    App.shared().getUser().getSessionId(), topics.get(i.getValue()).getId(), false);
         }
     }
 

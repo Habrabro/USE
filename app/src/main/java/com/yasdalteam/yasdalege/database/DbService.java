@@ -26,7 +26,6 @@ public class DbService
     private static DbService instance;
     private Db database;
     private Date lastUpdate;
-    private DbUpdateManager dbUpdateManager;
 
     DbService()
     {
@@ -34,7 +33,6 @@ public class DbService
                 .databaseBuilder(App.shared(), Db.class, "database")
                 .fallbackToDestructiveMigration()
                 .build();
-        dbUpdateManager = new DbUpdateManager(database, tableOperationsMapInit());
     }
 
     public static DbService getInstance()
@@ -62,13 +60,6 @@ public class DbService
     }
 
     public Db getDatabase() { return database; }
-
-    public DbUpdateManager getUpdateManager() { return dbUpdateManager; }
-
-    public void updateDb(DbRequestListener listener)
-    {
-        dbUpdateManager.updateDb(lastUpdate, listener);
-    }
 
     public void insertOrUpdateUser(User user)
     {

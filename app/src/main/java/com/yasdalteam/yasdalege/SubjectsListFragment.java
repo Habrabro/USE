@@ -12,6 +12,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.yasdalteam.yasdalege.Networking.BaseResponse;
+import com.yasdalteam.yasdalege.Networking.NetworkService;
+import com.yasdalteam.yasdalege.Networking.ResponseHandler;
+import com.yasdalteam.yasdalege.Networking.SubjectsResponse;
 import com.yasdalteam.yasdalege.database.DbService;
 import com.yasdalteam.yasdalege.database.DbRequestListener;
 
@@ -23,7 +26,6 @@ public class SubjectsListFragment extends BaseFragment implements SubjectsListAd
 {
     private Listener mListener;
     private SubjectsListAdapter subjectsListAdapter;
-    private HashMap<String, IDbOperationable> tableOperationsMap;
     private List<Subject> subjects;
 
     public SubjectsListFragment()
@@ -43,7 +45,12 @@ public class SubjectsListFragment extends BaseFragment implements SubjectsListAd
         super.onCreate(savedInstanceState);
     }
 
-
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        App.shared().getTopics().clear();
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -65,18 +72,27 @@ public class SubjectsListFragment extends BaseFragment implements SubjectsListAd
         subjectsListAdapter = new SubjectsListAdapter(this, subjects);
         recyclerView.setAdapter(subjectsListAdapter);
 
-        DbService.getInstance().getSubjects((DbRequestListener<List<Subject>>) subjects ->
+        if (App.shared().getSubjects().isEmpty())
         {
-            SubjectsListFragment.this.subjects.addAll(subjects);
+            Loader.show();
+            NetworkService.getInstance(new ResponseHandler() {
+                @Override
+                public void onResponse(BaseResponse response)
+                {
+                    super.onResponse(response);
+                    List<Subject> subjects = ((SubjectsResponse)response).getData();
+                    SubjectsListFragment.this.subjects.addAll(subjects);
+                    App.shared().getSubjects().addAll(subjects);
+                    subjectsListAdapter.notifyDataSetChanged();
+                    Loader.hide();
+                }
+            }).getSubjects(null);
+        }
+        else
+        {
+            SubjectsListFragment.this.subjects.addAll(App.shared().getSubjects());
             subjectsListAdapter.notifyDataSetChanged();
-            DbService.getInstance().updateDb(result ->
-                    DbService.getInstance().getSubjects((DbRequestListener<List<Subject>>) subjects1 ->
-            {
-                SubjectsListFragment.this.subjects.clear();
-                SubjectsListFragment.this.subjects.addAll(subjects1);
-                subjectsListAdapter.notifyDataSetChanged();
-            }));
-        });
+        }
     }
 
     @Override

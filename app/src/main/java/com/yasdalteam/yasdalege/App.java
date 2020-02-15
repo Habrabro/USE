@@ -8,7 +8,9 @@ import com.yasdalteam.yasdalege.Networking.ResponseHandler;
 import com.yasdalteam.yasdalege.Networking.UserResponse;
 import com.yasdalteam.yasdalege.database.DbService;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import com.google.android.gms.ads.MobileAds;
@@ -26,6 +28,9 @@ public class App extends Application
 
     private User user;
 
+    private List<Subject> subjects = new ArrayList<>();
+    private List<Topic> topics = new ArrayList<>();
+
     @Override
     public void onCreate()
     {
@@ -35,6 +40,26 @@ public class App extends Application
         adsService = new AdsService();
         VK.initialize(this);
         MobileAds.initialize(this, initializationStatus -> {});
+    }
+
+    public List<Subject> getSubjects()
+    {
+        return subjects;
+    }
+
+    public void setSubjects(List<Subject> subjects)
+    {
+        this.subjects = subjects;
+    }
+
+    public List<Topic> getTopics()
+    {
+        return topics;
+    }
+
+    public void setTopics(List<Topic> topics)
+    {
+        this.topics = topics;
     }
 
     public AdsService getAdsService()
@@ -83,10 +108,14 @@ public class App extends Application
 
                         User user = ((UserResponse)response).getData();
                         user.setLastUpdate(App.shared().getUser().getLastUpdate());
-                        if (completion != null)
-                        {
-                            completion.onUserReceived(user);
-                        }
+                        if (completion != null) { completion.onUserReceived(user); }
+                    }
+
+                    @Override
+                    public void onError(String error)
+                    {
+                        super.onError(error);
+                        if (completion != null) { completion.onUserReceived(null); }
                     }
                 }).getProfile();
             }
