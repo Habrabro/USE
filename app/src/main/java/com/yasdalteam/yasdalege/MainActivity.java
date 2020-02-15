@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements SubjectMenuFragme
             long diffInMillies = Math.abs(currentDateTime.getTime() - authorizeDateTime.getTime());
             long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
 
-            if (diff == 0)
+            if (diff < 14)
             {
                 NetworkService.getInstance(new IResponseReceivable()
                 {
