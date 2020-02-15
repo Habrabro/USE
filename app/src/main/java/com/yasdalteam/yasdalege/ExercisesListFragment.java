@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,6 +18,7 @@ import com.yasdalteam.yasdalege.Networking.ExerciseResponse;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.Inflater;
 
 public class ExercisesListFragment extends BaseFragment implements ExercisesListAdapter.Listener
 {
@@ -150,6 +153,22 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
         }
         exercises.addAll(exerciseResponse.getData());
         exercisesListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onError(String error)
+    {
+        super.onError(error);
+
+        if (error.equals("404") && page == 0)
+        {
+            View rlNoContentStub = getView().findViewById(R.id.llNoContentStub);
+            LinearLayout.LayoutParams showParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT
+            );
+            rlNoContentStub.setLayoutParams(showParams);
+        }
     }
 
     @Override

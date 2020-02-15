@@ -76,7 +76,7 @@ public class Exercise
     }
 
     public String getRightAnswer() {
-        return rightAnswer;
+        return rightAnswer.toLowerCase();
     }
 
     public int getVersion() {

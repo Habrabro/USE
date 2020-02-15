@@ -136,6 +136,7 @@ public class AnswerSection extends ViewHolder
 
     private boolean checkAnswer(String answer, String rightAnswer, String answerType)
     {
+        answer = answer.toLowerCase();
         switch (answerType)
         {
             case "ordered":
