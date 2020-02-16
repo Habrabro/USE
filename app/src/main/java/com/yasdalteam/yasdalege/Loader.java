@@ -18,7 +18,6 @@ public class Loader
                     "Загрузка",
                     Snackbar.LENGTH_INDEFINITE);
             snackbar.getView().setTranslationZ(130);
-            snackbar.
             snackbar.show();
         }
     }

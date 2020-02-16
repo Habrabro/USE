@@ -79,36 +79,31 @@ public class MainActivity extends AppCompatActivity implements SubjectMenuFragme
                     super.onActivityResult(requestCode, resultCode, data);
                 }
                 break;
-            default:
-                switch (resultCode) {
-                    case RESULT_OK:
-                        // successful tokenization
-                        TokenizationResult result = Checkout.createTokenizationResult(data);
-                        NetworkService.getInstance(new ResponseHandler() {
-                            @Override
-                            public void onResponse(BaseResponse response)
-                            {
-                                super.onResponse(response);
+            case RESULT_OK:
+                // successful tokenization
+                TokenizationResult result = Checkout.createTokenizationResult(data);
+                NetworkService.getInstance(new ResponseHandler() {
+                    @Override
+                    public void onResponse(BaseResponse response)
+                    {
+                        super.onResponse(response);
 
-                                Payment payment = ((PaymentResponse)response).getData();
-                                Log.i("Payment", "received");
-                                switch (payment.getPaymentMethod().getType())
-                                {
-                                    case "bank_card":
+                        Payment payment = ((PaymentResponse)response).getData();
+                        Log.i("Payment", "received");
+                        switch (payment.getPaymentMethod().getType())
+                        {
+                            case "bank_card":
 //                                        Intent intent = Checkout.create3dsIntent(
 //                                                MainActivity.this, payment);
-                                }
-                            }
-                        }).createPayment(result.getPaymentToken(), "Hello! I'm description!");
-                        break;
-                    case RESULT_CANCELED:
-                        // user canceled tokenization
+                        }
+                    }
+                }).createPayment(result.getPaymentToken(), "Hello! I'm description!");
+                break;
+            case RESULT_CANCELED:
+                // user canceled tokenization
 
-                        break;
-                }
                 break;
         }
-
     }
 
     @Override
