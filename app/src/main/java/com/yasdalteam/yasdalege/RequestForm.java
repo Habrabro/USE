@@ -45,6 +45,8 @@ public class RequestForm extends ViewHolder
     private TextView tvAvailableChecks;
     private LinearLayout llCanCreateRequest;
     private LinearLayout llCantCreateRequest;
+    private TextView tvPurchaseInstruction;
+    private Button btnOpenStore;
 
     private ArrayList<MediaFile> data = new ArrayList<>();
 
@@ -67,6 +69,13 @@ public class RequestForm extends ViewHolder
         tvAvailableChecks = view.findViewById(R.id.tvAvailableChecks);
         llCanCreateRequest = view.findViewById(R.id.llCanCreateRequest);
         llCantCreateRequest = view.findViewById(R.id.llCantCreateRequest);
+        btnOpenStore = view.findViewById(R.id.btnOpenStore);
+        tvPurchaseInstruction = view.findViewById(R.id.tvPurchaseInstruction);
+
+        btnOpenStore.setOnClickListener(button -> {
+            BaseFragment shopFragment = ShopFragment.newInstance();
+            ((MainActivity)fragment.getActivity()).replaceFragment(shopFragment, "shopFragment");
+        });
 
         view.findViewById(R.id.btnSelectFiles).setOnClickListener(v -> {
             if(ContextCompat.checkSelfPermission(fragment.getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -96,16 +105,29 @@ public class RequestForm extends ViewHolder
 
         int availChecks = App.shared().getUser().getAvailableChecks();
         boolean authorized = App.shared().getUser().isAuthorized();
-        tvAvailableChecks.setText("Доступных проверок: " + availChecks);
-        if (availChecks > 0 && authorized)
+        if (authorized)
         {
-            llCanCreateRequest.setLayoutParams(shownLayoutParams);
-            llCantCreateRequest.setLayoutParams(hiddenLayoutParams);
+            tvAvailableChecks.setText("Доступных проверок: " + availChecks);
+            if (availChecks > 0)
+            {
+                llCanCreateRequest.setVisibility(View.VISIBLE);
+                llCantCreateRequest.setVisibility(View.GONE);
+            }
+            else
+            {
+                llCantCreateRequest.setVisibility(View.VISIBLE);
+                llCanCreateRequest.setVisibility(View.GONE);
+                tvPurchaseInstruction.setText("Вы можете приобрести доступ к проверкам в разделе покупок");
+                btnOpenStore.setVisibility(View.VISIBLE);
+            }
         }
         else
         {
-            llCantCreateRequest.setLayoutParams(shownLayoutParams);
-            llCanCreateRequest.setLayoutParams(hiddenLayoutParams);
+            tvAvailableChecks.setText("Необходима авторизация");
+            llCanCreateRequest.setVisibility(View.GONE);
+            llCantCreateRequest.setVisibility(View.VISIBLE);
+            tvPurchaseInstruction.setText("Авторизуйтесь, чтобы отправить своё выполненное задание.");
+            btnOpenStore.setVisibility(View.GONE);
         }
     }
 

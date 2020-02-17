@@ -107,8 +107,9 @@ public class DirectoryFragment extends BaseFragment implements DirectoryAdapter.
 
         if (directories.isEmpty())
         {
+            Loader.show();
             NetworkService networkService = NetworkService.getInstance(this);
-            networkService.getDirectories(null, subjectId, null, true);
+            networkService.getDirectories(null, subjectId, null);
         }
     }
 
@@ -129,6 +130,8 @@ public class DirectoryFragment extends BaseFragment implements DirectoryAdapter.
     public void onResponse(BaseResponse response)
     {
         super.onResponse(response);
+
+        Loader.hide();
         DirectoryResponse directoryResponse = ((DirectoryResponse)response);
         directories.clear();
         directories.addAll(directoryResponse.getData());
@@ -140,6 +143,7 @@ public class DirectoryFragment extends BaseFragment implements DirectoryAdapter.
     {
         super.onError(error);
 
+        Loader.hide();
         if (error.equals("404"))
         {
             View rlNoContentStub = getView().findViewById(R.id.llNoContentStub);

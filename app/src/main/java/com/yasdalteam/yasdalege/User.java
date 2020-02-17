@@ -9,7 +9,9 @@ import androidx.room.TypeConverters;
 import com.yasdalteam.yasdalege.database.DateConverter;
 import com.yasdalteam.yasdalege.database.DbService;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @TypeConverters(DateConverter.class)
@@ -25,6 +27,11 @@ public class User
     private Date lastUpdate;
     private Date authorizeDateTime = new Date();
     private Long sessionId = null;
+    private int availableChecks;
+    private boolean isAuthorized = false;
+
+    @Ignore
+    private List<IUserObservable> observers = new ArrayList<>();
 
     public boolean isAdsEnabled()
     {
@@ -53,10 +60,6 @@ public class User
         this.availableChecks--;
         DbService.getInstance().insertOrUpdateUser(this);
     }
-
-    private int availableChecks;
-
-    private boolean isAuthorized = false;
 
     public void setLogin(String login)
     {
@@ -104,6 +107,16 @@ public class User
         this.authorizeDateTime = authorizeDateTime;
     }
 
+    public List<IUserObservable> getObservers()
+    {
+        return observers;
+    }
+
+    public void addObserver(IUserObservable observer)
+    {
+        this.observers.add(observer);
+    }
+
     public User(Date lastUpdate)
     {
         this.lastUpdate = lastUpdate;
@@ -125,6 +138,11 @@ public class User
         } else {
             App.shared().getAdsService().disableAds();
         }
+
+        for (IUserObservable observer: observers)
+        {
+            observer.onAuthorize(this);
+        }
     }
 
     public void logout()
@@ -134,10 +152,15 @@ public class User
         DbService.getInstance().insertOrUpdateUser(this);
         PreferencesHelper.getInstance().putStringSet(PREF_COOKIES, null);
 
-        FragmentManager fm = App.shared().getCurrentFragment().getActivity().getSupportFragmentManager();
-        for(int i = 0; i < fm.getBackStackEntryCount(); ++i)
+        for (IUserObservable observer: observers)
         {
-            fm.popBackStack();
+            observer.onLogout();
         }
+    }
+
+    interface IUserObservable
+    {
+        void onAuthorize(User user);
+        void onLogout();
     }
 }

@@ -287,7 +287,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
 
     class Profile
     {
-        private final String VK_GROUP_URL = "https://vk.com/";
+        private final String VK_GROUP_URL = "https://vk.com/sdal__ege";
 
         @BindView(R.id.btnLogout)
         Button logoutButton;
@@ -339,7 +339,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
                                 ((ExercisesListFragment)listener).getItemsPerLoad();
                         NetworkService networkService = NetworkService.getInstance(listener);
                         networkService.getFavoriteExercises(
-                                App.shared().getUser().getSessionId(), limit, true);
+                                App.shared().getUser().getSessionId(), limit);
                     }),
                     "favoriteExercises");
             BottomSheetFragment.this.dismiss();
@@ -356,7 +356,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
                                 ((ExercisesListFragment)listener).getItemsPerLoad();
                         NetworkService networkService = NetworkService.getInstance(listener);
                         networkService.getCompletedExercises(
-                                App.shared().getUser().getSessionId(), limit, true);
+                                App.shared().getUser().getSessionId(), limit);
                     }),
                     "completedExercises");
             BottomSheetFragment.this.dismiss();
@@ -388,11 +388,6 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements IR
                 public void onResponse(BaseResponse response)
                 {
                     App.shared().getUser().logout();
-                    FragmentManager fm = getActivity().getSupportFragmentManager();
-                    for(int i = 0; i < fm.getBackStackEntryCount(); ++i)
-                    {
-                        fm.popBackStack();
-                    }
                     reset();
                 }
 

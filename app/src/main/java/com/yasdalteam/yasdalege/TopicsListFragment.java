@@ -150,7 +150,7 @@ public class TopicsListFragment extends BaseFragment implements TopicsListAdapte
                             ((ExercisesListFragment)listener).getItemsPerLoad();
                     NetworkService networkService = NetworkService.getInstance(listener);
                     networkService.getExercises(
-                            null, topicId, limit, true);
+                            null, topicId, limit);
                 }),
                 "exercisesListFragment");
     }

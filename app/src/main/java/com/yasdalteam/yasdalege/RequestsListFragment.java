@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,7 +19,7 @@ import com.yasdalteam.yasdalege.Networking.RequestResponse;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RequestsListFragment extends BaseFragment implements RequestsListAdapter.Listener
+public class RequestsListFragment extends BaseFragment implements RequestsListAdapter.Listener, User.IUserObservable
 {
     private List<Request> requests = new ArrayList<>();
     RequestsListAdapter requestsListAdapter;
@@ -41,6 +42,13 @@ public class RequestsListFragment extends BaseFragment implements RequestsListAd
 
         requestsListAdapter = new RequestsListAdapter(this, requests);
         NetworkService.getInstance(this).getUserRequests();
+    }
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        checkIfUserAuthorized();
     }
 
     @Override
@@ -82,14 +90,23 @@ public class RequestsListFragment extends BaseFragment implements RequestsListAd
     }
 
     @Override
-    public void onAttach(@NonNull Context context)
+    public void onAuthorize(User user)
     {
-        super.onAttach(context);
+
     }
 
     @Override
-    public void onDetach()
+    public void onLogout()
     {
-        super.onDetach();
+        checkIfUserAuthorized();
+    }
+
+    private void checkIfUserAuthorized()
+    {
+        if (!App.shared().getUser().isAuthorized())
+        {
+            FragmentManager fragmentManager = App.shared().getCurrentFragment().getActivity().getSupportFragmentManager();
+            fragmentManager.popBackStack();
+        }
     }
 }

@@ -12,11 +12,23 @@ public class Loader
     {
         if (App.shared().getCurrentFragment().getView() != null)
         {
+            String tag = App.shared().getCurrentFragment().getTag();
             View view = App.shared().getCurrentFragment().getView();
             snackbar = Snackbar.make(
-                    App.shared().getCurrentFragment().getView(),
+                    view,
                     "Загрузка",
                     Snackbar.LENGTH_INDEFINITE);
+            snackbar.getView().setTranslationZ(130);
+            snackbar.show();
+        }
+    }
+
+    static void show(String text, int length)
+    {
+        if (App.shared().getCurrentFragment().getView() != null)
+        {
+            View view = App.shared().getCurrentFragment().getView();
+            snackbar = Snackbar.make(view, text, length);
             snackbar.getView().setTranslationZ(130);
             snackbar.show();
         }

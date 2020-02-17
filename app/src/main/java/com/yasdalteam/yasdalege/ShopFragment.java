@@ -79,9 +79,11 @@ public class ShopFragment extends BaseFragment
             public void onResponse(BaseResponse response)
             {
                 super.onResponse(response);
+                Loader.hide();
                 setupPriceListView(((PriceListResponse)response).getData());
             }
         };
+        Loader.show();
         NetworkService.getInstance(responseHandler).getPriceList();
     }
 

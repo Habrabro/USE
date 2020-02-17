@@ -23,7 +23,7 @@ import com.yasdalteam.yasdalege.database.DbService;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VariantFragment extends BaseFragment implements ExercisesListAdapter.Listener
+public class VariantFragment extends BaseFragment implements ExercisesListAdapter.Listener, User.IUserObservable
 {
     private final static String PARAM_1 = "param_1";
     private long subjectId;
@@ -53,6 +53,8 @@ public class VariantFragment extends BaseFragment implements ExercisesListAdapte
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        App.shared().getUser().addObserver(this);
         exercises = new ArrayList<>();
         topics = new ArrayList<>();
         if (getArguments() != null)
@@ -84,6 +86,7 @@ public class VariantFragment extends BaseFragment implements ExercisesListAdapte
 
         if (!created)
         {
+            Loader.show();
             NetworkService.getInstance(new ResponseHandler() {
                 @Override
                 public void onResponse(BaseResponse response)
@@ -98,10 +101,22 @@ public class VariantFragment extends BaseFragment implements ExercisesListAdapte
         }
     }
 
+    @Override
+    public void onAuthorize(User user)
+    {
+        exercisesListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onLogout()
+    {
+        exercisesListAdapter.notifyDataSetChanged();
+    }
+
     private void generate()
     {
         Int i = new Int(0);
-        NetworkService networkService = NetworkService.getInstance(new IResponseReceivable()
+        NetworkService networkService = NetworkService.getInstance(new ResponseHandler()
         {
             @Override
             public void onResponse(BaseResponse response)
@@ -114,7 +129,7 @@ public class VariantFragment extends BaseFragment implements ExercisesListAdapte
 
                     if (exercise.getTopicId() == topics.get(0).getId())
                     {
-                        Loader.show();
+//                        Loader.show();
                     }
                     if (exercise.getTopicId() == topics.get(topics.size() - 1).getId())
                     {
@@ -132,12 +147,6 @@ public class VariantFragment extends BaseFragment implements ExercisesListAdapte
                             App.shared().getUser().getSessionId(), topics.get(i.getValue()).getId(), false);
                 }
             }
-            @Override
-            public void onFailure(Throwable t) { }
-            @Override
-            public void onError(String error) { }
-            @Override
-            public void onDisconnected() { }
         });
         if (networkService.isNetworkConnected())
         {

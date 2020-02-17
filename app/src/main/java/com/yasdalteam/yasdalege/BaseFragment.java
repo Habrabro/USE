@@ -75,10 +75,7 @@ public class BaseFragment extends Fragment implements IResponseReceivable, Reque
     @Override
     public void onResponse(BaseResponse response)
     {
-        if (getActivity() != null)
-        {
-            ((MainActivity)getActivity()).onLoaded();
-        }
+
     }
 
     @Override
@@ -90,15 +87,12 @@ public class BaseFragment extends Fragment implements IResponseReceivable, Reque
     @Override
     public void onDisconnected()
     {
-        ((MainActivity)getActivity()).onDisconnected();
+
     }
 
     @Override
     public void onError(String error)
     {
-        if (getActivity() != null) {
-            ((MainActivity) getActivity()).onLoaded();
-        }
         Log.i("networking", "Error " + error);
     }
 }

@@ -114,60 +114,44 @@ public class NetworkService
         }
     }
 
-    public void getExercises(Long id, Long topicId, String limit, boolean showLoader)
+    public void getExercises(Long id, Long topicId, String limit)
     {
         if (isNetworkConnected())
         {
             serverAPI
                     .getExercises(id, topicId, limit)
-                    .enqueue(new BaseCallback<ExerciseResponse>(listener));
-            if (showLoader)
-            {
-                ((MainActivity)App.shared().getCurrentFragment().getActivity()).onLoad();
-            }
+                    .enqueue(new BaseCallback<>(listener));
         }
 
     }
 
-    public void getDirectories(Long id, Long subjectId, String limit, boolean showLoadingSnackbar)
+    public void getDirectories(Long id, Long subjectId, String limit)
     {
         if (isNetworkConnected())
         {
             serverAPI
                     .getDirectories(id, subjectId, limit)
                     .enqueue(new BaseCallback<DirectoryResponse>(listener));
-            if (showLoadingSnackbar)
-            {
-                ((MainActivity)App.shared().getCurrentFragment().getActivity()).onLoad();
-            }
         }
     }
 
-    public void getFavoriteExercises(long userId, String limit, boolean showLoader)
+    public void getFavoriteExercises(long userId, String limit)
     {
         if (isNetworkConnected())
         {
             serverAPI
                     .getFavoriteExercises(userId, limit)
                     .enqueue(new BaseCallback<ExerciseResponse>(listener));
-            if (showLoader)
-            {
-                ((MainActivity)App.shared().getCurrentFragment().getActivity()).onLoad();
-            }
         }
     }
 
-    public void getCompletedExercises(long userId, String limit, boolean showLoader)
+    public void getCompletedExercises(long userId, String limit)
     {
         if (isNetworkConnected())
         {
             serverAPI
                     .getCompletedExercises(userId, limit)
                     .enqueue(new BaseCallback<ExerciseResponse>(listener));
-            if (showLoader)
-            {
-                ((MainActivity)App.shared().getCurrentFragment().getActivity()).onLoad();
-            }
         }
     }
 
@@ -283,13 +267,7 @@ public class NetworkService
         ConnectivityManager cm = (ConnectivityManager) App.shared()
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         boolean isNetworkConnected = cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
-        if (isNetworkConnected)
-        {
-            if (App.shared().getCurrentFragment() != null) {
-                ((MainActivity)App.shared().getCurrentFragment().getActivity()).onLoaded();
-            }
-        }
-        else
+        if (!isNetworkConnected)
         {
             if (App.shared().getCurrentFragment() != null)
             {
@@ -328,7 +306,6 @@ public class NetworkService
             serverAPI
                     .getUserRequests()
                     .enqueue(new BaseCallback<>(listener));
-            ((MainActivity)App.shared().getCurrentFragment().getActivity()).onLoad();
         }
     }
 
@@ -339,7 +316,6 @@ public class NetworkService
             serverAPI
                     .getPriceList()
                     .enqueue(new BaseCallback<>(listener));
-            ((MainActivity)App.shared().getCurrentFragment().getActivity()).onLoad();
         }
     }
 
@@ -350,7 +326,6 @@ public class NetworkService
             serverAPI
                     .createPayment(paymentToken, description)
                     .enqueue(new BaseCallback<>(listener));
-            ((MainActivity)App.shared().getCurrentFragment().getActivity()).onLoad();
         }
     }
 

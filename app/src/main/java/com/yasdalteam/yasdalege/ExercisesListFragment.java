@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.Inflater;
 
-public class ExercisesListFragment extends BaseFragment implements ExercisesListAdapter.Listener
+public class ExercisesListFragment extends BaseFragment implements ExercisesListAdapter.Listener, User.IUserObservable
 {
     public int getItemsPerLoad()
     {
@@ -78,11 +79,21 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
 
         page = 0;
         exercisesListAdapter = new ExercisesListAdapter(this, exercises);
+        App.shared().getUser().addObserver(this);
 
         if (request != null)
         {
+            Loader.show();
             request.send(this);
         }
+    }
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+
+        checkIfUserAuthorized();
     }
 
     @Override
@@ -114,6 +125,7 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
                         && !exercisesListAdapter.isDataIsLoading()
                         && !exercisesListAdapter.isAllDataLoaded())
                 {
+                    Loader.show();
                     request.send(ExercisesListFragment.this);
                     exercisesListAdapter.setDataIsLoading(true);
                 }
@@ -134,9 +146,24 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
     }
 
     @Override
+    public void onAuthorize(User user)
+    {
+        exercisesListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onLogout()
+    {
+        checkIfUserAuthorized();
+        exercisesListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public void onResponse(BaseResponse response)
     {
         super.onResponse(response);
+
+        Loader.hide();
         if (!exercisesListAdapter.isDataIsLoading())
         {
             exercises.clear();
@@ -160,6 +187,7 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
     {
         super.onError(error);
 
+        Loader.hide();
         if (error.equals("404") && page == 0)
         {
             View rlNoContentStub = getView().findViewById(R.id.llNoContentStub);
@@ -175,5 +203,17 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
     public void OnViewHolderClick(RecyclerView.ViewHolder viewHolder)
     {
 
+    }
+
+    private void checkIfUserAuthorized()
+    {
+        if (!App.shared().getUser().isAuthorized() && getTag() != null)
+        {
+            if (getTag().equals("completedExercises") || getTag().equals("favoriteExercises"))
+            {
+                FragmentManager fragmentManager = App.shared().getCurrentFragment().getActivity().getSupportFragmentManager();
+                fragmentManager.popBackStack();
+            }
+        }
     }
 }

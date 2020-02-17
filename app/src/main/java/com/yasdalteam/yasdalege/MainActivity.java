@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements SubjectMenuFragme
                     @Override
                     public void onLogin(@NotNull VKAccessToken vkAccessToken)
                     {
-                        NetworkService.getInstance(new IResponseReceivable()
+                        NetworkService.getInstance(new ResponseHandler()
                         {
                             @Override
                             public void onResponse(BaseResponse response)
@@ -66,7 +66,6 @@ public class MainActivity extends AppCompatActivity implements SubjectMenuFragme
                                 App.shared().getUser().authorize(user);
                                 bottomSheet.reset();
                             }
-                            @Override public void onFailure(Throwable t){}@Override public void onError(String error){}@Override public void onDisconnected(){}
                         }).vkAuth(vkAccessToken.getAccessToken());
                     }
                     @Override
@@ -267,28 +266,16 @@ public class MainActivity extends AppCompatActivity implements SubjectMenuFragme
 
     public void onLoad()
     {
-        snackbar = Snackbar.make(
-                findViewById(R.id.fragmentContainer),
-                "Загрузка",
-                Snackbar.LENGTH_INDEFINITE);
-        snackbar.getView().setTranslationZ(130);
-        snackbar.show();
+        Loader.show();
     }
 
     public void onLoaded()
     {
-        if (snackbar != null)
-        {
-            snackbar.dismiss();
-        }
+        Loader.hide();
     }
 
     public void onDisconnected()
     {
-        snackbar = Snackbar.make(
-                findViewById(R.id.fragmentContainer),
-                "Нет подключения к сети",
-                Snackbar.LENGTH_LONG);
-        snackbar.show();
+        Loader.show("Нет подключения к сети", Snackbar.LENGTH_LONG);
     }
 }
