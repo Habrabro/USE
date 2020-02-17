@@ -24,13 +24,19 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
+import com.jaiselrahman.filepicker.activity.FilePickerActivity;
+import com.jaiselrahman.filepicker.config.Configurations;
+import com.jaiselrahman.filepicker.model.MediaFile;
 import com.yasdalteam.yasdalege.Networking.BaseResponse;
 import com.yasdalteam.yasdalege.Networking.IResponseReceivable;
 import com.yasdalteam.yasdalege.Networking.NetworkService;
 import com.google.android.material.snackbar.Snackbar;
+import com.yasdalteam.yasdalege.Networking.ResponseHandler;
 
 public class RequestForm extends ViewHolder
 {
+    public static final int MAX_FILES_COUNT = 5;
+
     private BaseFragment fragment;
     private EditText etText;
     private Button btnSendRequest;
@@ -40,7 +46,7 @@ public class RequestForm extends ViewHolder
     private LinearLayout llCanCreateRequest;
     private LinearLayout llCantCreateRequest;
 
-    private Intent data;
+    private ArrayList<MediaFile> data = new ArrayList<>();
 
     LinearLayout.LayoutParams hiddenLayoutParams = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT, 0);
@@ -55,28 +61,30 @@ public class RequestForm extends ViewHolder
         etText = view.findViewById(R.id.etText);
         tvRequestFormError = view.findViewById(R.id.tvRequestFormError);
         btnSendRequest = view.findViewById(R.id.btnSendRequest);
-        btnSendRequest.setOnClickListener(view1 -> submitDialogShow(RequestForm.this.data, etText.getText().toString()));
+        btnSendRequest.setOnClickListener(view1 ->
+                submitDialogShow(RequestForm.this.data, etText.getText().toString()));
         tvFilesPicked = view.findViewById(R.id.tvFilesPicked);
         tvAvailableChecks = view.findViewById(R.id.tvAvailableChecks);
         llCanCreateRequest = view.findViewById(R.id.llCanCreateRequest);
         llCantCreateRequest = view.findViewById(R.id.llCantCreateRequest);
 
-        view.findViewById(R.id.btnSelectFiles).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(ContextCompat.checkSelfPermission(fragment.getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED){
-                    ActivityCompat.requestPermissions(fragment.getActivity(),
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                            2);
-                }else{
-                    Intent intent = new Intent();
-                    intent.setType("*/*");
-                    intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                    ((BaseFragment)fragment).setFilepickCallback(RequestForm.this);
-                    fragment.startActivityForResult(Intent.createChooser(intent,"Выберите файл"), 1);
-                }
+        view.findViewById(R.id.btnSelectFiles).setOnClickListener(v -> {
+            if(ContextCompat.checkSelfPermission(fragment.getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED){
+                ActivityCompat.requestPermissions(fragment.getActivity(),
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        2);
+            }else{
+                fragment.setFilepickCallback(RequestForm.this);
+                Intent intent = new Intent(fragment.getContext(), FilePickerActivity.class);
+                intent.putExtra(FilePickerActivity.CONFIGS, new Configurations.Builder()
+                        .setCheckPermission(true)
+                        .setShowImages(true)
+                        .enableImageCapture(true)
+                        .setMaxSelection(MAX_FILES_COUNT)
+                        .setSkipZeroSizeFiles(true)
+                        .build());
+                fragment.getActivity().startActivityForResult(intent, App.FILE_REQUEST_CODE);
             }
         });
     }
@@ -101,30 +109,28 @@ public class RequestForm extends ViewHolder
         }
     }
 
-    public void selectFiles(@Nullable Intent data)
+    public void selectFiles(ArrayList<MediaFile> files)
     {
-        if (data != null)
+        if (!files.isEmpty())
         {
-            this.data = new Intent(data);
-            if (data.getClipData() != null)
-            {
-                tvFilesPicked.setText("Выбрано файлов: " + data.getClipData().getItemCount());
-            }
-            if (data.getData() != null)
-            {
-                tvFilesPicked.setText("Выбрано файлов: 1");
-            }
-            tvFilesPicked.setLayoutParams(shownLayoutParams);
+            this.data = files;
+            tvFilesPicked.setText("Выбрано файлов: " + files.size());
+            tvFilesPicked.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            this.data.clear();
+            tvFilesPicked.setVisibility(View.GONE);
         }
     }
 
-    public void submitDialogShow(@Nullable Intent data, String text)
+    public void submitDialogShow(@Nullable ArrayList<MediaFile> files, String text)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(fragment.getActivity());
         builder.setMessage("Вы действительно хотите отправить заявку на проверку?");
         builder.setPositiveButton("OK", (dialog, id) ->
         {
-            submitForm(data, text);
+            submitForm(files, text);
         });
         builder.setNegativeButton("Отмена", (dialog, id) ->
         {
@@ -134,92 +140,60 @@ public class RequestForm extends ViewHolder
         dialog.show();
     }
 
-    void submitForm(@Nullable Intent data, String _text)
+    enum ContentCombinations
+    {
+
+    }
+
+    void submitForm(ArrayList<MediaFile> files, String _text)
     {
         tvRequestFormError.setLayoutParams(hiddenLayoutParams);
-
         List<MultipartBody.Part> parts = new ArrayList<>();
 
-        if (data != null || !_text.isEmpty())
+        if (!(files.isEmpty() && _text.isEmpty()))
         {
-            int clipDataCount = 0;
-            if (data != null)
+            if (!files.isEmpty())
             {
-                if (data.getClipData() != null)
+                for (MediaFile file : files)
                 {
-                    clipDataCount = data.getClipData().getItemCount();
-                    for (int i = 0; i < clipDataCount; i++)
-                    {
-                        Uri uri = data.getClipData().getItemAt(i).getUri();
-                        parts.add(createMultipartBodyPart(uri));
-                    }
-                }
-                else if (data.getData() != null)
-                {
-                    parts.add(createMultipartBodyPart(data.getData()));
+                    parts.add(createMultipartBodyPart(file.getUri()));
                 }
             }
-            if (clipDataCount <= 5)
+            RequestBody text = RequestBody.create(MediaType.parse("text/html"), _text);
+            RequestBody exerciseId = RequestBody.create(MediaType.parse("text/html"), Long.toString(exercise.getId()));
+            ProgressDialog dialog = ProgressDialog.show(fragment.getContext(), "",
+                    "Отправка...", true);
+            dialog.setCancelable(true);
+            NetworkService networkService = NetworkService.getInstance(new ResponseHandler()
             {
-                RequestBody exerciseId = RequestBody.create(MediaType.parse("text/html"), Long.toString(exercise.getId()));
-                RequestBody text = RequestBody.create(MediaType.parse("text/html"), _text);
-                ProgressDialog dialog = ProgressDialog.show(fragment.getContext(), "",
-                        "Отправка...", true);
-                dialog.setCancelable(true);
-                NetworkService networkService = NetworkService.getInstance(new IResponseReceivable()
+                @Override
+                public void onResponse(BaseResponse response)
                 {
-                    @Override
-                    public void onResponse(BaseResponse response)
-                    {
-                        dialog.dismiss();
-                        Snackbar snackbar = Snackbar.make(
-                                fragment.getView(),
-                                "Вы успешно оставили запрос на проверку задания. " +
-                                        "Посмотреть его статус вы можете в" +
-                                        "профиле в разделе \"Ваши запросы на проверку\"",
-                                Snackbar.LENGTH_INDEFINITE);
-                        snackbar.setAction("OK", view -> snackbar.dismiss());
-                        View snackbarView = snackbar.getView();
-                        TextView textView = (TextView) snackbarView.findViewById(R.id.snackbar_text);
-                        textView.setMaxLines(5);
-                        snackbar.show();
+                    dialog.dismiss();
+                    Snackbar snackbar = Snackbar.make(
+                            fragment.getView(),
+                            "Вы успешно оставили запрос на проверку задания. " +
+                                    "Посмотреть его статус вы можете в" +
+                                    "профиле в разделе \"Ваши запросы на проверку\"",
+                            Snackbar.LENGTH_INDEFINITE);
+                    snackbar.setAction("OK", view -> snackbar.dismiss());
+                    View snackbarView = snackbar.getView();
+                    TextView textView = (TextView) snackbarView.findViewById(R.id.snackbar_text);
+                    textView.setMaxLines(5);
+                    snackbar.show();
 
-                        App.shared().getUser().decAvailableChecks();
-                        if (fragment instanceof ExercisesListFragment)
-                        {
-                            ((ExercisesListFragment)fragment).exercisesListAdapter.notifyDataSetChanged();
-                        }
-                        if (fragment instanceof VariantFragment)
-                        {
-                            ((VariantFragment)fragment).exercisesListAdapter.notifyDataSetChanged();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Throwable t)
+                    App.shared().getUser().decAvailableChecks();
+                    if (fragment instanceof ExercisesListFragment)
                     {
-                        dialog.dismiss();
+                        ((ExercisesListFragment)fragment).exercisesListAdapter.notifyDataSetChanged();
                     }
-
-                    @Override
-                    public void onError(String error)
+                    if (fragment instanceof VariantFragment)
                     {
-                        dialog.dismiss();
+                        ((VariantFragment)fragment).exercisesListAdapter.notifyDataSetChanged();
                     }
-
-                    @Override
-                    public void onDisconnected()
-                    {
-                        dialog.dismiss();
-                    }
-                });
-                networkService.createRequest(exerciseId, parts, text);
-            }
-            else
-            {
-                tvRequestFormError.setText("Вы не можете отправить больше пяти файлов");
-                tvRequestFormError.setLayoutParams(shownLayoutParams);
-            }
+                }
+            });
+            networkService.createRequest(exerciseId, parts, text);
         }
         else
         {

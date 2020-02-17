@@ -9,9 +9,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.jaiselrahman.filepicker.activity.FilePickerActivity;
+import com.jaiselrahman.filepicker.model.MediaFile;
 import com.yasdalteam.yasdalege.Networking.BaseResponse;
 import com.yasdalteam.yasdalege.Networking.IResponseReceivable;
 import com.google.android.material.snackbar.Snackbar;
+
+import java.util.ArrayList;
 
 public class BaseFragment extends Fragment implements IResponseReceivable, RequestForm.FilepickCallback
 {
@@ -26,7 +30,14 @@ public class BaseFragment extends Fragment implements IResponseReceivable, Reque
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-        requestForm.selectFiles(data);
+
+        ArrayList<MediaFile> files = new ArrayList<>();
+        if (data != null) {
+            if (data.getParcelableArrayListExtra(FilePickerActivity.MEDIA_FILES) != null) {
+                files = data.getParcelableArrayListExtra(FilePickerActivity.MEDIA_FILES);
+            }
+        }
+        requestForm.selectFiles(files);
     }
 
     public void setSnackbar(Snackbar snackbar)

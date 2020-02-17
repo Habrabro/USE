@@ -94,6 +94,22 @@ public class TopicsListFragment extends BaseFragment implements TopicsListAdapte
                     topicsListAdapter.notifyDataSetChanged();
                     Loader.hide();
                 }
+
+                @Override
+                public void onError(String error)
+                {
+                    super.onError(error);
+                    if (error.equals("404"))
+                    {
+                        View rlNoContentStub = getView().findViewById(R.id.llNoContentStub);
+                        LinearLayout.LayoutParams showParams = new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.MATCH_PARENT
+                        );
+                        rlNoContentStub.setLayoutParams(showParams);
+                    }
+                    Loader.hide();
+                }
             }).getTopics(null, subjectId);
         }
         else
@@ -121,22 +137,6 @@ public class TopicsListFragment extends BaseFragment implements TopicsListAdapte
     public void onResponse(BaseResponse response)
     {
         super.onResponse(response);
-    }
-
-    @Override
-    public void onError(String error)
-    {
-        super.onError(error);
-
-        if (error.equals("404"))
-        {
-            View rlNoContentStub = getView().findViewById(R.id.llNoContentStub);
-            LinearLayout.LayoutParams showParams = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.MATCH_PARENT
-            );
-            rlNoContentStub.setLayoutParams(showParams);
-        }
     }
 
     @Override
