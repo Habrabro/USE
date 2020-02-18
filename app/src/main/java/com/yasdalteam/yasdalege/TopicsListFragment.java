@@ -23,25 +23,29 @@ import java.util.List;
 
 public class TopicsListFragment extends BaseFragment implements TopicsListAdapter.Listener
 {
-    private final static String PARAM_1 = "param_1";
-    private long subjectId;
-
-    private Listener mListener;
+    private Subject subject;
     private TopicsListAdapter topicsListAdapter;
-
     private List<Topic> topics;
+
+    public Subject getSubject()
+    {
+        return subject;
+    }
+
+    public void setSubject(Subject subject)
+    {
+        this.subject = subject;
+    }
 
     public TopicsListFragment()
     {
 
     }
 
-    public static TopicsListFragment newInstance(long subjectId)
+    public static TopicsListFragment newInstance(Subject subject)
     {
-        Bundle bundle = new Bundle();
-        bundle.putLong(PARAM_1, subjectId);
         TopicsListFragment fragment = new TopicsListFragment();
-        fragment.setArguments(bundle);
+        fragment.setSubject(subject);
         return fragment;
     }
 
@@ -49,10 +53,6 @@ public class TopicsListFragment extends BaseFragment implements TopicsListAdapte
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null)
-        {
-            subjectId = getArguments().getLong(PARAM_1);
-        }
     }
 
     @Override
@@ -77,7 +77,7 @@ public class TopicsListFragment extends BaseFragment implements TopicsListAdapte
         horizontalSeparator.setDrawable(getResources().getDrawable(R.drawable.horizontal_separator));
         recyclerView.addItemDecoration(horizontalSeparator);
 
-        topicsListAdapter = new TopicsListAdapter(this, topics);
+        topicsListAdapter = new TopicsListAdapter(this, topics, subject);
         recyclerView.setAdapter(topicsListAdapter);
 
         if (App.shared().getTopics().isEmpty())
@@ -110,27 +110,13 @@ public class TopicsListFragment extends BaseFragment implements TopicsListAdapte
                     }
                     Loader.hide();
                 }
-            }).getTopics(null, subjectId);
+            }).getTopics(null, subject.getId());
         }
         else
         {
             TopicsListFragment.this.topics.addAll(App.shared().getTopics());
             topicsListAdapter.notifyDataSetChanged();
         }
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context)
-    {
-        super.onAttach(context);
-        mListener = (Listener)getActivity();
-    }
-
-    @Override
-    public void onDetach()
-    {
-        super.onDetach();
-        mListener = null;
     }
 
     @Override
@@ -153,10 +139,5 @@ public class TopicsListFragment extends BaseFragment implements TopicsListAdapte
                             null, topicId, limit);
                 }),
                 "exercisesListFragment");
-    }
-
-    public interface Listener
-    {
-        void onTopicsListFragmentInteraction(long topicId, long number);
     }
 }

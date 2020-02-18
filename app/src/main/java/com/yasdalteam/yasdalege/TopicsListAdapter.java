@@ -17,10 +17,12 @@ public class TopicsListAdapter extends RecyclerView.Adapter<TopicsListAdapter.Vi
     private LayoutInflater inflater;
     private List<Topic> topics;
     private Listener listener;
+    private Subject subject;
 
-    public TopicsListAdapter(Listener listener, List<Topic> topics)
+    public TopicsListAdapter(Listener listener, List<Topic> topics, Subject subject)
     {
         this.topics = topics;
+        this.subject = subject;
         if (listener instanceof Listener)
         {
             this.listener = listener;
@@ -38,7 +40,14 @@ public class TopicsListAdapter extends RecyclerView.Adapter<TopicsListAdapter.Vi
     public void onBindViewHolder(TopicsListAdapter.ViewHolder holder, int position)
     {
         Topic topic = topics.get(position);
-        holder.topicTitleView.setText(topic.getNumber() + ". " + topic.getTitle());
+        if (subject.getId() == 64 || subject.getName().equals("Английский язык"))
+        {
+            holder.topicTitleView.setText(topic.getTitle());
+        }
+        else
+        {
+            holder.topicTitleView.setText(topic.getNumber() + ". " + topic.getTitle());
+        }
     }
 
     @Override

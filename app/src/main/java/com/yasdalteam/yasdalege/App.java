@@ -6,6 +6,7 @@ import com.yasdalteam.yasdalege.Networking.BaseResponse;
 import com.yasdalteam.yasdalege.Networking.NetworkService;
 import com.yasdalteam.yasdalege.Networking.ResponseHandler;
 import com.yasdalteam.yasdalege.Networking.UserResponse;
+import com.yasdalteam.yasdalege.Payments.PaymentCache;
 import com.yasdalteam.yasdalege.database.DbService;
 
 import java.util.ArrayList;
@@ -21,11 +22,12 @@ public class App extends Application
     public final String SERVER_BASE_URL = "http://host1803169.hostland.pro/";
     public final String OLD_SERVER_BASE_URL = "https://usetrainingadmin.000webhostapp.com/";
     public final int SESSION_LIFETIME_IN_DAYS = 14;
-    public static final int FILE_REQUEST_CODE = 615;
+    public static final int FILE_REQUEST_CODE = 61599;
 
     private static App instance;
     private BaseFragment currentFragment;
     private AdsService adsService;
+    private PaymentCache paymentCache;
 
     private User user;
 
@@ -66,6 +68,16 @@ public class App extends Application
     public AdsService getAdsService()
     {
         return adsService;
+    }
+
+    public PaymentCache getPaymentCache()
+    {
+        return paymentCache;
+    }
+
+    public void setPaymentCache(PaymentCache paymentCache)
+    {
+        this.paymentCache = paymentCache;
     }
 
     public void setCurrentFragment(BaseFragment fragment)

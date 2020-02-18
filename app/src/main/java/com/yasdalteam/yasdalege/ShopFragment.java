@@ -19,10 +19,13 @@ import com.yasdalteam.yasdalege.Networking.NetworkService;
 import com.yasdalteam.yasdalege.Networking.ShopItem;
 import com.yasdalteam.yasdalege.Networking.PriceListResponse;
 import com.yasdalteam.yasdalege.Networking.ResponseHandler;
+import com.yasdalteam.yasdalege.Payments.PaymentCache;
 
 import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.List;
+import java.util.NavigableSet;
+import java.util.TreeSet;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,14 +34,17 @@ import butterknife.OnClick;
 import ru.yandex.money.android.sdk.Amount;
 import ru.yandex.money.android.sdk.Checkout;
 import ru.yandex.money.android.sdk.MockConfiguration;
+import ru.yandex.money.android.sdk.PaymentMethodType;
 import ru.yandex.money.android.sdk.PaymentParameters;
 import ru.yandex.money.android.sdk.SavePaymentMethod;
 import ru.yandex.money.android.sdk.TestParameters;
 
 public class ShopFragment extends BaseFragment
 {
-    final static String API_KEY = "test_NjcyMTk0WLhKiHlVgWILsSsULlz2wxHSG8axSYO8wCs";
+    final static String API_KEY = "live_NjcxMTM1ZGh_I99DzD-wcokJ8foiseaKa6fMjXjdago";
+    final static String SHOP_ID = "671135";
     final static int REQUEST_CODE_TOKENIZE = 755;
+    final static int REQUEST_CODE_3DS = 765;
 
     @BindView(R.id.btnCloseShop)
     Button btnCloseShop;
@@ -73,6 +79,7 @@ public class ShopFragment extends BaseFragment
     {
         super.onViewCreated(view, savedInstanceState);
 
+        Loader.show();
         ResponseHandler responseHandler = new ResponseHandler()
         {
             @Override
@@ -83,7 +90,6 @@ public class ShopFragment extends BaseFragment
                 setupPriceListView(((PriceListResponse)response).getData());
             }
         };
-        Loader.show();
         NetworkService.getInstance(responseHandler).getPriceList();
     }
 
@@ -110,29 +116,36 @@ public class ShopFragment extends BaseFragment
             disablesAdsCol.setText(isAdsDisabledLocalizedString);
             buyButton.setOnClickListener(view ->
             {
-                buySomething(item.getId());
+                buySomething(item);
             });
         }
     }
 
-    private void buySomething(int id)
+    private void buySomething(ShopItem item)
     {
-//        NavigableSet<PaymentMethodType> methodsSet = new TreeSet<>();
-//        methodsSet.add(PaymentMethodType.BANK_CARD);
-//        methodsSet.add(PaymentMethodType.SBERBANK);
-//        methodsSet.add(PaymentMethodType.GOOGLE_PAY);
+        PaymentCache paymentCache = new PaymentCache(
+                new BigDecimal(item.getPrice()),
+                item.getId(),
+                item.getDescription()
+        );
+        App.shared().setPaymentCache(paymentCache);
+
+        NavigableSet<PaymentMethodType> methodsSet = new TreeSet<>();
+        methodsSet.add(PaymentMethodType.BANK_CARD);
+//        methodsSet.add(PaymentMethodType.YANDEX_MONEY);
 
         PaymentParameters paymentParameters = new PaymentParameters(
-                new Amount(BigDecimal.ONE, Currency.getInstance("RUB")),
-                "1 проверка",
-                "",
+                new Amount(new BigDecimal(item.getPrice()), Currency.getInstance("RUB")),
+                item.getName(),
+                item.getDescription(),
                 API_KEY,
-                "",
-                SavePaymentMethod.USER_SELECTS
+                SHOP_ID,
+                SavePaymentMethod.USER_SELECTS,
+                methodsSet
         );
-        TestParameters testParameters = new TestParameters(true, true, new MockConfiguration(false, true, 5));
-        Intent intent = Checkout.createTokenizeIntent(getActivity(), paymentParameters);
-        startActivityForResult(intent, REQUEST_CODE_TOKENIZE);
+        TestParameters testParameters = new TestParameters(true, true);
+        Intent intent = Checkout.createTokenizeIntent(getActivity(), paymentParameters, testParameters);
+        getActivity().startActivityForResult(intent, REQUEST_CODE_TOKENIZE);
     }
 
     @OnClick(R.id.btnCloseShop)

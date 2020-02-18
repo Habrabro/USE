@@ -32,6 +32,9 @@ public class Payment
     @SerializedName("refundable")
     @Expose
     private String refundable;
+    @SerializedName("confirmation")
+    @Expose
+    private Confirmation confirmation;
     @SerializedName("expires_at")
     @Expose
     private String expiresAt;
@@ -77,6 +80,11 @@ public class Payment
     public String isRefundable()
     {
         return refundable;
+    }
+
+    public Confirmation getConfirmation()
+    {
+        return confirmation;
     }
 
     public String getExpiresAt()
