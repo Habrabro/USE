@@ -132,7 +132,7 @@ public class ShopFragment extends BaseFragment
 
         NavigableSet<PaymentMethodType> methodsSet = new TreeSet<>();
         methodsSet.add(PaymentMethodType.BANK_CARD);
-//        methodsSet.add(PaymentMethodType.YANDEX_MONEY);
+        methodsSet.add(PaymentMethodType.YANDEX_MONEY);
 
         PaymentParameters paymentParameters = new PaymentParameters(
                 new Amount(new BigDecimal(item.getPrice()), Currency.getInstance("RUB")),
@@ -140,7 +140,7 @@ public class ShopFragment extends BaseFragment
                 item.getDescription(),
                 API_KEY,
                 SHOP_ID,
-                SavePaymentMethod.USER_SELECTS,
+                SavePaymentMethod.OFF,
                 methodsSet
         );
         TestParameters testParameters = new TestParameters(true, true);

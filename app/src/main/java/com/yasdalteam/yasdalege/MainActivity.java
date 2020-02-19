@@ -33,9 +33,13 @@ import com.vk.api.sdk.auth.VKAccessToken;
 import com.vk.api.sdk.auth.VKAuthCallback;
 import com.yasdalteam.yasdalege.Payments.Payment;
 import com.yasdalteam.yasdalege.Payments.PaymentCache;
+import com.yasdalteam.yasdalege.Payments.PaymentCancellations;
 import com.yasdalteam.yasdalege.Payments.PaymentResponse;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.text.ParseException;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements VKAuthCallback
 {
@@ -47,6 +51,15 @@ public class MainActivity extends AppCompatActivity implements VKAuthCallback
     @BindView(R.id.btnShop) Button shopButton;
     private Snackbar snackbar;
     private AdView adView;
+
+    ResponseHandler seccessPurchaseResponseHandler = new ResponseHandler() {
+        @Override
+        public void onResponse(BaseResponse response)
+        {
+            super.onResponse(response);
+            Loader.show("Покупка совершена!", Snackbar.LENGTH_INDEFINITE);
+        }
+    };
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -93,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements VKAuthCallback
                                 super.onResponse(response);
 
                                 Payment payment = ((PaymentResponse) response).getData();
+                                App.shared().getPaymentCache().setPayment(payment);
                                 Log.i("Payment", "received");
                                 switch (payment.getPaymentMethod().getType()) {
                                     case "bank_card":
@@ -101,11 +115,38 @@ public class MainActivity extends AppCompatActivity implements VKAuthCallback
                                                 payment.getConfirmation().getConfirmationUrl()
                                         );
                                         startActivityForResult(intent3ds, ShopFragment.REQUEST_CODE_3DS);
+                                        break;
+                                    case "yandex_money":
+                                        NetworkService.getInstance(seccessPurchaseResponseHandler).acceptPayment(App.shared().getPaymentCache().getPayment().getId());
+                                        break;
                                 }
+                            }
+
+                            @Override
+                            public void onError(String error)
+                            {
+                                super.onError(error);
+
+                                HashMap<Integer, String> errorMap = new HashMap<>();
+                                for (PaymentCancellations cancellation: PaymentCancellations.values())
+                                {
+                                    errorMap.put(cancellation.getCode(), cancellation.getDescription());
+                                }
+                                String errorMessage = "Что-то пошло не так...";
+                                try {
+                                    errorMessage = errorMap.get(Integer.parseInt(error));
+                                } catch (NumberFormatException exception) {}
+                                Snackbar snackbar = Snackbar.make(
+                                        App.shared().getCurrentFragment().getView(),
+                                        errorMessage,
+                                        Snackbar.LENGTH_INDEFINITE);
+                                snackbar.setAction("OK", view -> snackbar.dismiss());
+                                TextView textView = snackbar.getView().findViewById(R.id.snackbar_text);
+                                textView.setMaxLines(5);
+                                snackbar.show();
                             }
                         };
                         PaymentCache paymentCache = App.shared().getPaymentCache();
-                        int t = paymentCache.getAmount().intValue();
                         NetworkService.getInstance(responseHandler).createPayment(
                                 result.getPaymentToken(),
                                 paymentCache.getAmount().intValue(),
@@ -120,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements VKAuthCallback
                 switch (resultCode)
                 {
                     case RESULT_OK:
-
+                        NetworkService.getInstance(seccessPurchaseResponseHandler).acceptPayment(App.shared().getPaymentCache().getPayment().getId());
                         break;
                     case Checkout.RESULT_ERROR:
                         Snackbar snackbar = Snackbar.make(

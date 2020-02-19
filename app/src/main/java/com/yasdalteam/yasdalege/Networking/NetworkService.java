@@ -329,6 +329,16 @@ public class NetworkService
         }
     }
 
+    public void acceptPayment(String paymentId)
+    {
+        if (isNetworkConnected())
+        {
+            serverAPI
+                    .acceptPayment(paymentId)
+                    .enqueue(new BaseCallback<>(listener));
+        }
+    }
+
     public interface ServerAPI
     {
         @GET("api/getSubjects.php")
@@ -424,6 +434,11 @@ public class NetworkService
                 @Field("amount") int amount,
                 @Field("description") String description,
                 @Field("shopItemId") long shopItemId);
+
+        @FormUrlEncoded
+        @POST("/api/accept_payment.php")
+        Call<BaseResponse> acceptPayment(
+                @Field("paymentId") String paymentId);
     }
 
     public interface VKApi
