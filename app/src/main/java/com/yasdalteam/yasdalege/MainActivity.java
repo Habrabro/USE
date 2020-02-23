@@ -9,13 +9,10 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.google.android.gms.security.ProviderInstaller;
 import com.yasdalteam.yasdalege.Networking.BaseResponse;
-import com.yasdalteam.yasdalege.Networking.IResponseReceivable;
 import com.yasdalteam.yasdalege.Networking.NetworkService;
 import com.yasdalteam.yasdalege.Networking.ResponseHandler;
 import com.yasdalteam.yasdalege.Networking.UserResponse;
@@ -38,9 +35,6 @@ import com.yasdalteam.yasdalege.Payments.PaymentResponse;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.text.ParseException;
-import java.util.HashMap;
-
 public class MainActivity extends AppCompatActivity implements VKAuthCallback
 {
     private FragmentManager fragmentManager;
@@ -49,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements VKAuthCallback
 
     @BindView(R.id.btnProfile) Button profileButton;
     @BindView(R.id.btnShop) Button shopButton;
-    private Snackbar snackbar;
     private AdView adView;
 
     ResponseHandler seccessPurchaseResponseHandler = new ResponseHandler() {
@@ -57,7 +50,23 @@ public class MainActivity extends AppCompatActivity implements VKAuthCallback
         public void onResponse(BaseResponse response)
         {
             super.onResponse(response);
-            Loader.show("Покупка совершена!", Snackbar.LENGTH_INDEFINITE);
+
+            User user = App.shared().getUser();
+            PaymentCache paymentCache = App.shared().getPaymentCache();
+            user.setAvailableChecks(user.getAvailableChecks() + paymentCache.getCountOfChecks());
+            if (user.isAdsEnabled())
+            {
+                user.setAdsEnabled(!paymentCache.doesDisableAds());
+            }
+            App.shared().getUser().authorize(user);
+            Messager.message("Покупка совершена!");
+        }
+
+        @Override
+        public void onError(String error)
+        {
+            super.onError(error);
+            displayError(error);
         }
     };
 
@@ -96,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements VKAuthCallback
             case ShopFragment.REQUEST_CODE_TOKENIZE:
                 switch (resultCode) {
                     case RESULT_OK:
-                        // successful tokenization
+                        Loader.showOverlay("", "Соединяемся с платёжной системой", this);
                         TokenizationResult result = Checkout.createTokenizationResult(data);
                         ResponseHandler responseHandler = new ResponseHandler()
                         {
@@ -107,7 +116,6 @@ public class MainActivity extends AppCompatActivity implements VKAuthCallback
 
                                 Payment payment = ((PaymentResponse) response).getData();
                                 App.shared().getPaymentCache().setPayment(payment);
-                                Log.i("Payment", "received");
                                 switch (payment.getPaymentMethod().getType()) {
                                     case "bank_card":
                                         Intent intent3ds = Checkout.create3dsIntent(
@@ -117,7 +125,9 @@ public class MainActivity extends AppCompatActivity implements VKAuthCallback
                                         startActivityForResult(intent3ds, ShopFragment.REQUEST_CODE_3DS);
                                         break;
                                     case "yandex_money":
-                                        NetworkService.getInstance(seccessPurchaseResponseHandler).acceptPayment(App.shared().getPaymentCache().getPayment().getId());
+                                        NetworkService.getInstance(seccessPurchaseResponseHandler).acceptPayment(
+                                                App.shared().getPaymentCache().getPayment().getId()
+                                        );
                                         break;
                                 }
                             }
@@ -126,24 +136,7 @@ public class MainActivity extends AppCompatActivity implements VKAuthCallback
                             public void onError(String error)
                             {
                                 super.onError(error);
-
-                                HashMap<Integer, String> errorMap = new HashMap<>();
-                                for (PaymentCancellations cancellation: PaymentCancellations.values())
-                                {
-                                    errorMap.put(cancellation.getCode(), cancellation.getDescription());
-                                }
-                                String errorMessage = "Что-то пошло не так...";
-                                try {
-                                    errorMessage = errorMap.get(Integer.parseInt(error));
-                                } catch (NumberFormatException exception) {}
-                                Snackbar snackbar = Snackbar.make(
-                                        App.shared().getCurrentFragment().getView(),
-                                        errorMessage,
-                                        Snackbar.LENGTH_INDEFINITE);
-                                snackbar.setAction("OK", view -> snackbar.dismiss());
-                                TextView textView = snackbar.getView().findViewById(R.id.snackbar_text);
-                                textView.setMaxLines(5);
-                                snackbar.show();
+                                displayError(error);
                             }
                         };
                         PaymentCache paymentCache = App.shared().getPaymentCache();
@@ -164,14 +157,7 @@ public class MainActivity extends AppCompatActivity implements VKAuthCallback
                         NetworkService.getInstance(seccessPurchaseResponseHandler).acceptPayment(App.shared().getPaymentCache().getPayment().getId());
                         break;
                     case Checkout.RESULT_ERROR:
-                        Snackbar snackbar = Snackbar.make(
-                                App.shared().getCurrentFragment().getView(),
-                                "Ошибка: " + data.getStringExtra(Checkout.EXTRA_ERROR_DESCRIPTION),
-                                Snackbar.LENGTH_INDEFINITE);
-                                snackbar.setAction("OK", view -> snackbar.dismiss());
-                                TextView textView = snackbar.getView().findViewById(R.id.snackbar_text);
-                                textView.setMaxLines(5);
-                                snackbar.show();
+                        Messager.message("Ошибка: " + data.getStringExtra(Checkout.EXTRA_ERROR_DESCRIPTION));
                         break;
                     case RESULT_CANCELED:
                         break;
@@ -199,6 +185,7 @@ public class MainActivity extends AppCompatActivity implements VKAuthCallback
             adView = findViewById(R.id.adView);
             App.shared().getAdsService().setAdView(adView);
             if (user == null) {
+                App.shared().getUser().logout();
                 App.shared().getAdsService().enableAds();
             } else {
                 App.shared().getUser().authorize(user);
@@ -297,5 +284,17 @@ public class MainActivity extends AppCompatActivity implements VKAuthCallback
     public void onDisconnected()
     {
         Loader.show("Нет подключения к сети", Snackbar.LENGTH_LONG);
+    }
+
+    private void displayError(String error)
+    {
+        String errorMessage = "Что-то пошло не так...";
+        if (error != "Response is null")
+        {
+            try {
+                errorMessage = PaymentCancellations.getMap().get(Integer.parseInt(error));
+            } catch (NumberFormatException exception) {}
+        }
+        Messager.message(errorMessage);
     }
 }

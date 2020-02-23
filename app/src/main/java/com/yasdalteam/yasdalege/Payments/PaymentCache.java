@@ -8,12 +8,16 @@ public class PaymentCache
     private long shopItemId = -1;
     private String description;
     private Payment payment;
+    private int countOfChecks;
+    private boolean disablesAds;
 
-    public PaymentCache(BigDecimal amount, long shopItemId, String description)
+    public PaymentCache(BigDecimal amount, long shopItemId, String description, int countOfChecks, boolean disablesAds)
     {
         this.amount = amount;
         this.shopItemId = shopItemId;
         this.description = description;
+        this.countOfChecks = countOfChecks;
+        this.disablesAds = disablesAds;
     }
 
     public BigDecimal getAmount()
@@ -39,5 +43,15 @@ public class PaymentCache
     public void setPayment(Payment payment)
     {
         this.payment = payment;
+    }
+
+    public int getCountOfChecks()
+    {
+        return countOfChecks;
+    }
+
+    public boolean doesDisableAds()
+    {
+        return disablesAds;
     }
 }

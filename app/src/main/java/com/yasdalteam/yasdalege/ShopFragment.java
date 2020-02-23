@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.yasdalteam.yasdalege.Networking.BaseResponse;
 import com.yasdalteam.yasdalege.Networking.NetworkService;
 import com.yasdalteam.yasdalege.Networking.ShopItem;
@@ -116,7 +117,14 @@ public class ShopFragment extends BaseFragment
             disablesAdsCol.setText(isAdsDisabledLocalizedString);
             buyButton.setOnClickListener(view ->
             {
-                buySomething(item);
+                if (App.shared().getUser().isAuthorized())
+                {
+                    buySomething(item);
+                }
+                else
+                {
+                    Messager.notify("Авторизуйтесь для совершения покупок", Snackbar.LENGTH_SHORT);
+                }
             });
         }
     }
@@ -126,7 +134,9 @@ public class ShopFragment extends BaseFragment
         PaymentCache paymentCache = new PaymentCache(
                 new BigDecimal(item.getPrice()),
                 item.getId(),
-                item.getDescription()
+                item.getDescription(),
+                Integer.parseInt(item.getCountOfChecks()),
+                item.getDisablesAds()
         );
         App.shared().setPaymentCache(paymentCache);
 
@@ -140,7 +150,7 @@ public class ShopFragment extends BaseFragment
                 item.getDescription(),
                 API_KEY,
                 SHOP_ID,
-                SavePaymentMethod.OFF,
+                SavePaymentMethod.USER_SELECTS,
                 methodsSet
         );
         TestParameters testParameters = new TestParameters(true, true);
