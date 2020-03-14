@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/llExercise"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView android:id="@+id/btnAddToCompleted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:paddingEnd="12dp"
+            android:src="@drawable/ic_uncompleted"/>
+
+        <TextView
+            android:id="@+id/tvId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="0dp"
+            android:paddingStart="45dp"
+            android:text="awdwad"
+            android:textColor="@android:color/black"
+            android:textSize="19sp"
+            android:textStyle="bold" />
+
+        <ImageView android:id="@+id/btnAddToFavorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_unstar"/>
+    </RelativeLayout>
+
+    <TextView android:id="@+id/tvDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:textColor="@android:color/black"
+        android:textSize="19sp"
+        android:lineSpacingExtra="6sp"/>
+
+    <ImageView android:id="@+id/ivImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="7dp"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"/>
+</LinearLayout>

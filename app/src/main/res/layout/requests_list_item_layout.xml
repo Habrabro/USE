@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="15dp">
+
+    <TextView android:id="@+id/tvRequestId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/requestListItemDescTextViewStyle"
+        android:text="Запрос № 2354"/>
+
+    <TextView android:id="@+id/tvRequestTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/requestListItemDescTextViewStyle"
+        android:text="Русский язык – Задание 21"/>
+
+    <LinearLayout android:id="@+id/llAttachments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView android:id="@+id/tvAttachmentsTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/requestListItemTitleTextViewStyle"
+            android:text="Вложения: "/>
+
+        <TextView android:id="@+id/tvAttachmentsDesc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/requestListItemDescTextViewStyle"
+            android:drawableEnd="@drawable/ic_arrow_point_to_right"
+            android:text="файлы (3), текст"/>
+    </LinearLayout>
+
+    <LinearLayout android:id="@+id/llSent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView android:id="@+id/tvSentTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/requestListItemTitleTextViewStyle"
+            android:text="Отправлен: "/>
+
+        <TextView android:id="@+id/tvSentDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/requestListItemDescTextViewStyle"
+            android:text="2019-11-21 16:43"/>
+    </LinearLayout>
+
+    <LinearLayout android:id="@+id/llStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView android:id="@+id/tvStatusTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/requestListItemTitleTextViewStyle"
+            android:text="Статус: "/>
+
+        <TextView android:id="@+id/tvStatusDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/requestListItemDescTextViewStyle"
+            android:textColor="@color/colorPrimaryDark"
+            android:text="НА ПРОВЕРКЕ"/>
+    </LinearLayout>
+</LinearLayout>

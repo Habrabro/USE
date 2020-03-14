@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="15dp">
+
+    <include layout="@layout/fragment_exercises_list_item"></include>
+
+    <EditText android:id="@+id/etAnswerField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:inputType="textVisiblePassword"
+        android:imeOptions="actionDone"
+        android:textSize="25sp"
+        android:hint="Введите ответ"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="100">
+
+        <Button android:id="@+id/btnShowAnswer"
+            android:layout_width="0dp"
+            android:layout_weight="50"
+            android:layout_height="45dp"
+            android:layout_marginEnd="5dp"
+            style="@style/exerciseAnswerSectionButton"
+            android:hint="Показать ответ"/>
+
+        <Button android:id="@+id/btnAnswer"
+            android:layout_width="0dp"
+            android:layout_weight="50"
+            android:layout_height="45dp"
+            android:layout_marginStart="5dp"
+            style="@style/exerciseAnswerSectionButton"
+            android:hint="Ответить"/>
+    </LinearLayout>
+
+    <TextView android:id="@+id/tvAnswerMessage"
+        android:visibility="invisible"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/exercise_answer_section_message"
+        style="@style/exerciseAnswerSectionButton"
+        android:hint="Верно"/>
+</LinearLayout>

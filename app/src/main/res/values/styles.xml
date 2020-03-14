@@ -5,7 +5,68 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorPrimaryDark</item>
+
+        <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
     </style>
 
+    <style name="AppBottomSheetDialogTheme"
+        parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppModalStyle</item>
+    </style>
+
+    <style name="AppModalStyle"
+        parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/layout_rounded_corners</item>
+    </style>
+
+    <style name="subjectMenuButton">
+        <item name="android:background">@drawable/subject_menu_button</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_marginTop">18dp</item>
+        <item name="android:stateListAnimator">@animator/button_state_list_anim_material</item>
+        <item name="android:textColorHint">@android:color/black</item>
+        <item name="android:textSize">23sp</item>
+    </style>
+
+    <style name="exerciseAnswerSectionButton" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textColorHint">@android:color/black</item>
+        <item name="android:background">@drawable/exercise_answer_section_button</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="bottomSheetEditText">
+        <item name="android:textSize">24sp</item>
+        <item name="android:lines">1</item>
+    </style>
+
+    <style name="bottomSheetSmallText">
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="variantResultsTableCell">
+        <item name="android:background">#f2f2f2</item>
+        <item name="android:layout_margin">1dp</item>
+        <item name="android:padding">5dp</item>
+        <item name="android:maxWidth">150dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="requestListItemTextViewStyle">
+        <item name="android:textSize">19sp</item>
+    </style>
+
+    <style name="requestListItemTitleTextViewStyle" parent="@style/requestListItemTextViewStyle">
+        <item name="android:textColor">#949494</item>
+    </style>
+
+    <style name="requestListItemDescTextViewStyle" parent="@style/requestListItemTextViewStyle">
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="descAttachmentViewStyle" parent="@style/requestListItemTextViewStyle">
+        <item name="android:textColor">#1a0dab</item>
+        <item name="android:drawableEnd">@drawable/ic_arrow_point_to_right</item>
+    </style>
 </resources>

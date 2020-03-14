@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/bottomSheetRegistration"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout android:id="@+id/bottomSheetWrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="25dp" android:paddingEnd="25dp"
+        android:paddingTop="40dp" android:paddingBottom="40dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageButton android:id="@+id/btnBackToSignIn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:paddingEnd="15dp"
+                android:src="@drawable/ic_back"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="24sp"
+                android:textColor="@android:color/black"
+                android:text="Регистрация"/>
+        </LinearLayout>
+
+        <TextView android:id="@+id/tvEmptyFieldsError"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:paddingTop="23dp"
+            android:textColor="@android:color/holo_red_light"
+            android:text="Заполните все поля"/>
+
+        <EditText android:id="@+id/etLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="23dp"
+            style="@style/bottomSheetEditText"
+            android:inputType="textEmailAddress"
+            android:hint="E-mail"/>
+
+        <TextView android:id="@+id/tvLoginError"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:textColor="@android:color/holo_red_light"
+            android:text="Введите корректный e-mail"/>
+
+        <EditText android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/bottomSheetEditText"
+            android:inputType="textPassword"
+            android:hint="Пароль"/>
+
+        <TextView android:id="@+id/tvPasswordError"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:textColor="@android:color/holo_red_light"
+            android:text="Password is invalid"/>
+
+        <EditText android:id="@+id/etRepeatPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/bottomSheetEditText"
+            android:inputType="textPassword"
+            android:hint="Повторите пароль"/>
+
+        <TextView android:id="@+id/tvPasswordComparisonError"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:textColor="@android:color/holo_red_light"
+            android:text="Пароли не совпадают"/>
+
+        <TextView android:id="@+id/tvEmailError"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:textColor="@android:color/holo_red_light"
+            android:text="Email is invalid"/>
+
+    </LinearLayout>
+
+    <Button android:id="@+id/btnRegister"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="7dp" android:layout_marginEnd="7dp"
+        android:background="@drawable/subject_menu_button"
+        android:textColorHint="@android:color/black"
+        android:textSize="22sp"
+        android:hint="Зарегистрироваться"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:visibility="invisible"/>
+</LinearLayout>

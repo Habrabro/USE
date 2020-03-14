@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/llRequestForm"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="15dp">
+
+    <include layout="@layout/fragment_exercises_list_item"></include>
+
+    <TextView android:id="@+id/tvAvailableChecks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:paddingTop="20dp"
+        android:textSize="23sp"
+        android:textColor="@android:color/black"
+        android:text="Доступных проверок: 7"/>
+
+    <LinearLayout android:id="@+id/llCanCreateRequest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView android:id="@+id/tvInstruction1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:paddingTop="15dp"
+            android:paddingBottom="20dp"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:text="Приложите файл с вашим выполнением задания (не более пяти файлов):"/>
+
+        <Button
+            android:id="@+id/btnSelectFiles"
+            android:layout_width="150dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_horizontal"
+            android:text="Выбрать файлы" />
+
+        <TextView android:id="@+id/tvFilesPicked"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:paddingTop="8dp"
+            android:paddingBottom="20dp"
+            android:textSize="16sp"
+            android:textColor="@android:color/darker_gray"
+            android:visibility="gone"
+            android:text="Выбрано файлов: 3"/>
+
+        <EditText android:id="@+id/etText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minLines="3"
+            android:inputType="textMultiLine"
+            android:gravity="start"
+            android:hint="Или выполните его прямо здесь"/>
+
+        <TextView android:id="@+id/tvRequestFormError"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="20dp"
+            android:gravity="center_horizontal"
+            android:textColor="@android:color/holo_red_light"
+            android:text="Вы не можете отправить пустой запрос"/>
+
+        <Button android:id="@+id/btnSendRequest"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            style="@style/exerciseAnswerSectionButton"
+            android:background="@drawable/subject_menu_button"
+            android:hint="Отправить на проверку"/>
+    </LinearLayout>
+
+    <LinearLayout android:id="@+id/llCantCreateRequest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView android:id="@+id/tvPurchaseInstruction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:paddingTop="15dp"
+            android:paddingBottom="20dp"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:text="Вы можете приобрести доступ к проверкам в разделе покупок"/>
+
+        <Button android:id="@+id/btnOpenStore"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            style="@style/exerciseAnswerSectionButton"
+            android:background="@drawable/subject_menu_button"
+            android:hint="Открыть магазин"/>
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="15dp">
+
+        <LinearLayout android:id="@+id/llResultsTable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <LinearLayout
+                android:orientation="horizontal" android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="100">
+
+                <TextView android:id="@+id/tvNumberCol"
+                    android:layout_weight="16"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:background="#C4C4C4"
+                    style="@style/variantResultsTableCell"
+                    android:textSize="12sp"
+                    android:text="Номер"/>
+
+                <TextView android:id="@+id/tvRightAnswerCol"
+                    android:layout_weight="34"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    style="@style/variantResultsTableCell"
+                    android:background="#C4C4C4"
+                    android:text="Верный ответ"/>
+
+                <TextView android:id="@+id/tvAnswerCol"
+                    android:layout_weight="34"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    style="@style/variantResultsTableCell"
+                    android:background="#C4C4C4"
+                    android:text="Ваш ответ"/>
+
+                <TextView android:id="@+id/tvPointsCol"
+                    android:layout_weight="16"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    style="@style/variantResultsTableCell"
+                    android:background="#C4C4C4"
+                    android:textSize="12sp"
+                    android:text="Баллы"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/llSummaryRow"
+            android:orientation="horizontal" android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="100">
+
+            <TextView android:id="@+id/tvPointsSummaryHeaderCell"
+                android:layout_weight="50"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="#C4C4C4"
+                style="@style/variantResultsTableCell"
+                android:text="Набрано баллов за тестовую часть"/>
+
+            <TextView android:id="@+id/tvPointsSummaryValueCell"
+                android:layout_weight="50"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                style="@style/variantResultsTableCell"
+                android:text="Верный ответ"/>
+        </LinearLayout>
+        <Button android:id="@+id/btnCloseResults"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="30dp"
+            style="@style/exerciseAnswerSectionButton"
+            android:background="@drawable/subject_menu_button"
+            android:hint="Закрыть"/>
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:weightSum="100"
+    android:layout_marginTop="10dp">
+
+    <TextView android:id="@+id/tvCountOfChecksCol"
+        android:layout_weight="25"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        style="@style/variantResultsTableCell"
+        android:text="1"/>
+
+    <TextView android:id="@+id/tvPriceCol"
+        android:layout_weight="15"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        style="@style/variantResultsTableCell"
+        android:text="249"/>
+
+    <TextView android:id="@+id/tvDisablesAdsCol"
+        android:layout_weight="25"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        style="@style/variantResultsTableCell"
+        android:text="Ваш ответ"/>
+
+    <Button android:id="@+id/btnBuy"
+        android:layout_weight="35"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginStart="-18dp"
+        android:layout_marginEnd="-18dp"
+        style="@style/exerciseAnswerSectionButton"
+        android:background="@drawable/subject_menu_button"
+        android:textSize="15sp"
+        android:hint="Купить"/>
+
+</LinearLayout>

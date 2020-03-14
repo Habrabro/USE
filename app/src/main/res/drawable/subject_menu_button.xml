@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="false">
+        <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+            <item
+                android:left="18dp"
+                android:right="18dp">
+
+                <shape>
+                    <solid android:color="#ffffff"/>
+                    <gradient
+                        android:startColor="#BA98FF"
+                        android:endColor="#A3D3FF">
+                    </gradient>
+                    <corners android:bottomRightRadius="@dimen/subjectMenuButtonBorderRadius"
+                        android:bottomLeftRadius="@dimen/subjectMenuButtonBorderRadius"
+                        android:topLeftRadius="@dimen/subjectMenuButtonBorderRadius"
+                        android:topRightRadius="@dimen/subjectMenuButtonBorderRadius" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+</selector>
