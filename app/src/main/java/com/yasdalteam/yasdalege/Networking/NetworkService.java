@@ -319,12 +319,22 @@ public class NetworkService
         }
     }
 
-    public void createPayment(String paymentToken, String description)
+    public void createPayment(String paymentToken, int amount, String description, long shopItemId)
     {
         if (isNetworkConnected())
         {
             serverAPI
-                    .createPayment(paymentToken, description)
+                    .createPayment(paymentToken, amount, description, shopItemId)
+                    .enqueue(new BaseCallback<>(listener));
+        }
+    }
+
+    public void acceptPayment(String paymentId)
+    {
+        if (isNetworkConnected())
+        {
+            serverAPI
+                    .acceptPayment(paymentId)
                     .enqueue(new BaseCallback<>(listener));
         }
     }
@@ -421,7 +431,14 @@ public class NetworkService
         @POST("/api/create_payment.php")
         Call<PaymentResponse> createPayment(
                 @Field("paymentToken") String paymentToken,
-                @Field("description") String description);
+                @Field("amount") int amount,
+                @Field("description") String description,
+                @Field("shopItemId") long shopItemId);
+
+        @FormUrlEncoded
+        @POST("/api/accept_payment.php")
+        Call<BaseResponse> acceptPayment(
+                @Field("paymentId") String paymentId);
     }
 
     public interface VKApi

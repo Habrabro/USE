@@ -92,25 +92,25 @@ public class VariantResultsFragment extends BaseFragment
 
         for (Exercise exercise : exercises)
         {
-            View rowView = inflater.inflate(R.layout.results_table_row, null);
-            tableView.addView(rowView);
-
-            TextView numberCol = rowView.findViewById(R.id.tvNumberCol);
-            TextView rightAnswerCol = rowView.findViewById(R.id.tvRightAnswerCol);
-            TextView answerCol = rowView.findViewById(R.id.tvAnswerCol);
-            TextView pointsCol = rowView.findViewById(R.id.tvPointsCol);
-
-            numberCol.setText(Integer.toString(exercise.getNumber()));
-            rightAnswerCol.setText(exercise.getRightAnswer());
-            answerCol.setText(exercise.getAnswer());
-            if (exercise.isAnsweredRight())
+            if (!exercise.getRightAnswer().equals(ExercisesListAdapter.EXERCISE_WITH_REQUEST_SECTION_KEY))
             {
-                pointsSummary += exercise.getPoints();
-                pointsCol.setText(Integer.toString(exercise.getPoints()));
-            }
-            else
-            {
-                pointsCol.setText("0");
+                View rowView = inflater.inflate(R.layout.results_table_row, null);
+                tableView.addView(rowView);
+
+                TextView numberCol = rowView.findViewById(R.id.tvNumberCol);
+                TextView rightAnswerCol = rowView.findViewById(R.id.tvRightAnswerCol);
+                TextView answerCol = rowView.findViewById(R.id.tvAnswerCol);
+                TextView pointsCol = rowView.findViewById(R.id.tvPointsCol);
+
+                numberCol.setText(Integer.toString(exercise.getNumber()));
+                rightAnswerCol.setText(exercise.getRightAnswer());
+                answerCol.setText(exercise.getAnswer());
+                if (exercise.isAnsweredRight()) {
+                    pointsSummary += exercise.getPoints();
+                    pointsCol.setText(Integer.toString(exercise.getPoints()));
+                } else {
+                    pointsCol.setText("0");
+                }
             }
         }
 

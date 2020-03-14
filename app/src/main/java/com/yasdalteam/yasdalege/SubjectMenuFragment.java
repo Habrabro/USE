@@ -28,8 +28,6 @@ public class SubjectMenuFragment extends BaseFragment
     @BindView(R.id.btnStartTraining) Button startTrainingView;
     @BindView(R.id.btnTopicsList) Button topicsListView;
 
-    private SubjectMenuFragment.Listener mListener;
-
     public SubjectMenuFragment()
     {
 
@@ -65,26 +63,15 @@ public class SubjectMenuFragment extends BaseFragment
         directoryView.setOutlineProvider(new SubjectMenuButtonOutlineProvider());
         startTrainingView.setOutlineProvider(new SubjectMenuButtonOutlineProvider());
         topicsListView.setOutlineProvider(new SubjectMenuButtonOutlineProvider());
-    }
 
-    @Override
-    public void onAttach(@NonNull Context context)
-    {
-        super.onAttach(context);
-        mListener = (SubjectMenuFragment.Listener)getActivity();
-    }
-
-    @Override
-    public void onDetach()
-    {
-        super.onDetach();
-        mListener = null;
+        setupMenuForEnglish();
     }
 
     @OnClick(R.id.btnDirectory)
     public void onDirectoryViewClick()
     {
-        mListener.onDirectoryFragmentDisplay(subject);
+        DirectoryFragment directoryFragment = DirectoryFragment.newInstance(subject);
+        ((MainActivity)getActivity()).replaceFragment(directoryFragment, "directoryFragment");
     }
 
     @OnClick(R.id.btnStartTraining)
@@ -97,12 +84,16 @@ public class SubjectMenuFragment extends BaseFragment
     @OnClick(R.id.btnTopicsList)
     public void onTopicsListViewClick()
     {
-        mListener.onTopicsListFragmentDisplay(subjectId);
+        TopicsListFragment topicsListFragment = TopicsListFragment.newInstance(subject);
+        ((MainActivity)getActivity()).replaceFragment(topicsListFragment, "topicsListFragment");
     }
 
-    interface Listener
+    private void setupMenuForEnglish()
     {
-        void onDirectoryFragmentDisplay(Subject subject);
-        void onTopicsListFragmentDisplay(long subjectId);
+        if (subject.getId() == 64 || subject.getName().equals("Английский язык"))
+        {
+            startTrainingView.setHint("Решить");
+            topicsListView.setHint("Практика");
+        }
     }
 }

@@ -24,7 +24,6 @@ import java.util.List;
 
 public class SubjectsListFragment extends BaseFragment implements SubjectsListAdapter.Listener
 {
-    private Listener mListener;
     private SubjectsListAdapter subjectsListAdapter;
     private List<Subject> subjects;
 
@@ -96,20 +95,6 @@ public class SubjectsListFragment extends BaseFragment implements SubjectsListAd
     }
 
     @Override
-    public void onAttach(@NonNull Context context)
-    {
-        super.onAttach(context);
-        mListener = (Listener)getActivity();
-    }
-
-    @Override
-    public void onDetach()
-    {
-        super.onDetach();
-        mListener = null;
-    }
-
-    @Override
     public void onResponse(BaseResponse response)
     {
         super.onResponse(response);
@@ -118,11 +103,7 @@ public class SubjectsListFragment extends BaseFragment implements SubjectsListAd
     @Override
     public void OnViewHolderClick(int position, Subject subject)
     {
-        mListener.onSubjectsListFragmentInteraction(subject);
-    }
-
-    interface Listener
-    {
-        void onSubjectsListFragmentInteraction(Subject subject);
+        SubjectMenuFragment subjectMenuFragment = SubjectMenuFragment.newInstance(subject);
+        ((MainActivity)getActivity()).replaceFragment(subjectMenuFragment, "subjectMenuFragment");
     }
 }

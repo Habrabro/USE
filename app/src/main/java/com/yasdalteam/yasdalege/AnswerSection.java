@@ -123,7 +123,7 @@ public class AnswerSection extends ViewHolder
         else
         {
             tvAnswerMessage.setVisibility(View.VISIBLE);
-            tvAnswerMessage.setHint("Не верно!");
+            tvAnswerMessage.setHint("Неверно!");
             tvAnswerMessageBackground.setStroke(messageStrokeWidth, messageWrongStrokeColor);
             isAnswerRight = false;
         }

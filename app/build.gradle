@@ -62,7 +62,7 @@ dependencies {
 
     implementation "com.vk:androidsdk:2.1.1"
 
-    implementation 'com.yandex.money:checkout:3.0.1'
+    implementation 'com.yandex.money:checkout:3.0.2'
     implementation 'com.yandex.android:authsdk:2.1.1'
 
     implementation 'id.zelory:compressor:2.1.0'

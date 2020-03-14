@@ -1,5 +1,7 @@
 package com.yasdalteam.yasdalege;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.view.View;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -7,12 +9,12 @@ import com.google.android.material.snackbar.Snackbar;
 public class Loader
 {
     private static Snackbar snackbar;
+    private static ProgressDialog dialog;
 
     static void show()
     {
         if (App.shared().getCurrentFragment().getView() != null)
         {
-            String tag = App.shared().getCurrentFragment().getTag();
             View view = App.shared().getCurrentFragment().getView();
             snackbar = Snackbar.make(
                     view,
@@ -34,11 +36,29 @@ public class Loader
         }
     }
 
+    static void showOverlay(String title, String description, Context context)
+    {
+        dialog = ProgressDialog.show(
+                context,
+                title,
+                description,
+                true
+        );
+    }
+
     static void hide()
     {
         if (snackbar != null)
         {
             snackbar.dismiss();
+        }
+    }
+
+    public static void hideOverlay()
+    {
+        if (dialog != null)
+        {
+            dialog.dismiss();
         }
     }
 }

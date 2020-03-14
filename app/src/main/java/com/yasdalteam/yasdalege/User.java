@@ -141,7 +141,10 @@ public class User
 
         for (IUserObservable observer: observers)
         {
-            observer.onAuthorize(this);
+            if (observer != null)
+            {
+                observer.onAuthorize(this);
+            }
         }
     }
 
@@ -154,7 +157,10 @@ public class User
 
         for (IUserObservable observer: observers)
         {
-            observer.onLogout();
+            if (observer != null)
+            {
+                observer.onLogout();
+            }
         }
     }
 
