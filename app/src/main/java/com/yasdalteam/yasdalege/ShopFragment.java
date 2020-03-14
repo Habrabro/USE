@@ -115,7 +115,7 @@ public class ShopFragment extends BaseFragment
 
         for (ShopItem item : priceList)
         {
-            View shopItemView = inflater.inflate(R.layout.shop_item, null);
+            View shopItemView = inflater.inflate(R.layout.layout_shop_item, null);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     (int)getResources().getDimension(R.dimen.shopItemRootContainerHeight)
@@ -139,7 +139,7 @@ public class ShopFragment extends BaseFragment
             else
             {
                 ivShopItemAdLabel.setVisibility(View.GONE);
-                tvShopItemDescription.setVisibility(View.GONE);
+                tvShopItemDescription.setVisibility(View.INVISIBLE);
             }
             flShopItem.setOnClickListener(view ->
             {

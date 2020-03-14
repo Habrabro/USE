@@ -44,9 +44,10 @@
                 android:layout_height="wrap_content"
                 android:textAlignment="textEnd"
                 style="@style/shopItemDescriptionStyle"
-                android:text="+ отключение рекламы"/>
+                android:text="+ отключение рекламы"
+                android:visibility="invisible"/>
 
-            <TextView
+            <TextView android:id="@+id/tvShopItemPrice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="textEnd"
