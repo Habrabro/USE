@@ -211,14 +211,14 @@ public class MainActivity extends AppCompatActivity implements VKAuthCallback
                     .commit();
         }
 
-        ProviderInstaller.installIfNeededAsync(this, new ProviderInstaller.ProviderInstallListener()
-        {
-            @Override
-            public void onProviderInstalled() {}
-
-            @Override
-            public void onProviderInstallFailed(int i, Intent intent) {}
-        });
+//        ProviderInstaller.installIfNeededAsync(this, new ProviderInstaller.ProviderInstallListener()
+//        {
+//            @Override
+//            public void onProviderInstalled() {}
+//
+//            @Override
+//            public void onProviderInstallFailed(int i, Intent intent) {}
+//        });
     }
 
     @Override

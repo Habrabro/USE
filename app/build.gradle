@@ -7,8 +7,8 @@ android {
         applicationId "com.yasdalteam.yasdalege"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "3.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         manifestPlaceholders = [YANDEX_CLIENT_ID:"825fd766835540c284193beedae1fbed"]
@@ -67,7 +67,7 @@ dependencies {
 
     implementation 'id.zelory:compressor:2.1.0'
 
-    implementation 'com.google.android.gms:play-services-ads:18.3.0'
+    implementation 'com.google.android.gms:play-services-ads:19.0.0'
 
     implementation 'com.android.support:multidex:1.0.3'
 

@@ -80,7 +80,13 @@ public class SubjectsListFragment extends BaseFragment implements SubjectsListAd
                 {
                     super.onResponse(response);
                     List<Subject> subjects = ((SubjectsResponse)response).getData();
-                    SubjectsListFragment.this.subjects.addAll(subjects);
+                    for (Subject subject : subjects)
+                    {
+                        if (subject.isActive())
+                        {
+                            SubjectsListFragment.this.subjects.add(subject);
+                        }
+                    }
                     App.shared().getSubjects().addAll(subjects);
                     subjectsListAdapter.notifyDataSetChanged();
                     Loader.hide();
@@ -89,7 +95,13 @@ public class SubjectsListFragment extends BaseFragment implements SubjectsListAd
         }
         else
         {
-            SubjectsListFragment.this.subjects.addAll(App.shared().getSubjects());
+            for (Subject subject : App.shared().getSubjects())
+            {
+                if (subject.isActive())
+                {
+                    SubjectsListFragment.this.subjects.add(subject);
+                }
+            }
             subjectsListAdapter.notifyDataSetChanged();
         }
     }

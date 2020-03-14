@@ -6,8 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -61,6 +64,28 @@ public class VariantFragment extends BaseFragment implements ExercisesListAdapte
         {
             subjectId = getArguments().getLong(PARAM_1);
         }
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */)
+        {
+            @Override
+            public void handleOnBackPressed()
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Вы действительно хотите закрыть вариант?");
+                builder.setPositiveButton("OK", (dialog, id) ->
+                {
+                    FragmentManager fm = getActivity().getSupportFragmentManager();
+                    fm.popBackStack();
+                });
+                builder.setNegativeButton("Отмена", (dialog, id) ->
+                {
+                    // User cancelled the dialog
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
     @Override

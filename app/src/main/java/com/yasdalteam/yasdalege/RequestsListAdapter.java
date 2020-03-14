@@ -112,10 +112,17 @@ public class RequestsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
             final SimpleDateFormat serverDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy, HH:mm");
+
             Date date = new Date();
-            serverDateFormat.setTimeZone(TimeZone.getTimeZone("UTC+00:00"));
+            TimeZone timeZone = TimeZone.getTimeZone("GMT+03:00");
+
+            serverDateFormat.setTimeZone(timeZone);
+
             try { date = serverDateFormat.parse(sentDesc); }
-            catch (ParseException exception) {}
+            catch (ParseException exception) {
+                int i = 0;
+            }
+
             dateFormat.setTimeZone(TimeZone.getDefault());
             String dateTime = dateFormat.format(date);
 

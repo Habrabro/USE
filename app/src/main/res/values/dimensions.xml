@@ -12,4 +12,6 @@
 
     <dimen name="textContentSize">10sp</dimen>
     <dimen name="textContentMarginTop">7dp</dimen>
+
+    <dimen name="shopItemRootContainerHeight">192dp</dimen>
 </resources>
