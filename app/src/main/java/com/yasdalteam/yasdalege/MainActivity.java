@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.gms.security.ProviderInstaller;
 import com.yasdalteam.yasdalege.Networking.BaseResponse;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements VKAuthCallback
 
     @BindView(R.id.btnProfile) Button profileButton;
     @BindView(R.id.btnShop) Button shopButton;
+    @BindView(R.id.toolbarTitle) TextView toolbarTitle;
     private AdView adView;
 
     ResponseHandler seccessPurchaseResponseHandler = new ResponseHandler() {
@@ -250,6 +252,15 @@ public class MainActivity extends AppCompatActivity implements VKAuthCallback
         {
             bottomSheet = BottomSheetFragment.newInstance();
             bottomSheet.show(fragmentManager, "bottomSheet");
+        }
+    }
+
+    @OnClick(R.id.toolbarTitle)
+    public void onToolbarTitleClick()
+    {
+        FragmentManager fm = getSupportFragmentManager();
+        for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {
+            fm.popBackStack();
         }
     }
 
