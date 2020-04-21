@@ -2,7 +2,9 @@ package com.yasdalteam.yasdalege;
 
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -12,6 +14,7 @@ import java.util.Set;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnEditorAction;
 
 public class AnswerSection extends ViewHolder
 {
@@ -63,10 +66,19 @@ public class AnswerSection extends ViewHolder
     {
         showOrHideRightAnswer();
     }
+
     @OnClick(R.id.btnAnswer)
     public void onAnswerClick()
     {
         answer(answerFieldView.getText().toString());
+    }
+
+    @OnEditorAction(R.id.etAnswerField)
+    boolean onEditorAction(EditText editText, int actionId, KeyEvent keyEvent) {
+        if (actionId == EditorInfo.IME_ACTION_DONE) {
+            answer(answerFieldView.getText().toString());
+        }
+        return actionId != EditorInfo.IME_ACTION_DONE;
     }
 
     public boolean isAnswerRight()
