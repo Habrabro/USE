@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="192dp">
+
+    <FrameLayout android:id="@+id/flShopItem"
+        android:layout_width="match_parent"
+        android:layout_height="172dp"
+        android:background="@drawable/shop_item_backdrop">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="-33dp"
+            android:layout_marginLeft="-18dp"
+            android:layout_gravity="bottom"
+            android:alpha="0.09"
+            android:background="@drawable/shop_item_backdrop_image"/>
+        
+        <ImageView android:id="@+id/ivShopItemAdLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_ad_label"
+            android:visibility="invisible"/>
+
+        <LinearLayout android:id="@+id/llTextContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingBottom="16dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="28dp">
+
+            <TextView android:id="@+id/tvShopItemTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="textEnd"
+                style="@style/shopItemTitleStyle"
+                android:text="1 проверка"/>
+
+            <TextView android:id="@+id/tvShopItemDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="textEnd"
+                style="@style/shopItemDescriptionStyle"
+                android:text="+ отключение рекламы"
+                android:visibility="invisible"/>
+
+            <TextView android:id="@+id/tvShopItemPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="textEnd"
+                style="@style/shopItemTitleStyle"
+                android:text="1 299 Р"/>
+        </LinearLayout>
+    </FrameLayout>
+</FrameLayout>

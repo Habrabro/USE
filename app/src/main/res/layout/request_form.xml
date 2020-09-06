@@ -71,7 +71,7 @@
             android:layout_height="45dp"
             style="@style/exerciseAnswerSectionButton"
             android:background="@drawable/subject_menu_button"
-            android:hint="Отправить на проверку"/>
+            android:hint="Отправить сочинение"/>
     </LinearLayout>
 
     <LinearLayout android:id="@+id/llCantCreateRequest"

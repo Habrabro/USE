@@ -74,9 +74,9 @@ public class NetworkService
     private OkHttpClient provideOkHttpClient()
     {
         OkHttpClient.Builder okhttpClientBuilder = new OkHttpClient.Builder();
-        okhttpClientBuilder.connectTimeout(60, TimeUnit.SECONDS);
-        okhttpClientBuilder.readTimeout(60, TimeUnit.SECONDS);
-        okhttpClientBuilder.writeTimeout(60, TimeUnit.SECONDS);
+        okhttpClientBuilder.connectTimeout(600, TimeUnit.SECONDS);
+        okhttpClientBuilder.readTimeout(600, TimeUnit.SECONDS);
+        okhttpClientBuilder.writeTimeout(600, TimeUnit.SECONDS);
         okhttpClientBuilder.interceptors().add(new AddCookiesInterceptor());
         okhttpClientBuilder.interceptors().add(new ReceivedCookiesInterceptor());
         return okhttpClientBuilder.build();
@@ -267,6 +267,7 @@ public class NetworkService
         ConnectivityManager cm = (ConnectivityManager) App.shared()
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         boolean isNetworkConnected = cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+//        boolean isNetworkConnected = true;
         if (!isNetworkConnected)
         {
             if (App.shared().getCurrentFragment() != null)

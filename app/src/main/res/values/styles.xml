@@ -69,4 +69,18 @@
         <item name="android:textColor">#1a0dab</item>
         <item name="android:drawableEnd">@drawable/ic_arrow_point_to_right</item>
     </style>
+
+    <style name="shopItemTextViewStyle">
+        <item name="android:textColor" >@android:color/white</item>
+    </style>
+
+    <style name="shopItemTitleStyle" parent="shopItemTextViewStyle">
+        <item name="android:textSize" >32sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="shopItemDescriptionStyle" parent="shopItemTextViewStyle">
+        <item name="android:textSize" >18sp</item>
+    </style>
+
 </resources>

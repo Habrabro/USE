@@ -78,12 +78,13 @@ public class RequestForm extends ViewHolder
         });
 
         view.findViewById(R.id.btnSelectFiles).setOnClickListener(v -> {
-            if(ContextCompat.checkSelfPermission(fragment.getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED){
+            if(ContextCompat.checkSelfPermission(fragment.getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+               && ContextCompat.checkSelfPermission(fragment.getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+            {
                 ActivityCompat.requestPermissions(fragment.getActivity(),
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
                         2);
-            }else{
+            } else {
                 fragment.setFilepickCallback(RequestForm.this);
                 Intent intent = new Intent(fragment.getContext(), FilePickerActivity.class);
                 intent.putExtra(FilePickerActivity.CONFIGS, new Configurations.Builder()

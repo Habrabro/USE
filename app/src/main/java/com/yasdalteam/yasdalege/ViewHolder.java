@@ -45,6 +45,7 @@ public class ViewHolder extends RecyclerView.ViewHolder
             Glide
                     .with(App.shared())
                     .load(exercise.getImg())
+                    .override(1080)
                     .placeholder(new ColorDrawable(
                             App.shared().getResources().getColor(R.color.glidePlaceholderColor)))
                     .error(R.drawable.ic_broken_image)
