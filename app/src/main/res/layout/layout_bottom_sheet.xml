@@ -33,20 +33,31 @@
                 android:src="@drawable/ic_vkicon"/>
         </RelativeLayout>
 
-        <EditText android:id="@+id/etLogin"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="23dp"
-            style="@style/bottomSheetEditText"
-            android:inputType="textEmailAddress"
-            android:hint="Email"/>
+            android:layout_height="wrap_content">
 
-        <EditText android:id="@+id/etPassword"
+            <EditText android:id="@+id/etLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="23dp"
+                style="@style/bottomSheetEditText"
+                android:inputType="textEmailAddress"
+                android:hint="Email"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/bottomSheetEditText"
-            android:inputType="textPassword"
-            android:hint="Пароль"/>
+            app:passwordToggleEnabled="true">
+
+            <EditText android:id="@+id/etPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/bottomSheetEditText"
+                android:inputType="textPassword"
+                android:hint="Пароль"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"

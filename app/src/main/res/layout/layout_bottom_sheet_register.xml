@@ -39,13 +39,18 @@
             android:textColor="@android:color/holo_red_light"
             android:text="Заполните все поля"/>
 
-        <EditText android:id="@+id/etLogin"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="23dp"
-            style="@style/bottomSheetEditText"
-            android:inputType="textEmailAddress"
-            android:hint="E-mail"/>
+            android:layout_height="wrap_content">
+
+            <EditText android:id="@+id/etLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="23dp"
+                style="@style/bottomSheetEditText"
+                android:inputType="textEmailAddress"
+                android:hint="E-mail"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView android:id="@+id/tvLoginError"
             android:layout_width="match_parent"
@@ -53,12 +58,18 @@
             android:textColor="@android:color/holo_red_light"
             android:text="Введите корректный e-mail"/>
 
-        <EditText android:id="@+id/etPassword"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/bottomSheetEditText"
-            android:inputType="textPassword"
-            android:hint="Пароль"/>
+            app:passwordToggleEnabled="true">
+
+            <EditText android:id="@+id/etPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/bottomSheetEditText"
+                android:inputType="textPassword"
+                android:hint="Пароль"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView android:id="@+id/tvPasswordError"
             android:layout_width="match_parent"
@@ -66,12 +77,18 @@
             android:textColor="@android:color/holo_red_light"
             android:text="Password is invalid"/>
 
-        <EditText android:id="@+id/etRepeatPassword"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/bottomSheetEditText"
-            android:inputType="textPassword"
-            android:hint="Повторите пароль"/>
+            app:passwordToggleEnabled="true">
+
+            <EditText android:id="@+id/etRepeatPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/bottomSheetEditText"
+                android:inputType="textPassword"
+                android:hint="Повторите пароль"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView android:id="@+id/tvPasswordComparisonError"
             android:layout_width="match_parent"
