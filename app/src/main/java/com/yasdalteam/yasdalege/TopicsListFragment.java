@@ -70,7 +70,7 @@ public class TopicsListFragment extends BaseFragment implements TopicsListAdapte
 
         topics = new ArrayList<>();
         RecyclerView recyclerView = view.findViewById(R.id.rvTopicsList);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
+        LinearLayoutManager linearLayoutManager = new MeasurableLinearLayoutManager(view.getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
 
         DividerItemDecoration horizontalSeparator = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
