@@ -9,5 +9,5 @@
         android:layout_height="45dp"
         style="@style/exerciseAnswerSectionButton"
         android:background="@drawable/subject_menu_button"
-        android:hint="Подвести итоги"/>
+        android:hint="Решить вариант"/>
 </LinearLayout>
