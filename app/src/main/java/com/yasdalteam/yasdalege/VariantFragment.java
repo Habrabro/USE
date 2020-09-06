@@ -102,7 +102,7 @@ public class VariantFragment extends BaseFragment implements ExercisesListAdapte
         super.onViewCreated(view, savedInstanceState);
 
         RecyclerView recyclerView = view.findViewById(R.id.rvExercisesList);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
+        LinearLayoutManager linearLayoutManager = new MeasurableLinearLayoutManager(view.getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
 
         exercisesListAdapter = new ExercisesListAdapter(this, exercises);
