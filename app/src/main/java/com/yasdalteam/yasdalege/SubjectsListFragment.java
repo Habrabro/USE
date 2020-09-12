@@ -49,12 +49,6 @@ public class SubjectsListFragment extends BaseFragment implements SubjectsListAd
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public void onStart()
     {
         super.onStart();
@@ -129,7 +123,7 @@ public class SubjectsListFragment extends BaseFragment implements SubjectsListAd
     @OnClick(R.id.btnSubjectListGuide)
     public void onGuideButtonClick()
     {
-
+        
     }
 
     private void applyStyle()
