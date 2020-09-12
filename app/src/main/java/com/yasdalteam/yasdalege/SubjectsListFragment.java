@@ -123,7 +123,8 @@ public class SubjectsListFragment extends BaseFragment implements SubjectsListAd
     @OnClick(R.id.btnSubjectListGuide)
     public void onGuideButtonClick()
     {
-        
+        GuideFragment guideFragment = GuideFragment.newInstance();
+        ((MainActivity)getActivity()).replaceFragment(guideFragment, "guideFragment");
     }
 
     private void applyStyle()
