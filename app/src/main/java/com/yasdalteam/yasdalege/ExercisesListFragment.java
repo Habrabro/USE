@@ -22,9 +22,11 @@ import com.yasdalteam.yasdalege.Networking.ExerciseResponse;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.zip.Inflater;
 
 public class ExercisesListFragment extends BaseFragment implements ExercisesListAdapter.Listener, User.IUserObservable
@@ -140,10 +142,22 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
 
     private void setupSpinner()
     {
-        String[] subjects = {"All", "Math", "Russian", "English"};
+        List<Subject> cachedSubjects = App.shared().getSubjects();
+        List<SubjectSpinnerModel> spinnerModels = new ArrayList<>();
+        List<String> spinnerItems = new ArrayList<>();
+        for (int i = 0; i < cachedSubjects.size(); i++)
+        {
+            if (cachedSubjects.get(i).isActive())
+            {
+                spinnerModels.add(new SubjectSpinnerItemModel(cachedSubjects.get(i)));
+                spinnerItems.add(spinnerModels.get(spinnerModels.size() - 1).getTitle());
+            }
+        }
+        spinnerModels.add(0, new SubjectSpinnerModel("Все", SubjectSpinnerModel.SubjectSpinnerModelType.ALL));
+        spinnerItems.add(0, spinnerModels.get(0).getTitle());
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                Objects.requireNonNull(this.getContext()), android.R.layout.simple_spinner_item, subjects);
+                Objects.requireNonNull(this.getContext()), android.R.layout.simple_spinner_item, spinnerItems);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         subjectFilterSpinner.setAdapter(adapter);
     }

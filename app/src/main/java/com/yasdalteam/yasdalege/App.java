@@ -19,9 +19,8 @@ import com.vk.api.sdk.*;
 
 public class App extends Application
 {
-    public final String SERVER_BASE_URL = "http://host1803169.hostland.pro/";
-//    public final String SERVER_BASE_URL = "https://usetrainingadmin.000webhostapp.com/";
     public final String OLD_SERVER_BASE_URL = "https://usetrainingadmin.000webhostapp.com/";
+    public final String SERVER_BASE_URL = "http://host1803169.hostland.pro/";
     public final int SESSION_LIFETIME_IN_DAYS = 14;
     public static final int FILE_REQUEST_CODE = 61599;
 
