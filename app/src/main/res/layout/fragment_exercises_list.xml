@@ -9,13 +9,24 @@
         layout="@layout/no_content_stub">
     </include>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvExercisesList"
-        android:scrollbars="vertical"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    </androidx.recyclerview.widget.RecyclerView>
+        <Spinner
+            android:id="@+id/spnExerciseListSubjectFilter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="40dp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvExercisesList"
+            android:scrollbars="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </androidx.recyclerview.widget.RecyclerView>
+    </LinearLayout>
 
     <include layout="@layout/ads_layout"></include>
 

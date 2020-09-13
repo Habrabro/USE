@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,46 +19,42 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.yasdalteam.yasdalege.Networking.BaseResponse;
 import com.yasdalteam.yasdalege.Networking.ExerciseResponse;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.zip.Inflater;
 
 public class ExercisesListFragment extends BaseFragment implements ExercisesListAdapter.Listener, User.IUserObservable
 {
+    @BindView(R.id.spnExerciseListSubjectFilter)
+    Spinner subjectFilterSpinner;
+
     public int getItemsPerLoad()
     {
         return itemsPerLoad;
     }
-
     private final int itemsPerLoad = 30;
-
     public int getPage()
     {
         return page;
     }
-
     private int page;
-
     public ExercisesListAdapter exercisesListAdapter;
-
     public void setRequest(IRequestSendable request)
     {
         this.request = request;
     }
-
     private IRequestSendable request;
-
     public void setExercises(List<Exercise> exercises)
     {
         this.exercises = exercises;
     }
-
     private List<Exercise> exercises = new ArrayList<>();
 
-    public ExercisesListFragment()
-    {
-
-    }
+    public ExercisesListFragment() {}
 
     public static ExercisesListFragment newInstance(IRequestSendable request)
     {
@@ -109,10 +107,17 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
     {
         super.onViewCreated(view, savedInstanceState);
 
+        ButterKnife.bind(this, view);
+
         RecyclerView recyclerView = view.findViewById(R.id.rvExercisesList);
         LinearLayoutManager linearLayoutManager = new MeasurableLinearLayoutManager(view.getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(exercisesListAdapter);
+
+        if (getTag().equals("completedExercises") || getTag().equals("favoriteExercises"))
+        {
+            setupSpinner();
+        }
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
         {
@@ -133,16 +138,14 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
         });
     }
 
-    @Override
-    public void onAttach(@NonNull Context context)
+    private void setupSpinner()
     {
-        super.onAttach(context);
-    }
+        String[] subjects = {"All", "Math", "Russian", "English"};
 
-    @Override
-    public void onDetach()
-    {
-        super.onDetach();
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                Objects.requireNonNull(this.getContext()), android.R.layout.simple_spinner_item, subjects);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        subjectFilterSpinner.setAdapter(adapter);
     }
 
     @Override
@@ -157,6 +160,9 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
         checkIfUserAuthorized();
         exercisesListAdapter.notifyDataSetChanged();
     }
+
+    @Override
+    public void OnViewHolderClick(RecyclerView.ViewHolder viewHolder) {}
 
     @Override
     public void onResponse(BaseResponse response)
@@ -197,12 +203,6 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
             );
             rlNoContentStub.setLayoutParams(showParams);
         }
-    }
-
-    @Override
-    public void OnViewHolderClick(RecyclerView.ViewHolder viewHolder)
-    {
-
     }
 
     private void checkIfUserAuthorized()
