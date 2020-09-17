@@ -21,8 +21,14 @@ import com.yasdalteam.yasdalege.Networking.TopicResponse;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class TopicsListFragment extends BaseFragment implements TopicsListAdapter.Listener
 {
+    @BindView(R.id.llNoContentStub)
+    LinearLayout rlNoContentStub;
+
     private Subject subject;
     private TopicsListAdapter topicsListAdapter;
     private List<Topic> topics;
@@ -68,6 +74,8 @@ public class TopicsListFragment extends BaseFragment implements TopicsListAdapte
     {
         super.onViewCreated(view, savedInstanceState);
 
+        ButterKnife.bind(this, view);
+
         topics = new ArrayList<>();
         RecyclerView recyclerView = view.findViewById(R.id.rvTopicsList);
         LinearLayoutManager linearLayoutManager = new MeasurableLinearLayoutManager(view.getContext());
@@ -101,12 +109,7 @@ public class TopicsListFragment extends BaseFragment implements TopicsListAdapte
                     super.onError(error);
                     if (error.equals("404"))
                     {
-                        View rlNoContentStub = getView().findViewById(R.id.llNoContentStub);
-                        LinearLayout.LayoutParams showParams = new LinearLayout.LayoutParams(
-                                LinearLayout.LayoutParams.MATCH_PARENT,
-                                LinearLayout.LayoutParams.MATCH_PARENT
-                        );
-                        rlNoContentStub.setLayoutParams(showParams);
+                        rlNoContentStub.setVisibility(View.VISIBLE);
                     }
                     Loader.hide();
                 }
@@ -117,6 +120,8 @@ public class TopicsListFragment extends BaseFragment implements TopicsListAdapte
             TopicsListFragment.this.topics.addAll(App.shared().getTopics());
             topicsListAdapter.notifyDataSetChanged();
         }
+
+        rlNoContentStub.setVisibility(View.INVISIBLE);
     }
 
     @Override
