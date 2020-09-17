@@ -1,13 +1,20 @@
 package com.yasdalteam.yasdalege;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,6 +31,9 @@ import java.util.List;
 
 public class SubjectsListFragment extends BaseFragment implements SubjectsListAdapter.Listener
 {
+    @BindView(R.id.btnSubjectListGuide)
+    Button guideButton;
+
     private SubjectsListAdapter subjectsListAdapter;
     private List<Subject> subjects;
 
@@ -36,12 +46,6 @@ public class SubjectsListFragment extends BaseFragment implements SubjectsListAd
     {
         SubjectsListFragment fragment = new SubjectsListFragment();
         return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -63,6 +67,9 @@ public class SubjectsListFragment extends BaseFragment implements SubjectsListAd
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+
+        ButterKnife.bind(this, view);
+        applyStyle();
 
         subjects = new ArrayList<>();
         RecyclerView recyclerView = view.findViewById(R.id.rvSubjectsList);
@@ -108,15 +115,21 @@ public class SubjectsListFragment extends BaseFragment implements SubjectsListAd
     }
 
     @Override
-    public void onResponse(BaseResponse response)
-    {
-        super.onResponse(response);
-    }
-
-    @Override
     public void OnViewHolderClick(int position, Subject subject)
     {
         SubjectMenuFragment subjectMenuFragment = SubjectMenuFragment.newInstance(subject);
         ((MainActivity)getActivity()).replaceFragment(subjectMenuFragment, "subjectMenuFragment");
+    }
+
+    @OnClick(R.id.btnSubjectListGuide)
+    public void onGuideButtonClick()
+    {
+        GuideFragment guideFragment = GuideFragment.newInstance();
+        ((MainActivity)getActivity()).replaceFragment(guideFragment, "guideFragment");
+    }
+
+    private void applyStyle()
+    {
+        guideButton.setOutlineProvider(new SubjectMenuButtonOutlineProvider());
     }
 }
