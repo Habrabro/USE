@@ -71,8 +71,8 @@ public class SubjectsListFragment extends BaseFragment implements SubjectsListAd
         subjectsListAdapter = new SubjectsListAdapter(this, subjects);
         recyclerView.setAdapter(subjectsListAdapter);
 
-        if (App.shared().getSubjects().isEmpty())
-        {
+//        if (App.shared().getSubjects().isEmpty())
+//        {
             Loader.show();
             NetworkService.getInstance(new ResponseHandler() {
                 @Override
@@ -90,20 +90,21 @@ public class SubjectsListFragment extends BaseFragment implements SubjectsListAd
                     App.shared().getSubjects().addAll(subjects);
                     subjectsListAdapter.notifyDataSetChanged();
                     Loader.hide();
+                    App.shared().setSubjects(subjects);
                 }
             }).getSubjects(null);
-        }
-        else
-        {
-            for (Subject subject : App.shared().getSubjects())
-            {
-                if (subject.isActive())
-                {
-                    SubjectsListFragment.this.subjects.add(subject);
-                }
-            }
-            subjectsListAdapter.notifyDataSetChanged();
-        }
+//        }
+//        else
+//        {
+//            for (Subject subject : App.shared().getSubjects())
+//            {
+//                if (subject.isActive())
+//                {
+//                    SubjectsListFragment.this.subjects.add(subject);
+//                }
+//            }
+//            subjectsListAdapter.notifyDataSetChanged();
+//        }
     }
 
     @Override

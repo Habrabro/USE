@@ -21,8 +21,14 @@ import com.yasdalteam.yasdalege.Networking.NetworkService;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class DirectoryFragment extends BaseFragment implements DirectoryAdapter.Listener
 {
+    @BindView(R.id.llNoContentStub)
+    LinearLayout rlNoContentStub;
+
     private final static String PARAM_1 = "param_1";
     private long subjectId;
 
@@ -93,6 +99,8 @@ public class DirectoryFragment extends BaseFragment implements DirectoryAdapter.
     {
         super.onViewCreated(view, savedInstanceState);
 
+        ButterKnife.bind(this, view);
+
         RecyclerView recyclerView = view.findViewById(R.id.rvDirectory);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
@@ -111,6 +119,8 @@ public class DirectoryFragment extends BaseFragment implements DirectoryAdapter.
             NetworkService networkService = NetworkService.getInstance(this);
             networkService.getDirectories(null, subjectId, null);
         }
+
+        rlNoContentStub.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -146,12 +156,7 @@ public class DirectoryFragment extends BaseFragment implements DirectoryAdapter.
         Loader.hide();
         if (error.equals("404"))
         {
-            View rlNoContentStub = getView().findViewById(R.id.llNoContentStub);
-            LinearLayout.LayoutParams showParams = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.MATCH_PARENT
-            );
-            rlNoContentStub.setLayoutParams(showParams);
+            rlNoContentStub.setVisibility(View.VISIBLE);
         }
     }
 
