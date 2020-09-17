@@ -5,6 +5,7 @@ public class Exercise
     private int number;
     private long id;
     private long topicId;
+    private long subjectId;
     private String description;
     private String img;
     private String rightAnswer;
@@ -105,5 +106,10 @@ public class Exercise
     public void setAnsweredRight(boolean answeredRight)
     {
         this.answeredRight = answeredRight;
+    }
+
+    public Long getSubjectId()
+    {
+        return subjectId;
     }
 }
