@@ -224,6 +224,15 @@ public class ExercisesListFragment extends BaseFragment implements ExercisesList
                 }
             }
         }
+
+        if (listData.isEmpty())
+        {
+            rlNoContentStub.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            rlNoContentStub.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
