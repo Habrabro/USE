@@ -3,6 +3,8 @@ package com.yasdalteam.yasdalege.Networking;
 import android.content.Context;
 import android.net.ConnectivityManager;
 
+import androidx.annotation.Nullable;
+
 import com.yasdalteam.yasdalege.App;
 import com.yasdalteam.yasdalege.MainActivity;
 import com.yasdalteam.yasdalege.Payments.PaymentResponse;
@@ -123,6 +125,16 @@ public class NetworkService
                     .enqueue(new BaseCallback<>(listener));
         }
 
+    }
+
+    public void getCPartExercises(@Nullable Long id, @Nullable Long topicId, @Nullable String limit)
+    {
+        if (isNetworkConnected())
+        {
+            serverAPI
+                    .getCPartExercises(id, topicId, limit)
+                    .enqueue(new BaseCallback<>(listener));
+        }
     }
 
     public void getDirectories(Long id, Long subjectId, String limit)
@@ -351,6 +363,12 @@ public class NetworkService
         @GET("api/getExercises.php")
         Call<ExerciseResponse> getExercises(
                 @Query("id") Long id,
+                @Query("topicId") Long topicId,
+                @Query("limit") String limit);
+
+        @GET("api/getCPartExercises.php")
+        Call<ExerciseResponse> getCPartExercises(
+                @Query("subjectId") Long id,
                 @Query("topicId") Long topicId,
                 @Query("limit") String limit);
 
