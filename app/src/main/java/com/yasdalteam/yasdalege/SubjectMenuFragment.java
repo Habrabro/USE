@@ -10,6 +10,9 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.yasdalteam.yasdalege.Networking.IResponseReceivable;
+import com.yasdalteam.yasdalege.Networking.NetworkService;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -93,7 +96,15 @@ public class SubjectMenuFragment extends BaseFragment
     @OnClick(R.id.btnOpenCPart)
     public void onOpenCPartButtonClick()
     {
-        
+        IRequestSendable request = new IRequestSendable() {
+            @Override
+            public void send(IResponseReceivable listener) {
+                NetworkService networkService = NetworkService.getInstance(listener);
+                networkService.getCPartExercises(subjectId, null, null);
+            }
+        };
+        ExercisesListFragment cPartExercisesListFragment = ExercisesListFragment.newInstance(request);
+        ((MainActivity)getActivity()).replaceFragment(cPartExercisesListFragment, "cPartExercisesListFragment");
     }
 
     private void setupMenuForEnglish()
