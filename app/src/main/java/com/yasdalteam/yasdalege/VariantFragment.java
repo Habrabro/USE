@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -26,8 +28,16 @@ import com.yasdalteam.yasdalege.database.DbService;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class VariantFragment extends BaseFragment implements ExercisesListAdapter.Listener, User.IUserObservable
 {
+    @BindView(R.id.llNoContentStub)
+    LinearLayout noContentStubLinearLayout;
+    @BindView(R.id.spnExerciseListSubjectFilter)
+    Spinner subjectFilterSpinner;
+
     private final static String PARAM_1 = "param_1";
     private long subjectId;
 
@@ -101,6 +111,8 @@ public class VariantFragment extends BaseFragment implements ExercisesListAdapte
     {
         super.onViewCreated(view, savedInstanceState);
 
+        ButterKnife.bind(this, view);
+
         RecyclerView recyclerView = view.findViewById(R.id.rvExercisesList);
         LinearLayoutManager linearLayoutManager = new MeasurableLinearLayoutManager(view.getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -124,6 +136,9 @@ public class VariantFragment extends BaseFragment implements ExercisesListAdapte
             }).getTopics(null, subjectId);
             created = true;
         }
+
+        noContentStubLinearLayout.setVisibility(View.GONE);
+        subjectFilterSpinner.setVisibility(View.GONE);
     }
 
     @Override
