@@ -30,6 +30,17 @@
             android:paddingStart="50dp"
             android:hint="Решить вариант"/>
 
+        <Button android:id="@+id/btnOpenCPart"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:maxWidth="500dp"
+            style="@style/subjectMenuButton"
+            android:drawableStart="@drawable/ic_iccpart"
+            android:drawablePadding="15dp"
+            android:gravity="center_vertical"
+            android:paddingStart="47dp"
+            android:hint="Решить С часть"/>
+
         <Button android:id="@+id/btnTopicsList"
             android:layout_width="match_parent"
             android:layout_height="75dp"

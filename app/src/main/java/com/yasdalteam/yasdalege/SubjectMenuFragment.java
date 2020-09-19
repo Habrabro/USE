@@ -27,6 +27,7 @@ public class SubjectMenuFragment extends BaseFragment
     @BindView(R.id.btnDirectory) Button directoryView;
     @BindView(R.id.btnStartTraining) Button startTrainingView;
     @BindView(R.id.btnTopicsList) Button topicsListView;
+    @BindView(R.id.btnOpenCPart) Button openCPartButton;
 
     public SubjectMenuFragment()
     {
@@ -63,6 +64,7 @@ public class SubjectMenuFragment extends BaseFragment
         directoryView.setOutlineProvider(new SubjectMenuButtonOutlineProvider());
         startTrainingView.setOutlineProvider(new SubjectMenuButtonOutlineProvider());
         topicsListView.setOutlineProvider(new SubjectMenuButtonOutlineProvider());
+        openCPartButton.setOutlineProvider(new SubjectMenuButtonOutlineProvider());
 
         setupMenuForEnglish();
     }
@@ -86,6 +88,12 @@ public class SubjectMenuFragment extends BaseFragment
     {
         TopicsListFragment topicsListFragment = TopicsListFragment.newInstance(subject);
         ((MainActivity)getActivity()).replaceFragment(topicsListFragment, "topicsListFragment");
+    }
+
+    @OnClick(R.id.btnOpenCPart)
+    public void onOpenCPartButtonClick()
+    {
+        
     }
 
     private void setupMenuForEnglish()
