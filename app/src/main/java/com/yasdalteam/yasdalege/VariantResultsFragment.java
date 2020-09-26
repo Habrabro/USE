@@ -1,6 +1,8 @@
 package com.yasdalteam.yasdalege;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,10 +32,7 @@ public class VariantResultsFragment extends BaseFragment
     @BindView(R.id.btnCloseResults)
     Button btnCloseResults;
 
-    public VariantResultsFragment()
-    {
-
-    }
+    public VariantResultsFragment() {}
 
     public static VariantResultsFragment newInstance(List<Exercise> exercises)
     {
@@ -61,12 +60,6 @@ public class VariantResultsFragment extends BaseFragment
         });
         AlertDialog dialog = builder.create();
         dialog.show();
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -102,9 +95,18 @@ public class VariantResultsFragment extends BaseFragment
                 TextView answerCol = rowView.findViewById(R.id.tvAnswerCol);
                 TextView pointsCol = rowView.findViewById(R.id.tvPointsCol);
 
+                rightAnswerCol.getBackground().setColorFilter(0xFFCCCACE, PorterDuff.Mode.MULTIPLY);
+                answerCol.getBackground().setColorFilter(
+                        exercise.isAnsweredRight() ? 0xFF8E78FF : 0xFF7F7F7F,
+                        PorterDuff.Mode.MULTIPLY);
+                pointsCol.getBackground().setColorFilter(
+                        exercise.isAnsweredRight() ? 0xFF4D3CA4 : 0xFF393939,
+                        PorterDuff.Mode.MULTIPLY);
+
                 numberCol.setText(Integer.toString(exercise.getNumber()));
                 rightAnswerCol.setText(exercise.getRightAnswer());
                 answerCol.setText(exercise.getAnswer());
+
                 if (exercise.isAnsweredRight()) {
                     pointsSummary += exercise.getPoints();
                     pointsCol.setText(Integer.toString(exercise.getPoints()));
@@ -115,23 +117,5 @@ public class VariantResultsFragment extends BaseFragment
         }
 
         pointsSummaryCell.setText(Integer.toString(pointsSummary));
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context)
-    {
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onDetach()
-    {
-        super.onDetach();
-    }
-
-    @Override
-    public void onResponse(BaseResponse response)
-    {
-        super.onResponse(response);
     }
 }
