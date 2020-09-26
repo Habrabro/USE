@@ -45,9 +45,10 @@
     </style>
 
     <style name="variantResultsTableCell">
-        <item name="android:background">#f2f2f2</item>
-        <item name="android:layout_margin">1dp</item>
+        <item name="android:background">@drawable/variant_results_drawable</item>
+        <item name="android:minHeight">44dp</item>
         <item name="android:padding">5dp</item>
+        <item name="android:layout_marginTop">10dp</item>
         <item name="android:maxWidth">150dp</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@android:color/black</item>

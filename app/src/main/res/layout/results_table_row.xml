@@ -5,31 +5,42 @@
     android:weightSum="100">
 
     <TextView android:id="@+id/tvNumberCol"
-        android:layout_weight="14"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:minWidth="95dp"
         style="@style/variantResultsTableCell"
-        android:text="Номер"/>
+        android:paddingStart="10dp"
+        android:paddingEnd="55dp"
+        android:text="1"/>
 
     <TextView android:id="@+id/tvRightAnswerCol"
-        android:layout_weight="36"
+        android:layout_weight="50"
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_marginStart="-54dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="55dp"
         style="@style/variantResultsTableCell"
-        android:text="Верный ответ"/>
+        android:text="чтобы несмотря"/>
 
     <TextView android:id="@+id/tvAnswerCol"
-        android:layout_weight="36"
+        android:layout_weight="50"
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_marginStart="-54dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="55dp"
         style="@style/variantResultsTableCell"
-        android:text="Ваш ответ"/>
+        android:textColor="@android:color/white"
+        android:text="Серебряный"/>
 
     <TextView android:id="@+id/tvPointsCol"
-        android:layout_weight="14"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:minWidth="95dp"
+        android:layout_marginStart="-54dp"
         style="@style/variantResultsTableCell"
-        android:text="Баллы"/>
+        android:textColor="@android:color/white"
+        android:text="2"/>
 
 </LinearLayout>

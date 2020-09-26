@@ -14,4 +14,6 @@
     <dimen name="textContentMarginTop">7dp</dimen>
 
     <dimen name="shopItemRootContainerHeight">192dp</dimen>
+
+    <dimen name="variant_results_common_drawable_corner_radius">27dp</dimen>
 </resources>
