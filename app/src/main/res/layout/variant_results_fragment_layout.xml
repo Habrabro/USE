@@ -20,21 +20,16 @@
                 android:weightSum="100">
 
                 <TextView android:id="@+id/tvNumberCol"
-                    android:layout_width="wrap_content"
+                    android:layout_width="41dp"
                     android:layout_height="match_parent"
-                    android:minWidth="95dp"
                     style="@style/variantResultsTableCell"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="55dp"
-                    android:text="Номер"/>
+                    android:text="№"/>
 
                 <TextView android:id="@+id/tvRightAnswerCol"
                     android:layout_weight="50"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="-54dp"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="55dp"
+                    android:layout_marginStart="6dp"
                     style="@style/variantResultsTableCell"
                     android:text="Верный ответ"/>
 
@@ -42,9 +37,7 @@
                     android:layout_weight="50"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="-54dp"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="55dp"
+                    android:layout_marginStart="6dp"
                     style="@style/variantResultsTableCell"
                     android:text="Ваш ответ"/>
 
@@ -52,7 +45,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:minWidth="95dp"
-                    android:layout_marginStart="-54dp"
+                    android:layout_marginStart="6dp"
                     style="@style/variantResultsTableCell"
                     android:text="Баллы"/>
             </LinearLayout>
@@ -74,6 +67,7 @@
                 android:layout_weight="50"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginStart="6dp"
                 style="@style/variantResultsTableCell"
                 android:text="Верный ответ"/>
         </LinearLayout>
