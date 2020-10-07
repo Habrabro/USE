@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="false">
+        <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+            <item>
+                <shape>
+                    <solid android:color="#E0E0E0"/>
+                    <corners android:bottomRightRadius="@dimen/variant_results_common_drawable_corner_radius"
+                        android:bottomLeftRadius="@dimen/variant_results_common_drawable_corner_radius"
+                        android:topLeftRadius="@dimen/variant_results_common_drawable_corner_radius"
+                        android:topRightRadius="@dimen/variant_results_common_drawable_corner_radius" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+</selector>
