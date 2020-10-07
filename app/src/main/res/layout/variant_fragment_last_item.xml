@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="85dp"
+    android:layout_height="wrap_content"
+    android:minHeight="85dp"
     android:padding="15dp">
 
     <Button android:id="@+id/btnCompleteVariant"
@@ -10,4 +11,10 @@
         style="@style/exerciseAnswerSectionButton"
         android:background="@drawable/subject_menu_button"
         android:hint="Решить вариант"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="Задания из C части отправляются отдельно от всего варианта. Для этого нажмите на кнопку отправки в задании"/>
 </LinearLayout>
