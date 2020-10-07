@@ -20,37 +20,40 @@
                 android:weightSum="100">
 
                 <TextView android:id="@+id/tvNumberCol"
-                    android:layout_weight="16"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:background="#C4C4C4"
+                    android:minWidth="95dp"
                     style="@style/variantResultsTableCell"
-                    android:textSize="12sp"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="55dp"
                     android:text="Номер"/>
 
                 <TextView android:id="@+id/tvRightAnswerCol"
-                    android:layout_weight="34"
+                    android:layout_weight="50"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_marginStart="-54dp"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="55dp"
                     style="@style/variantResultsTableCell"
-                    android:background="#C4C4C4"
                     android:text="Верный ответ"/>
 
                 <TextView android:id="@+id/tvAnswerCol"
-                    android:layout_weight="34"
+                    android:layout_weight="50"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_marginStart="-54dp"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="55dp"
                     style="@style/variantResultsTableCell"
-                    android:background="#C4C4C4"
                     android:text="Ваш ответ"/>
 
                 <TextView android:id="@+id/tvPointsCol"
-                    android:layout_weight="16"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:minWidth="95dp"
+                    android:layout_marginStart="-54dp"
                     style="@style/variantResultsTableCell"
-                    android:background="#C4C4C4"
-                    android:textSize="12sp"
                     android:text="Баллы"/>
             </LinearLayout>
         </LinearLayout>
@@ -64,9 +67,8 @@
                 android:layout_weight="50"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:background="#C4C4C4"
                 style="@style/variantResultsTableCell"
-                android:text="Набрано баллов за тестовую часть"/>
+                android:text="Набрано баллов за тестовую часть:"/>
 
             <TextView android:id="@+id/tvPointsSummaryValueCell"
                 android:layout_weight="50"
